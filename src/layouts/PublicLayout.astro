@@ -1,0 +1,24 @@
+---
+import Layout from './Layout.astro';
+import Navigation from '../components/common/Navigation.astro';
+import Footer from '../components/common/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  keywords?: string[];
+  canonical?: string;
+  image?: string;
+  noindex?: boolean;
+}
+
+const { title, description, keywords, canonical, image, noindex } = Astro.props;
+---
+
+<Layout title={title} description={description} keywords={keywords} canonical={canonical} image={image} noindex={noindex}>
+  <Navigation />
+  <main class="min-h-screen">
+    <slot />
+  </main>
+  <Footer />
+</Layout>

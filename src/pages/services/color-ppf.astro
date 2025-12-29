@@ -1,0 +1,399 @@
+---
+import PublicLayout from '../../layouts/PublicLayout.astro';
+---
+
+<PublicLayout
+  title="Color PPF - ColorAuto"
+  description="Color-match paint protection film in Grand Junction. Factory-like finish with the protection of PPF."
+  keywords={[
+    'color PPF',
+    'colored paint protection film',
+    'PPF color match',
+    'Grand Junction PPF',
+    'vinyl alternative'
+  ]}
+  image="/images/colorppfhero.jpg"
+>
+  <!-- Hero Section -->
+  <section class="relative text-white py-70 overflow-hidden">
+    <img src="/images/colorppfhero.jpg" alt="Color PPF" class="absolute inset-0 w-full h-full object-cover" />
+    <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-orange-900/60"></div>
+    <div class="relative max-w-7xl mx-auto px-4 text-center">
+      <h1 class="text-5xl font-bold mb-4">Color Paint Protection Film</h1>
+      <p class="text-xl mb-2">Transform AND protect your vehicle with the latest color-changing technology</p>
+      <p class="text-lg text-purple-100">The perfect blend of style and protection</p>
+    </div>
+  </section>
+
+  <!-- Interactive Color Picker -->
+  <section class="color-picker">
+    <div class="container">
+      <div class="image-container">
+        <img id="vehicle-image" src="/images/colorppf/GTI_Front_Hero_Gloss_Grey_Black.avif" alt="Vehicle with Color PPF" />
+        <p class="disclaimer">Colors are for reference only. Visit us for physical samples.</p>
+        <div class="vehicle-options">
+          <label><input type="radio" name="vehicle" value="sedan" checked aria-label="Select Sedan"><span>Sedan</span></label>
+        </div>
+      </div>
+      <div class="content-container">
+        <h3>Customize Your Vehicle’s Style</h3>
+        <p>Choose a vibrant color to enhance your vehicle with durable paint protection film.</p>
+        <p id="selected-color" class="color-name">Moss Green</p>
+        <div class="color-options">
+          <label class="color-swatch">
+            <input type="radio" name="color" value="yellow" data-color-name="Yellow" data-hex="#f1ce42" aria-label="Select Yellow">
+            <div class="swatch" style="background: #f1ce42;"></div>
+          </label>
+          <label class="color-swatch">
+            <input type="radio" name="color" value="orange" data-color-name="Orange" data-hex="#e68508" aria-label="Select Orange">
+            <div class="swatch" style="background: #e68508;"></div>
+          </label>
+          <label class="color-swatch">
+            <input type="radio" name="color" value="red" data-color-name="Red" data-hex="#dd2911" aria-label="Select Red">
+            <div class="swatch" style="background: #dd2911;"></div>
+          </label>
+          <label class="color-swatch">
+            <input type="radio" name="color" value="gray" data-color-name="Gray" data-hex="#afafaf" aria-label="Select Gray">
+            <div class="swatch" style="background: #afafaf;"></div>
+          </label>
+          <label class="color-swatch">
+            <input type="radio" name="color" value="green" data-color-name="Moss Green" data-hex="#515745" checked aria-label="Select Moss Green">
+            <div class="swatch" style="background: #515745;"></div>
+          </label>
+          <label class="color-swatch">
+            <input type="radio" name="color" value="black" data-color-name="Black" data-hex="#000000" aria-label="Select Black">
+            <div class="swatch" style="background: #000000;"></div>
+          </label>
+          <label class="color-swatch">
+            <input type="radio" name="color" value="beach_blue" data-color-name="Beach Blue" data-hex="#02bac7" aria-label="Select Beach Blue">
+            <div class="swatch" style="background: #02bac7;"></div>
+          </label>
+          <label class="color-swatch">
+            <input type="radio" name="color" value="plum" data-color-name="Ultra Plum" data-hex="#33132c" aria-label="Select Plum">
+            <div class="swatch" style="background: #33132c;"></div>
+          </label>
+          <label class="color-swatch">
+            <input type="radio" name="color" value="silver" data-color-name="Bond Silver" data-hex="#b4b4b4" aria-label="Select Silver">
+            <div class="swatch" style="background: #b4b4b4;"></div>
+          </label>
+          <label class="color-swatch">
+            <input type="radio" name="color" value="white" data-color-name="Pearl White" data-hex="#ffffff" aria-label="Select White">
+            <div class="swatch" style="background: #ffffff;"></div>
+          </label>
+          <label class="color-swatch">
+            <input type="radio" name="color" value="abyss_blue" data-color-name="Abyss Blue" data-hex="#021635" aria-label="Select Abyss Blue">
+            <div class="swatch" style="background: #021635;"></div>
+          </label>
+          <label class="color-swatch">
+            <input type="radio" name="color" value="battle_green" data-color-name="Battle Green" data-hex="#0a3608" aria-label="Select Battle Green">
+            <div class="swatch" style="background: #0a3608;"></div>
+          </label>
+          <label class="color-swatch">
+            <input type="radio" name="color" value="satin_midnight" data-color-name="Satin Midnight" data-hex="#252525" aria-label="Select Satin Midnight">
+            <div class="swatch" style="background: #252525;"></div>
+          </label>
+          <label class="color-swatch">
+            <input type="radio" name="color" value="satin_thermal" data-color-name="Satin Thermal Beige" data-hex="#bbad60" aria-label="Select Satin Thermal Beige">
+            <div class="swatch" style="background: #bbad60;"></div>
+          </label>
+          <label class="color-swatch">
+            <input type="radio" name="color" value="gray_black" data-color-name="Gray Black" data-hex="#858585" aria-label="Select Gray Black">
+            <div class="swatch" style="background: #858585;"></div>
+          </label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .color-picker { padding: 40px 0; background: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .color-picker .container { max-width: 1200px; margin: 0 auto; display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start; padding: 0 20px; }
+    .color-picker .image-container { flex: 1; min-width: 300px; text-align: center; }
+    .color-picker .image-container img { width: 100%; max-width: 450px; height: auto; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: opacity 0.3s ease; }
+    .color-picker .image-container img.loading { opacity: 0.5; }
+    .color-picker .disclaimer { font-size: 14px; color: #666; margin: 10px 0 20px; }
+    .color-picker .vehicle-options { display: flex; gap: 20px; justify-content: center; margin-top: 20px; }
+    .color-picker .vehicle-options label { font-size: 16px; color: #333; cursor: pointer; transition: color 0.3s ease; }
+    .color-picker .vehicle-options span { padding: 5px 10px; }
+    .color-picker .vehicle-options input:checked + span { color: #7c3aed; font-weight: bold; border-bottom: 2px solid #7c3aed; }
+    .color-picker .content-container { flex: 1; min-width: 300px; }
+    .color-picker .content-container h3 { font-size: 32px; margin-bottom: 15px; color: #111; }
+    .color-picker .content-container p { font-size: 18px; margin-bottom: 20px; color: #444; }
+    .color-picker .color-name { font-weight: 600; font-size: 18px; margin-bottom: 20px; color: #111; }
+    .color-picker .color-options { display: flex; flex-wrap: wrap; gap: 15px; }
+    .color-picker .color-swatch { width: 60px; height: 60px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; position: relative; transition: border 0.3s ease; }
+    .color-picker .color-swatch input { display: none; }
+    .color-picker .color-swatch input:checked + .swatch { outline: 3px solid #7c3aed; }
+    .color-picker .swatch { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 3px 8px rgba(0,0,0,0.2); transition: transform 0.3s ease; }
+    .color-picker .color-swatch:hover .swatch { transform: scale(1.08); }
+    @media (max-width: 768px) {
+      .color-picker .container { flex-direction: column; align-items: center; gap: 30px; }
+      .color-picker .image-container, .color-picker .content-container { min-width: 100%; }
+      .color-picker .vehicle-options { flex-direction: column; align-items: center; }
+      .color-picker .vehicle-options label { font-size: 14px; }
+      .color-picker .color-swatch { width: 50px; height: 50px; }
+    }
+  </style>
+
+  <script>
+    const imageMap = {
+      sedan: {
+        yellow: '/images/colorppf/GTI_Front_Hero_XPEL_Yellow.avif',
+        orange: '/images/colorppf/GTI_Front_Hero_Gloss_Molten_Orange.avif',
+        beach_blue: '/images/colorppf/GTI_Front_Hero_Gloss_South_Beach_Blue.avif',
+        black: '/images/colorppf/GTI_Front_Hero_Gloss_Obsidian_Black.avif',
+        green: '/images/colorppf/GTI_Front_Hero_Gloss_Moss_Green.avif',
+        red: '/images/colorppf/GTI_Front_Hero_Gloss_Monza_Red.avif',
+        gray: '/images/colorppf/GTI_Front_Hero_Gloss_Heritage_Grey.avif',
+        gray_black: '/images/colorppf/GTI_Front_Hero_Gloss_Grey_Black.avif',
+        satin_thermal: '/images/colorppf/GTI_Front_Hero_Satin_Thermal_Beige.avif',
+        satin_tarmac: '/images/colorppf/GTI_Front_Hero_Satin_Tarmac.avif',
+        satin_midnight: '/images/colorppf/GTI_Front_Hero_Satin_Midnight.avif',
+        battle_green: '/images/colorppf/GTI_Front_Hero_Satin_Battle_Green.avif',
+        abyss_blue: '/images/colorppf/GTI_Front_Hero_Satin_Abyss_Blue.avif',
+        white: '/images/colorppf/GTI_Front_Hero_Metallic_Pearl_White.avif',
+        silver: '/images/colorppf/GTI_Front_Hero_Metallic_Bond_Silver.avif',
+        plum: '/images/colorppf/GTI_Front_Hero_Gloss_Ultra_Plum.avif',
+      },
+    };
+
+    const defaultImage = '/images/colorppf/GTI_Front_Hero_Gloss_Grey_Black.avif';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const vehicleInputs = document.querySelectorAll('.color-picker input[name="vehicle"]');
+      const colorInputs = document.querySelectorAll('.color-picker input[name="color"]');
+      const vehicleImage = document.getElementById('vehicle-image');
+      const colorName = document.getElementById('selected-color');
+
+      function updateImageAndColor() {
+        const selectedVehicle = document.querySelector('.color-picker input[name="vehicle"]:checked')?.value || 'sedan';
+        const selectedColor = document.querySelector('.color-picker input[name="color"]:checked')?.value || 'green';
+        const colorNameText = document.querySelector('.color-picker input[name="color"]:checked')?.dataset.colorName || 'Moss Green';
+
+        vehicleImage.classList.add('loading');
+        vehicleImage.src = (imageMap[selectedVehicle] && imageMap[selectedVehicle][selectedColor]) || defaultImage;
+        vehicleImage.onload = () => vehicleImage.classList.remove('loading');
+        colorName.textContent = colorNameText;
+      }
+
+      vehicleInputs.forEach((input) => input.addEventListener('change', updateImageAndColor));
+      colorInputs.forEach((input) => input.addEventListener('change', updateImageAndColor));
+
+      updateImageAndColor();
+    });
+  </script>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <!-- Left Column -->
+      <div>
+        <h2 class="text-3xl font-bold mb-6">Revolutionize Your Vehicle's Look</h2>
+        <p class="text-lg text-gray-700 mb-6">
+          Color PPF combines the protective benefits of traditional paint protection film with the ability to completely change your vehicle's color. Available in hundreds of colors and finishes, Color PPF gives you unlimited customization options while protecting your original paint.
+        </p>
+
+        <h3 class="text-2xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Why Choose Color PPF?</h3>
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-start">
+            <span class="text-purple-600 font-bold text-xl mr-3">✓</span>
+            <div>
+              <strong class="text-lg">Complete Color Change</strong>
+              <p class="text-gray-600">Change your vehicle's color without permanent paint work</p>
+            </div>
+          </li>
+          <li class="flex items-start">
+            <span class="text-purple-600 font-bold text-xl mr-3">✓</span>
+            <div>
+              <strong class="text-lg">Ultimate Paint Protection</strong>
+              <p class="text-gray-600">All the protective benefits of traditional PPF with custom color</p>
+            </div>
+          </li>
+          <li class="flex items-start">
+            <span class="text-purple-600 font-bold text-xl mr-3">✓</span>
+            <div>
+              <strong class="text-lg">Self-Healing Technology</strong>
+              <p class="text-gray-600">Minor scratches disappear with heat, maintaining flawless appearance</p>
+            </div>
+          </li>
+          <li class="flex items-start">
+            <span class="text-purple-600 font-bold text-xl mr-3">✓</span>
+            <div>
+              <strong class="text-lg">Removable & Reversible</strong>
+              <p class="text-gray-600">Returns to original paint color when removed - no permanent changes</p>
+            </div>
+          </li>
+          <li class="flex items-start">
+            <span class="text-purple-600 font-bold text-xl mr-3">✓</span>
+            <div>
+              <strong class="text-lg">Resale Value Protection</strong>
+              <p class="text-gray-600">Protects original paint, potentially increasing resale value</p>
+            </div>
+          </li>
+          <li class="flex items-start">
+            <span class="text-purple-600 font-bold text-xl mr-3">✓</span>
+            <div>
+              <strong class="text-lg">Endless Options</strong>
+              <p class="text-gray-600">Matte, gloss, satin, metallic, chrome, and specialty finishes</p>
+            </div>
+          </li>
+        </ul>
+
+        <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg mb-8 border-2 border-purple-200">
+          <h3 class="text-xl font-bold mb-3">Color PPF Packages</h3>
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="font-semibold">Accent Package (Hood/Roof)</span>
+              <span class="text-gray-600">Starting at $2,500</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="font-semibold">Partial Wrap</span>
+              <span class="text-gray-600">Starting at $4,000</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="font-semibold">Full Vehicle Color Change</span>
+              <span class="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent font-bold">Starting at $6,500</span>
+            </div>
+          </div>
+          <p class="text-sm text-gray-600 mt-4">*Pricing varies by vehicle size, complexity, and color selection</p>
+        </div>
+
+        <div class="bg-gray-50 p-6 rounded-lg">
+          <h4 class="font-bold text-lg mb-3">Popular Finish Options</h4>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-gray-900 rounded mr-3"></div>
+              <span>Matte Black</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-blue-600 rounded mr-3"></div>
+              <span>Gloss Blue</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded mr-3"></div>
+              <span>Color Shift</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-gradient-to-r from-yellow-400 to-red-500 rounded mr-3"></div>
+              <span>Chrome Gold</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div>
+        <div class="bg-gray-200 rounded-lg h-96 mb-6 flex items-center justify-center">
+          <img src="/images/colorppf.jpg" alt="Color Paint Protection Film" class="w-full h-full object-cover rounded-lg" />
+        </div>
+
+        <div class="bg-white p-8 rounded-lg shadow-lg border-2 border-purple-200">
+          <h3 class="text-2xl font-bold mb-4">Transform Your Ride Today</h3>
+          <p class="text-gray-600 mb-6">
+            Consult with our experts to explore color options and create a completely custom look for your vehicle.
+          </p>
+          <a href="/contact" class="block w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white text-center font-bold py-3 rounded hover:opacity-90 transition mb-3">
+            Get a Free Consultation
+          </a>
+          <a href="tel:970-628-1505" class="block w-full bg-gray-800 text-white text-center font-bold py-3 rounded hover:bg-gray-900 transition">
+            Call: 970-628-1505
+          </a>
+        </div>
+
+        <div class="mt-8 bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6 rounded-lg">
+          <h4 class="font-bold text-xl mb-3">🔥 Now Trending</h4>
+          <ul class="space-y-2">
+            <li>• Satin Black & White Combos</li>
+            <li>• Gloss Nardo Grey</li>
+            <li>• Matte Army Green</li>
+            <li>• Chrome Delete Accents</li>
+            <li>• Color-Shifting Chameleon</li>
+          </ul>
+        </div>
+
+        <div class="mt-8 bg-yellow-50 border-l-4 border-yellow-500 p-4">
+          <p class="text-sm text-gray-700">
+            <strong>Pro Tip:</strong> Color PPF can be combined with traditional clear PPF on high-impact areas for maximum protection.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Color Gallery Section -->
+  <section class="bg-gray-900 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8">Color & Finish Options</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="text-center">
+          <div class="w-full h-32 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg mb-3"></div>
+          <p class="font-semibold">Matte Finishes</p>
+        </div>
+        <div class="text-center">
+          <div class="w-full h-32 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg mb-3"></div>
+          <p class="font-semibold">Gloss Finishes</p>
+        </div>
+        <div class="text-center">
+          <div class="w-full h-32 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 rounded-lg mb-3"></div>
+          <p class="font-semibold">Color Shift</p>
+        </div>
+        <div class="text-center">
+          <div class="w-full h-32 bg-gradient-to-br from-yellow-300 to-yellow-600 rounded-lg mb-3"></div>
+          <p class="font-semibold">Metallic/Chrome</p>
+        </div>
+      </div>
+      <p class="text-center text-gray-400 mt-8">Hundreds of colors and custom color-matching available</p>
+    </div>
+  </section>
+
+  <!-- Installation Process -->
+  <section class="bg-white py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8">Professional Installation Process</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="text-center">
+          <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl font-bold text-purple-600">1</span>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Consultation & Design</h3>
+          <p class="text-gray-600">Choose your perfect color and finish with our expert guidance</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl font-bold text-purple-600">2</span>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Preparation & Installation</h3>
+          <p class="text-gray-600">Precision cutting and expert application by certified installers</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl font-bold text-purple-600">3</span>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Final Inspection</h3>
+          <p class="text-gray-600">Quality check and curing before delivery of your transformed vehicle</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Services -->
+  <section class="bg-gray-100 py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8">Enhance Your Color PPF</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <a href="/services/ceramic-coating" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition text-center">
+          <h3 class="text-xl font-bold mb-2 text-blue-600">Ceramic Coating</h3>
+          <p class="text-gray-600">Add ceramic coating over Color PPF for ultimate gloss and protection</p>
+        </a>
+        <a href="/services/window-tinting" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition text-center">
+          <h3 class="text-xl font-bold mb-2 text-blue-600">Window Tinting</h3>
+          <p class="text-gray-600">Complete the look with matching window tint</p>
+        </a>
+        <a href="/services/auto-detailing" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition text-center">
+          <h3 class="text-xl font-bold mb-2 text-blue-600">Auto Detailing</h3>
+          <p class="text-gray-600">Maintain your Color PPF with professional detailing</p>
+        </a>
+      </div>
+    </div>
+  </section>
+</PublicLayout>

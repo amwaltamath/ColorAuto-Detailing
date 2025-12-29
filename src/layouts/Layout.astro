@@ -1,0 +1,70 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  keywords?: string[];
+  canonical?: string;
+  image?: string;
+  noindex?: boolean;
+}
+
+const { title, description, keywords = [], canonical, image, noindex = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description || "ColorAuto Detailing — Auto detailing, paint protection film, ceramic coating, and window tinting in Grand Junction, CO."} />
+    {keywords.length ? (
+      <meta name="keywords" content={keywords.join(', ')} />
+    ) : null}
+    {noindex ? (<meta name="robots" content="noindex,nofollow" />) : (<meta name="robots" content="index,follow" />)}
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    {canonical && (<link rel="canonical" href={canonical} />)}
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description || "ColorAuto Detailing — Auto detailing, paint protection film, ceramic coating, and window tinting in Grand Junction, CO."} />
+    {canonical && (<meta property="og:url" content={canonical} />)}
+    <meta property="og:type" content="website" />
+    {image && (<meta property="og:image" content={image} />)}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description || "ColorAuto Detailing — Auto detailing, paint protection film, ceramic coating, and window tinting in Grand Junction, CO."} />
+    {image && (<meta name="twitter:image" content={image} />)}
+    <title>{title}</title>
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        name: "ColorAuto Detailing",
+        telephone: "970-628-1505",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "562 S Westgate Drive",
+          addressLocality: "Grand Junction",
+          addressRegion: "CO",
+          postalCode: "81505",
+          addressCountry: "US"
+        }
+      })}
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  html {
+    font-family: system-ui, sans-serif;
+    background: #f3f4f6;
+  }
+</style>

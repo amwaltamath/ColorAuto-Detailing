@@ -1,0 +1,20 @@
+---
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  keywords?: string[];
+  canonical?: string;
+  image?: string;
+  noindex?: boolean;
+}
+
+const { title, description, keywords, canonical, image, noindex } = Astro.props;
+---
+
+<Layout title={title} description={description} keywords={keywords} canonical={canonical} image={image} noindex={noindex}>
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700">
+    <slot />
+  </div>
+</Layout>

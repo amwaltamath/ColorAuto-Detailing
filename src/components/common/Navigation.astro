@@ -1,0 +1,118 @@
+---
+---
+
+<nav class="bg-white shadow-md sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <!-- Logo -->
+    <a href="/" class="flex items-center space-x-3">
+      <img src="/images/ColorAuto.png" alt="ColorAuto Logo" class="h-12 w-auto" />
+      <span class="text-xs text-gray-600 tracking-wider hidden md:block">PROFESSIONAL CAR DETAILING</span>
+    </a>
+    
+    <!-- Navigation -->
+    <div class="hidden md:flex space-x-8 items-center">
+      
+      <!-- Auto Service Dropdown -->
+      <div class="relative group">
+        <button class="text-gray-700 text-sm hover:text-blue-600 transition flex items-center">
+          Auto Service
+          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+          <div class="py-2">
+            <a href="/services/auto-detailing" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">Auto Detailing</a>
+            <a href="/services/paint-protection-film" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">Paint Protection Film</a>
+            <a href="/services/ceramic-coating" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">Ceramic Coating</a>
+            <a href="/services/window-tinting" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">Window Tinting</a>
+            <a href="/services/color-ppf" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">Color PPF</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Home Service Dropdown -->
+      <div class="relative group">
+        <button class="text-gray-700 text-sm hover:text-blue-600 transition flex items-center">
+          Home Service
+          <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+          <div class="py-2">
+            <a href="/services/home-window-tint" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">Home Flat Window Tint</a>
+            <a href="/services/office-window-tint" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">Office Flat Window Tint</a>
+          </div>
+        </div>
+      </div>
+
+      <a href="/our-work" class="text-gray-700 text-sm hover:text-blue-600 transition">Our Work</a>
+      <a href="/our-team" class="text-gray-700 text-sm hover:text-blue-600 transition">Our Team</a>
+      <a href="/contact" class="text-gray-700 text-sm hover:text-blue-600 transition">Contact</a>
+    </div>
+    
+    <!-- CTA Button -->
+    <a href="tel:970-628-1505" class="bg-blue-600 text-white px-4 py-2 rounded text-sm font-semibold hover:bg-blue-700 transition hidden md:block">
+      970-628-1505
+    </a>
+    
+    <!-- Mobile Menu Button -->
+    <button id="mobile-menu-button" aria-controls="mobile-menu" aria-expanded="false" class="md:hidden text-gray-700 text-2xl p-2 rounded hover:bg-gray-100" aria-label="Open menu">
+      ☰
+    </button>
+  </div>
+  
+  <!-- Mobile Menu Panel -->
+  <div id="mobile-menu" class="md:hidden hidden border-t border-gray-200 bg-white">
+    <div class="max-w-7xl mx-auto px-4 py-4 space-y-2">
+      
+
+      <details class="group">
+        <summary class="flex items-center justify-between py-2 text-gray-700 hover:text-blue-600 cursor-pointer">
+          <span>Auto Service</span>
+          <svg class="w-4 h-4 ml-2 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </summary>
+        <div class="pl-4 mt-1 space-y-1">
+          <a href="/services/auto-detailing" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Auto Detailing</a>
+          <a href="/services/paint-protection-film" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Paint Protection Film</a>
+          <a href="/services/ceramic-coating" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Ceramic Coating</a>
+          <a href="/services/window-tinting" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Window Tinting</a>
+          <a href="/services/color-ppf" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Color PPF</a>
+        </div>
+      </details>
+
+      <details class="group">
+        <summary class="flex items-center justify-between py-2 text-gray-700 hover:text-blue-600 cursor-pointer">
+          <span>Home Service</span>
+          <svg class="w-4 h-4 ml-2 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </summary>
+        <div class="pl-4 mt-1 space-y-1">
+          <a href="/services/home-window-tint" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Home Flat Window Tint</a>
+          <a href="/services/office-window-tint" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Office Flat Window Tint</a>
+        </div>
+      </details>
+
+      <a href="/our-work" class="block py-2 text-gray-700 hover:text-blue-600 transition">Our Work</a>
+      <a href="/our-team" class="block py-2 text-gray-700 hover:text-blue-600 transition">Our Team</a>
+      <a href="/contact" class="block py-2 text-gray-700 hover:text-blue-600 transition">Contact</a>
+
+      <a href="tel:970-628-1505" class="block mt-2 bg-blue-600 text-white text-center px-4 py-2 rounded text-sm font-semibold hover:bg-blue-700 transition">
+        Call 970-628-1505
+      </a>
+    </div>
+  </div>
+</nav>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('mobile-menu-button');
+    const menu = document.getElementById('mobile-menu');
+    if (!btn || !menu) return;
+    btn.addEventListener('click', () => {
+      const willOpen = menu.classList.contains('hidden');
+      menu.classList.toggle('hidden');
+      btn.setAttribute('aria-expanded', String(willOpen));
+    });
+  });
+  </script>
