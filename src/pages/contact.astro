@@ -24,28 +24,38 @@ import PublicLayout from '../layouts/PublicLayout.astro';
       <!-- Contact Form -->
       <div class="bg-white p-8 rounded-lg shadow-lg">
         <h2 class="text-2xl font-bold mb-6">Send us a Message</h2>
-        <form class="space-y-4">
+        <form id="contact-form" class="space-y-4" method="POST" action="/api/contact">
+          <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
           <div>
-            <label class="block text-gray-700 font-semibold mb-2">Name</label>
+            <label class="block text-gray-700 font-semibold mb-2" for="name">Name</label>
             <input
+              id="name"
+              name="name"
               type="text"
+              required
               class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               placeholder="Your name"
             />
           </div>
 
           <div>
-            <label class="block text-gray-700 font-semibold mb-2">Email</label>
+            <label class="block text-gray-700 font-semibold mb-2" for="email">Email</label>
             <input
+              id="email"
+              name="email"
               type="email"
+              required
               class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               placeholder="your@email.com"
             />
           </div>
 
           <div>
-            <label class="block text-gray-700 font-semibold mb-2">Phone</label>
+            <label class="block text-gray-700 font-semibold mb-2" for="phone">Phone</label>
             <input
+              id="phone"
+              name="phone"
               type="tel"
               class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               placeholder="(970) 123-4567"
@@ -53,8 +63,10 @@ import PublicLayout from '../layouts/PublicLayout.astro';
           </div>
 
           <div>
-            <label class="block text-gray-700 font-semibold mb-2">Vehicle</label>
+            <label class="block text-gray-700 font-semibold mb-2" for="vehicle">Vehicle</label>
             <input
+              id="vehicle"
+              name="vehicle"
               type="text"
               class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               placeholder="Year, Make, Model"
@@ -62,9 +74,13 @@ import PublicLayout from '../layouts/PublicLayout.astro';
           </div>
 
           <div>
-            <label class="block text-gray-700 font-semibold mb-2">Service Interested In</label>
-            <select class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
-              <option>Select a service...</option>
+            <label class="block text-gray-700 font-semibold mb-2" for="service">Service Interested In</label>
+            <select
+              id="service"
+              name="service"
+              class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+            >
+              <option value="">Select a service...</option>
               <option>Auto Detailing</option>
               <option>Paint Protection Film</option>
               <option>Ceramic Coating</option>
@@ -75,13 +91,18 @@ import PublicLayout from '../layouts/PublicLayout.astro';
           </div>
 
           <div>
-            <label class="block text-gray-700 font-semibold mb-2">Message</label>
+            <label class="block text-gray-700 font-semibold mb-2" for="message">Message</label>
             <textarea
+              id="message"
+              name="message"
               rows="4"
+              required
               class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               placeholder="Tell us about your vehicle and service needs..."
             ></textarea>
           </div>
+
+          <div id="form-status" class="text-sm font-semibold hidden"></div>
 
           <button
             type="submit"
@@ -172,3 +193,41 @@ import PublicLayout from '../layouts/PublicLayout.astro';
     </div>
   </div>
 </PublicLayout>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector("#contact-form");
+    const statusEl = document.querySelector("#form-status");
+
+    if (!form || !statusEl) return;
+
+    const setStatus = (text, color) => {
+      statusEl.textContent = text;
+      statusEl.classList.remove("hidden", "text-red-600", "text-green-600", "text-gray-700");
+      statusEl.classList.add(color);
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      setStatus("Sending...", "text-gray-700");
+
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          body: new FormData(form),
+        });
+
+        const json = await res.json().catch(() => ({}));
+
+        if (res.ok && json.ok) {
+          setStatus("Thanks! We received your message.", "text-green-600");
+          form.reset();
+        } else {
+          setStatus(json.error || "Unable to send right now. Please call 970-628-1505.", "text-red-600");
+        }
+      } catch (error) {
+        setStatus("Unable to send right now. Please call 970-628-1505.", "text-red-600");
+      }
+    });
+  });
+</script>

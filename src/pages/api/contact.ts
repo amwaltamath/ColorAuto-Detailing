@@ -5,6 +5,8 @@ interface ContactPayload {
   email: string;
   phone?: string;
   message: string;
+  vehicle?: string;
+  service?: string;
   website?: string; // honeypot
 }
 
@@ -15,24 +17,38 @@ function isValidEmail(email: string) {
 export async function POST({ request }: APIContext) {
   try {
     const contentType = request.headers.get("content-type") || "";
+    const isJson = contentType.includes("application/json");
+    const isForm =
+      contentType.includes("application/x-www-form-urlencoded") ||
+      contentType.includes("multipart/form-data");
 
     let data: ContactPayload | null = null;
-    if (contentType.includes("application/json")) {
+    if (isJson) {
       data = (await request.json()) as ContactPayload;
-    } else if (contentType.includes("application/x-www-form-urlencoded")) {
-      const form = await request.formData();
-      data = {
-        name: String(form.get("name") || ""),
-        email: String(form.get("email") || ""),
-        phone: String(form.get("phone") || ""),
-        message: String(form.get("message") || ""),
-        website: String(form.get("website") || ""),
-      };
     } else {
-      return new Response(JSON.stringify({ ok: false, error: "Unsupported content type" }), {
-        status: 400,
-        headers: { "content-type": "application/json" },
-      });
+      // Try formData first (handles multipart/form-data and url-encoded)
+      try {
+        const form = await request.formData();
+        data = {
+          name: String(form.get("name") || ""),
+          email: String(form.get("email") || ""),
+          phone: String(form.get("phone") || ""),
+          message: String(form.get("message") || ""),
+          vehicle: String(form.get("vehicle") || ""),
+          service: String(form.get("service") || ""),
+          website: String(form.get("website") || ""),
+        };
+      } catch (e) {
+        // Fallback: if formData fails, try json
+        try {
+          data = (await request.json()) as ContactPayload;
+        } catch (e2) {
+          return new Response(JSON.stringify({ ok: false, error: "Invalid request format" }), {
+            status: 400,
+            headers: { "content-type": "application/json" },
+          });
+        }
+      }
     }
 
     if (!data) {
@@ -47,6 +63,8 @@ export async function POST({ request }: APIContext) {
     const email = (data.email || "").trim();
     const phone = (data.phone || "").trim();
     const message = (data.message || "").trim();
+    const vehicle = (data.vehicle || "").trim();
+    const service = (data.service || "").trim();
     const website = (data.website || "").trim(); // honeypot
 
     if (website) {
@@ -90,7 +108,20 @@ export async function POST({ request }: APIContext) {
     }
 
     const subject = `New Contact Form Submission — ${name}`;
-    const text = `New inquiry from ColorAuto site\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || "N/A"}\n\nMessage:\n${message}`;
+    const lines = [
+      "New inquiry from ColorAuto site",
+      "",
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `Phone: ${phone || "N/A"}`,
+      service ? `Service: ${service}` : null,
+      vehicle ? `Vehicle: ${vehicle}` : null,
+      "",
+      "Message:",
+      message,
+    ].filter(Boolean);
+
+    const text = lines.join("\n");
 
     // Send via Resend REST API to avoid SDK dependency
     const res = await fetch("https://api.resend.com/emails", {
