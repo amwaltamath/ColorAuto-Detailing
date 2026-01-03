@@ -1,0 +1,99 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const title = "Ceramic Coating | Protect Your Paint | Color Auto Detailing";
+const description = "Professional ceramic coating in Grand Junction. Long-lasting paint protection, hydrophobic coating, 5-year warranty. Book now!";
+const keywords = ['ceramic coating', 'paint protection', 'hydrophobic coating', 'Grand Junction'];
+---
+
+<Layout {title} {description} {keywords} noindex={true}>
+  <!-- Hero Section -->
+  <section class="relative text-white py-70 overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="/images/ceramic-coating.jpg" alt="Ceramic Coating" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-black/60"></div>
+    </div>
+    <div class="relative max-w-4xl mx-auto px-4 text-center">
+      <h1 class="text-5xl font-bold mb-4 drop-shadow-lg">Ceramic Coating Protection</h1>
+      <p class="text-2xl text-gray-200 drop-shadow-md mb-8">Paint Protection That Lasts Years</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="tel:970-628-1505" class="bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition shadow-lg inline-block">
+          Call Now: 970-628-1505
+        </a>
+        <a href="/contact" class="bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-lg inline-block">
+          Get Free Quote
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Benefits -->
+  <section class="bg-gradient-to-b from-blue-600 to-blue-800 text-white py-16">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 class="text-4xl font-extrabold text-center mb-12">Why Ceramic Coating?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="group bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20 hover:bg-white/20 hover:border-white/40 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="text-6xl mb-4">🛡️</div>
+          <h3 class="font-extrabold text-2xl mb-3">5+ Year Protection</h3>
+          <p class="text-blue-100 leading-relaxed">Long-lasting defense against UV, dirt, and oxidation</p>
+        </div>
+        <div class="group bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20 hover:bg-white/20 hover:border-white/40 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="text-6xl mb-4">💧</div>
+          <h3 class="font-extrabold text-2xl mb-3">Hydrophobic Finish</h3>
+          <p class="text-blue-100 leading-relaxed">Water beads and rolls off for easy cleaning</p>
+        </div>
+        <div class="group bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20 hover:bg-white/20 hover:border-white/40 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <div class="text-6xl mb-4">✨</div>
+          <h3 class="font-extrabold text-2xl mb-3">Showroom Shine</h3>
+          <p class="text-blue-100 leading-relaxed">Professional gloss that turns heads</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits -->
+  <section class="bg-gray-50 py-12">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8">What You Get</h2>
+      <ul class="space-y-3">
+        <li class="flex items-start text-lg">
+          <span class="text-green-600 font-bold text-2xl mr-3">✓</span>
+          <span>Professional application by certified installers</span>
+        </li>
+        <li class="flex items-start text-lg">
+          <span class="text-green-600 font-bold text-2xl mr-3">✓</span>
+          <span>5-year manufacturer warranty coverage</span>
+        </li>
+        <li class="flex items-start text-lg">
+          <span class="text-green-600 font-bold text-2xl mr-3">✓</span>
+          <span>Superior UV and oxidation protection</span>
+        </li>
+        <li class="flex items-start text-lg">
+          <span class="text-green-600 font-bold text-2xl mr-3">✓</span>
+          <span>Enhanced water beading and dirt resistance</span>
+        </li>
+        <li class="flex items-start text-lg">
+          <span class="text-green-600 font-bold text-2xl mr-3">✓</span>
+          <span>Reduced washing and maintenance time</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="bg-white border-t-4 border-blue-600 py-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Protect Your Paint Today</h2>
+      <p class="text-xl text-gray-600 mb-8">Expert ceramic coating application with warranty protection</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="tel:970-628-1505" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition">
+          ☎️ Call: 970-628-1505
+        </a>
+        <a href="/contact" class="bg-green-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-green-700 transition">
+          📧 Get Free Quote
+        </a>
+      </div>
+      <p class="text-sm text-gray-500 mt-6">📍 562 S. Westgate Drive, Grand Junction, CO</p>
+    </div>
+  </section>
+</Layout>

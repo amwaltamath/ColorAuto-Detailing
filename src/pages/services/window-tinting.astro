@@ -16,11 +16,13 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
 >
   <!-- Hero Section -->
   <section class="relative text-white py-70 overflow-hidden">
-    <img src="/images/primexr.jpg" alt="Window Tinting" class="absolute inset-0 w-full h-full object-cover" />
-    <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-blue-900/60"></div>
+    <div class="absolute inset-0">
+      <img src="/images/primexr.jpg" alt="Window Tinting" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-black/60"></div>
+    </div>
     <div class="relative max-w-7xl mx-auto px-4 text-center">
-      <h1 class="text-5xl font-bold mb-4">Window Tinting</h1>
-      <p class="text-xl text-blue-100">UV protection, heat reduction, and enhanced privacy</p>
+      <h1 class="text-5xl font-bold mb-4 drop-shadow-lg">Window Tinting</h1>
+      <p class="text-xl text-gray-200 drop-shadow-md">UV protection, heat reduction, and enhanced privacy</p>
     </div>
   </section>
 
@@ -47,7 +49,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
             <span class="text-blue-600 font-bold text-xl mr-3">✓</span>
             <div>
               <strong class="text-lg">Heat Reduction</strong>
-              <p class="text-gray-600">Rejects up to 60% of solar heat, keeping interiors cooler</p>
+              <p class="text-gray-600">Rejects up to 90% of solar heat, keeping interiors cooler</p>
             </div>
           </li>
           <li class="flex items-start">
@@ -80,34 +82,6 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
           </li>
         </ul>
 
-        <div class="bg-blue-50 p-6 rounded-lg mb-8">
-          <h3 class="text-xl font-bold mb-3">Window Tint Options</h3>
-          <div class="space-y-3">
-            <div>
-              <div class="flex justify-between items-center mb-1">
-                <span class="font-semibold">Automotive Tint</span>
-                <span class="text-gray-600">Starting at $200</span>
-              </div>
-              <p class="text-sm text-gray-600">Full vehicle tinting (all side and rear windows)</p>
-            </div>
-            <div>
-              <div class="flex justify-between items-center mb-1">
-                <span class="font-semibold">Ceramic Tint</span>
-                <span class="text-gray-600">Starting at $400</span>
-              </div>
-              <p class="text-sm text-gray-600">Premium heat rejection and clarity</p>
-            </div>
-            <div>
-              <div class="flex justify-between items-center mb-1">
-                <span class="font-semibold">Home/Office Tint</span>
-                <span class="text-blue-600 font-bold">Custom Quote</span>
-              </div>
-              <p class="text-sm text-gray-600">Residential and commercial window film installation</p>
-            </div>
-          </div>
-          <p class="text-sm text-gray-600 mt-4">*Pricing varies by vehicle type and film selection</p>
-        </div>
-
         <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4">
           <p class="text-sm text-gray-700">
             <strong>Colorado Law:</strong> Front side windows must allow more than 27% of light in. We ensure all installations are compliant with state regulations.
@@ -138,16 +112,28 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
           <h4 class="font-bold text-lg mb-3">Tint Shade Options</h4>
           <div class="space-y-3">
             <div class="flex justify-between items-center">
-              <span>50% (Light Tint)</span>
+              <span>70%</span>
+              <div class="w-20 h-6 bg-gray-200 rounded"></div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span>55% (Light Tint)</span>
               <div class="w-20 h-6 bg-gray-300 rounded"></div>
             </div>
             <div class="flex justify-between items-center">
-              <span>35% (Medium Tint)</span>
+              <span>45% (Medium Tint)</span>
               <div class="w-20 h-6 bg-gray-400 rounded"></div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span>30</span>
+              <div class="w-20 h-6 bg-gray-500 rounded"></div>
             </div>
             <div class="flex justify-between items-center">
               <span>20% (Dark Tint)</span>
               <div class="w-20 h-6 bg-gray-600 rounded"></div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span>15</span>
+              <div class="w-20 h-6 bg-gray-700 rounded"></div>
             </div>
             <div class="flex justify-between items-center">
               <span>5% (Limo Tint)</span>
@@ -187,7 +173,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
           <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" aria-hidden="true"></div>
           <div class="absolute inset-0 flex flex-col justify-end items-center text-center px-6 pb-8 text-white">
             <h3 class="text-2xl font-bold mb-3 drop-shadow">PRIME XR</h3>
-            <p class="text-sm text-gray-200 leading-relaxed">Premium nano-ceramic performance · Up to 96% IR heat rejection · Crystal clear optics · Signal-friendly</p>
+            <p class="text-sm text-gray-200 leading-relaxed">Premium nano-ceramic performance · 60% heat reduction · Crystal clear optics · Signal-friendly</p>
             <div class="text-3xl font-extrabold text-amber-300 mt-4">From $350</div>
           </div>
         </div>
@@ -198,7 +184,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
           <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" aria-hidden="true"></div>
           <div class="absolute inset-0 flex flex-col justify-end items-center text-center px-6 pb-8 text-white">
             <h3 class="text-2xl font-bold mb-3 drop-shadow">PRIME XR PLUS</h3>
-            <p class="text-sm text-gray-200 leading-relaxed">Flagship film—absolute best · 98% IR heat rejection · Feels 3–8°F cooler inside · Maximum clarity & durability</p>
+            <p class="text-sm text-gray-200 leading-relaxed">Flagship film—absolute best · 60% heat reduction · Feels 3–8°F cooler inside · Maximum clarity & durability</p>
             <div class="text-3xl font-extrabold text-amber-300 mt-4">From $500</div>
           </div>
         </div>
@@ -212,18 +198,18 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
       <h2 class="text-3xl font-bold text-center mb-4">Window Film for Every Application</h2>
       <p class="text-center text-gray-600 mb-8">We also provide professional window tinting for homes and offices</p>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-xl font-bold mb-2 text-blue-600">Automotive</h3>
-          <p class="text-gray-600">Cars, trucks, SUVs, and commercial vehicles</p>
-        </div>
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-xl font-bold mb-2 text-blue-600">Residential</h3>
-          <p class="text-gray-600">Home windows for energy savings and privacy</p>
-        </div>
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-xl font-bold mb-2 text-blue-600">Commercial</h3>
-          <p class="text-gray-600">Office buildings and storefronts</p>
-        </div>
+          <div class="bg-white p-6 rounded-lg shadow text-center">
+            <h3 class="text-xl font-bold mb-2 text-blue-600">Automotive</h3>
+            <p class="text-gray-600">Cars, trucks, SUVs, and commercial vehicles</p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow text-center">
+            <h3 class="text-xl font-bold mb-2 text-blue-600">Home</h3>
+            <p class="text-gray-600">Home windows for energy savings and privacy</p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow text-center">
+            <h3 class="text-xl font-bold mb-2 text-blue-600">Office</h3>
+            <p class="text-gray-600">Office buildings and storefronts</p>
+          </div>
       </div>
     </div>
   </section>

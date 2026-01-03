@@ -16,11 +16,13 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
 >
   <!-- Hero Section -->
   <section class="relative text-white py-70 overflow-hidden">
-    <img src="/images/autodetailing.jpg" alt="Auto Detailing" class="absolute inset-0 w-full h-full object-cover" />
-    <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-blue-900/60"></div>
+    <div class="absolute inset-0">
+      <img src="/images/autodetailing.jpg" alt="Auto Detailing" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-black/60"></div>
+    </div>
     <div class="relative max-w-7xl mx-auto px-4 text-center">
-      <h1 class="text-5xl font-bold mb-4">Auto Detailing</h1>
-      <p class="text-xl text-blue-100">Professional car detailing to restore and protect your vehicle's appearance</p>
+      <h1 class="text-5xl font-bold mb-4 drop-shadow-lg">Auto Detailing</h1>
+      <p class="text-xl text-gray-200 drop-shadow-md">Professional car detailing to restore and protect your vehicle's appearance</p>
     </div>
   </section>
 
@@ -83,57 +85,114 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
         <div class="bg-blue-50 p-6 rounded-lg mb-8">
           <h3 class="text-xl font-bold mb-3">Detailing Packages</h3>
           <div class="space-y-6">
-            <!-- Hand Wash -->
+            <!-- Interior -->
             <div class="border-b pb-4">
               <div class="flex justify-between items-start mb-3">
-                <h4 class="font-bold text-lg">Hand Wash</h4>
-                <span class="text-blue-600 font-bold">$45+</span>
+                <h4 class="font-bold text-lg">Interior Detailing</h4>
               </div>
               <ul class="space-y-2 text-sm text-gray-700">
                 <li class="flex items-start">
                   <span class="mr-2">•</span>
-                  <span>Premium hand wash with PH balance car soap</span>
+                  <span>Interior and trunk professionally vacuumed in every area to remove all traces of sand and dirt</span>
                 </li>
                 <li class="flex items-start">
                   <span class="mr-2">•</span>
-                  <span>Wheels</span>
+                  <span>Carpets, seats, and floor mats steam cleaned or shampoo and extract</span>
                 </li>
                 <li class="flex items-start">
                   <span class="mr-2">•</span>
-                  <span>Exterior Windows</span>
+                  <span>Blow out and clean all vents</span>
                 </li>
                 <li class="flex items-start">
                   <span class="mr-2">•</span>
-                  <span>Towel and compressed air dried</span>
+                  <span>All plastic trim safely cleaned</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>All plastic trim protected in a satin, silicone free UV dressing – makes the interior look conditioned without the greasy look of cheap silicone dressings</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>Interior glass thoroughly cleaned</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>Door jams and rubber seals cleaned</span>
                 </li>
               </ul>
             </div>
-            <!-- Maintenance Detail -->
+            <!-- Exterior -->
+            <div class="border-b pb-4">
+              <div class="flex justify-between items-start mb-3">
+                <h4 class="font-bold text-lg">Exterior Detailing</h4>
+              </div>
+              <ul class="space-y-2 text-sm text-gray-700">
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>Chemical decontamination of wheels and brakes and agitated with a variety of wheel brushes – removes baked on brake dust</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>Tires, door jams degreased and agitated with a variety of detailing brushes – dissolves built up grime, silicone oils and dirt accumulation</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>Tar and bug splatter sprayed with a concentrated cleaning agent – safely dissolves contamination to allow for gentle cleaning</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>Entire vehicle thoroughly washed with 2 bucket wash method and clayed – removes embedded contamination from paint for a smooth finish through the use of an automotive clay bar and lubricant</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>Paintwork lightly polished/waxed – improves gloss levels of the paintwork and can hide minor paint imperfection (not proper paint correction like in other packages)</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>Hand wash using only microfiber towels</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>Clay bar to decontaminate paint</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>Clean door jams</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>Clean wheels and wheel wells</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>UV protectant applied to trim</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="mr-2">•</span>
+                  <span>3-4 month synthetic wax protection</span>
+                </li>
+              </ul>
+            </div>
+            <!-- Full Auto -->
             <div>
               <div class="flex justify-between items-start mb-3">
-                <h4 class="font-bold text-lg">Maintenance Detail</h4>
-                <span class="text-blue-600 font-bold">$125+</span>
+                <h4 class="font-bold text-lg">Full Auto Detailing</h4>
               </div>
-              <p class="text-sm text-gray-700 mb-3">Everything in Hand Wash package plus:</p>
-              <ul class="space-y-2 text-sm text-gray-700">
-                <li class="flex items-start">
-                  <span class="mr-2">•</span>
-                  <span>Spray Wax</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="mr-2">•</span>
-                  <span>Vacuum carpets, seats, and floor mats</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="mr-2">•</span>
-                  <span>Dust and wipe of interior plastic trim</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="mr-2">•</span>
-                  <span>Interior Windows</span>
-                </li>
-              </ul>
+              <p class="text-sm text-gray-700 mb-3">Includes both the exterior and interior detail plus the vehicle's engine bay is cleaned.</p>
             </div>
+          </div>
+          <div class="mt-6 pt-6 border-t border-blue-200">
+            <h4 class="font-bold text-base mb-3">Additional Auto Detailing Charges</h4>
+            <ul class="space-y-2 text-sm text-gray-700">
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Paint Correction (requires visual inspection for exact quote)</span>
+              </li>
+              <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Upgrade to Premium Paint Sealant for 6-8 months of protection for $85</span>
+              </li>
+            </ul>
           </div>
           <p class="text-sm text-gray-600 mt-6">*Pricing varies by vehicle size and condition</p>
         </div>
@@ -192,3 +251,4 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
     </div>
   </section>
 </PublicLayout>
+               
