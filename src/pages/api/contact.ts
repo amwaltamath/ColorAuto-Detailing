@@ -141,8 +141,9 @@ export async function POST({ request }: APIContext) {
 
     if (!res.ok) {
       const errText = await res.text();
-      console.error("Resend error:", errText);
-      return new Response(JSON.stringify({ ok: false, error: "Email service error" }), {
+      console.error("Resend error:", res.status, errText);
+      console.error("Resend request details - FROM:", FROM_EMAIL, "TO:", TO_EMAIL);
+      return new Response(JSON.stringify({ ok: false, error: `Email service error: ${res.status}` }), {
         status: 500,
         headers: { "content-type": "application/json" },
       });
