@@ -8,6 +8,9 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
+  // Enable server output so API routes deploy as Vercel functions
+  output: 'server',
+
   adapter: vercel(),
 
   integrations: [react()],
