@@ -6,7 +6,7 @@
 
 **Data flow**: Browser → Zustand (auth state) → React components → `auth.ts` utils (`PUBLIC_API_URL`) → backend API. Server-side: Astro endpoints → `api.ts` utils (`API_URL`) → backend. Contact form: Browser → `/api/contact` (Resend) → Email delivery. Two separate API clients because Astro server vs browser contexts have different env var access.
 
-**Deployment**: Uses `@astrojs/vercel` adapter with `output: 'server'` for serverless API routes. Static pages prerendered, API routes deploy as Vercel functions.
+**Deployment**: Uses `@astrojs/vercel` adapter with `output: 'server'` for serverless API routes. Static pages prerendered, API routes deploy as Vercel functions. URL redirects configured in `vercel.json` for SEO preservation from old site URLs.
 
 ## Critical Patterns
 
@@ -84,13 +84,24 @@ login(user);  // Zustand
 
 ### PPF Page Updates
 - **Color PPF Hero Banner**: Converted small purple box to full-width hero banner with `/images/colorppf.jpg` background
-- **Pricing Removal**: Removed pricing list from PPF Coverage Options section while keeping coverage images
-- **Coverage Gallery**: Visual coverage options without pricing (Partial Front, Full Front, Drivers Package, Full Coverage)
+- **Pricing Added**: Added pricing to all PPF Coverage Options (Partial Front $800, Full Front $1,600, Drivers Package $2,500, Full Coverage $5,500+)
+- **Coverage Gallery**: Visual coverage options with bullet points and check marks, Full Front marked as Popular
+- **Improved Presentation**: Better visual hierarchy with consistent pricing styling
+
+### Ceramic Coating Updates
+- **Pricing Consistency**: Made Level 1 pricing color match Level 2 (both now use `text-blue-600 font-bold`)
+- **Visual Consistency**: Both package prices now display in the same blue, bold format
 
 ### Service Name Changes
 - **Home Window Tint**: All "Residential" references changed to "Home" for consistency.
 - **Office Window Tint**: All "Commercial" references changed to "Office" throughout page.
 - **Navigation**: "Home Service" menu label updated to "Home and Office Service".
+
+### URL Redirects Configuration
+- **Vercel Redirects**: Added comprehensive `vercel.json` with 32 redirect mappings for old site URLs
+- **SEO Preservation**: All redirects configured as permanent (301) to maintain search engine rankings
+- **Coverage**: Includes service variations, common typos, and navigation page redirects
+- **Examples**: `/auto-detailing/` → `/services/auto-detailing`, `/contact-us/` → `/contact`, `/portfolio/` → `/our-work`
 
 ### Google Ads Landing Pages
 - New directory: `src/pages/ads/` contains **8 conversion-optimized landing pages** for Google Ads campaigns (one per service). All pages use `noindex={true}` to prevent organic ranking and focus on paid traffic.
@@ -124,3 +135,4 @@ login(user);  // Zustand
 - **Add auth check**: Import `useAuthStore()`, check `isLoggedIn`, redirect if false.
 - **Call API from page**: Use `apiFetch()` in frontmatter; use `loginUser()` in React components.
 - **SEO override**: Pass props to layout: `<PublicLayout title="Custom Title" description="..." keywords={['auto', 'detail']} />`.
+- **URL redirects**: Edit `vercel.json` to add permanent redirects from old URLs to new routes for SEO preservation.
