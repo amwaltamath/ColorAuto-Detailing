@@ -2,9 +2,11 @@
 
 ## Architecture Overview
 
-**Stack**: Astro 5 + React 19 + TypeScript + Tailwind v4 (via Vite plugin). Auto detailing business site with customer/employee portals. Run `npm run dev|build|preview`.
+**Stack**: Astro 5 + React 19 + TypeScript + Tailwind v4 (via Vite plugin). Auto detailing business site with customer/employee portals. Deployed on Vercel with serverless API routes. Run `npm run dev|build|preview`.
 
-**Data flow**: Browser → Zustand (auth state) → React components → `auth.ts` utils (`PUBLIC_API_URL`) → backend API. Server-side: Astro endpoints → `api.ts` utils (`API_URL`) → backend. Two separate API clients because Astro server vs browser contexts have different env var access.
+**Data flow**: Browser → Zustand (auth state) → React components → `auth.ts` utils (`PUBLIC_API_URL`) → backend API. Server-side: Astro endpoints → `api.ts` utils (`API_URL`) → backend. Contact form: Browser → `/api/contact` (Resend) → Email delivery. Two separate API clients because Astro server vs browser contexts have different env var access.
+
+**Deployment**: Uses `@astrojs/vercel` adapter with `output: 'server'` for serverless API routes. Static pages prerendered, API routes deploy as Vercel functions.
 
 ## Critical Patterns
 
@@ -37,6 +39,7 @@ login(user);  // Zustand
 ### 4. API Client Separation
 - **Browser-side** ([auth.ts](src/utils/auth.ts)): Uses `PUBLIC_API_URL` env var (accessible in browser). Functions: `loginUser`, `saveAuthToken`, `getAuthToken`, `isAuthenticated`.
 - **Server-side** ([api.ts](src/utils/api.ts)): Uses `API_URL` env var (server-only). Functions: `apiFetch<T>`, `getBookings`, `createBooking`. Pass bearer token in headers.
+- **Contact form** ([api/contact.ts](src/pages/api/contact.ts)): Uses `RESEND_API_KEY` env var. Sends emails via Resend REST API. Validates form data, honeypot protection, rate limiting.
 - **Why two?** Astro's env vars: `PUBLIC_*` available everywhere, others only in server context.
 
 ## Development Workflow
@@ -54,6 +57,7 @@ login(user);  // Zustand
 
 ### Environment Variables
 - `local.env` file (not committed): `PUBLIC_API_URL` and `API_URL` both point to `http://localhost:3001/api`.
+- **Resend Email**: `RESEND_API_KEY`, `CONTACT_TO_EMAIL=admin@colorautodetailing.com`, `CONTACT_FROM_EMAIL=no-reply@colorautodetailing.com`
 - **Rule**: Only `PUBLIC_*` vars accessible in browser. Use `API_URL` for server-side API calls in Astro endpoints.
 
 ### Asset Management
@@ -63,9 +67,19 @@ login(user);  // Zustand
 
 ## Recent Updates (January 2026)
 
-### Hero Sections
-- All service pages now use **unified hero styling** based on Paint Protection Film template with image overlay (bg-black/60), centered gradient text, and consistent CTA buttons.
-- Hero sections across all pages: [auto-detailing.astro](src/pages/services/auto-detailing.astro), [paint-protection-film.astro](src/pages/services/paint-protection-film.astro), [ceramic-coating.astro](src/pages/services/ceramic-coating.astro), [window-tinting.astro](src/pages/services/window-tinting.astro), [auto-paint-correction.astro](src/pages/services/auto-paint-correction.astro), [home-window-tint.astro](src/pages/services/home-window-tint.astro), [office-window-tint.astro](src/pages/services/office-window-tint.astro), [color-ppf.astro](src/pages/services/color-ppf.astro).
+### Deployment & Architecture
+- **Vercel Deployment**: Added `@astrojs/vercel` adapter with `output: 'server'` for serverless API routes
+- **Contact Form**: Implemented with Resend email service, includes honeypot protection and validation
+- **API Routes**: `/api/contact` now deploys as Vercel serverless function
+
+### Homepage Updates
+- **Before & After Section**: Temporarily hidden (commented out) for future content addition
+- **Hero Sections**: Unified styling across all service pages with image overlay (`bg-black/60`)
+
+### PPF Page Updates
+- **Color PPF Hero Banner**: Converted small purple box to full-width hero banner with `/images/colorppf.jpg` background
+- **Pricing Removal**: Removed pricing list from PPF Coverage Options section while keeping coverage images
+- **Coverage Gallery**: Visual coverage options without pricing (Partial Front, Full Front, Drivers Package, Full Coverage)
 
 ### Service Name Changes
 - **Home Window Tint**: All "Residential" references changed to "Home" for consistency.
@@ -87,12 +101,14 @@ login(user);  // Zustand
 
 - **Dashboards are stubs**: [customer/dashboard.astro](src/pages/customer/dashboard.astro) shows hardcoded metrics (5 bookings, $450 spent). Replace with real `getBookings()` calls.
 - **Mock auth**: LoginForm doesn't validate credentials or call backend. Wire to `auth.ts` helpers before production.
-- **Contact form**: [api/contact.ts](src/pages/api/contact.ts) exists but integration TBD. Handles JSON and form-data with honeypot.
+- **Contact form**: [api/contact.ts](src/pages/api/contact.ts) implemented with Resend email service. Requires domain verification in Resend for production delivery.
 
 ## Integration Points
 
 - **Backend API**: Expects `POST /auth/login` with `{ email, password, role }` → returns `{ token, user }`.
 - **Booking API**: `GET /bookings/:userId` and `POST /bookings` with bearer token (see `api.ts`).
+- **Contact Form API**: `POST /api/contact` with form data → sends email via Resend API.
+- **Resend Email Service**: Requires `RESEND_API_KEY` and domain verification for production delivery.
 - **Role-based routing**: `/customer/*` vs `/employee/*` pages. Auth check not enforced yet—add middleware/guards before launch.
 
 ## Quick Reference
