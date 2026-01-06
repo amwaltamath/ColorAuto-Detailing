@@ -39,8 +39,14 @@ login(user);  // Zustand
 ### 4. API Client Separation
 - **Browser-side** ([auth.ts](src/utils/auth.ts)): Uses `PUBLIC_API_URL` env var (accessible in browser). Functions: `loginUser`, `saveAuthToken`, `getAuthToken`, `isAuthenticated`.
 - **Server-side** ([api.ts](src/utils/api.ts)): Uses `API_URL` env var (server-only). Functions: `apiFetch<T>`, `getBookings`, `createBooking`. Pass bearer token in headers.
-- **Contact form** ([api/contact.ts](src/pages/api/contact.ts)): Uses `RESEND_API_KEY` env var. Sends emails via Resend REST API. Validates form data, honeypot protection, rate limiting.
+- **Contact form** ([api/contact.ts](src/pages/api/contact.ts)): Uses `RESEND_API_KEY` env var. Sends emails via Resend REST API. Supports JSON/form-data payloads, includes honeypot protection, validation, and rate limiting.
 - **Why two?** Astro's env vars: `PUBLIC_*` available everywhere, others only in server context.
+
+### 5. Form Handling Patterns
+- Use React Hook Form for complex forms ([ContactForm.tsx](src/components/features/ContactForm.tsx)).
+- Status states: `idle` → `loading` → `success`/`error` with user feedback.
+- Fetch to `/api/contact` with JSON payload; handle network errors gracefully.
+- Honeypot field (`website`) to prevent spam; always empty in legitimate submissions.
 
 ## Development Workflow
 
@@ -102,6 +108,7 @@ login(user);  // Zustand
 - **Dashboards are stubs**: [customer/dashboard.astro](src/pages/customer/dashboard.astro) shows hardcoded metrics (5 bookings, $450 spent). Replace with real `getBookings()` calls.
 - **Mock auth**: LoginForm doesn't validate credentials or call backend. Wire to `auth.ts` helpers before production.
 - **Contact form**: [api/contact.ts](src/pages/api/contact.ts) implemented with Resend email service. Requires domain verification in Resend for production delivery.
+- **No automated tests**: Validate changes manually via `npm run build` and browser testing. Add tests when backend integration is complete.
 
 ## Integration Points
 
