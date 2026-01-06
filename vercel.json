@@ -144,6 +144,11 @@
       "source": "/services",
       "destination": "/services",
       "permanent": true
+    },
+    {
+      "source": "/contact-us/",
+      "destination": "/contact",
+      "permanent": true
     }
   ]
 }
