@@ -1,6 +1,6 @@
 import { e as createComponent, k as renderComponent, r as renderTemplate } from '../../chunks/astro/server_CeE5WmXa.mjs';
 import 'piccolore';
-import { $ as $$AuthLayout, L as LoginForm } from '../../chunks/LoginForm_CG17nT0W.mjs';
+import { $ as $$AuthLayout, L as LoginForm } from '../../chunks/LoginForm_BqZuvorW.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const $$Login = createComponent(($$result, $$props, $$slots) => {

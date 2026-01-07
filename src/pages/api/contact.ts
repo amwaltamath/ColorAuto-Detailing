@@ -100,8 +100,22 @@ export async function POST({ request }: APIContext) {
 
     if (!RESEND_API_KEY) {
       // Fallback: log but respond OK to avoid blocking UX in dev
-      console.warn("Missing RESEND_API_KEY. Contact submission logged only.", { name, email, phone, message });
+      console.warn("Missing RESEND_API_KEY. Contact submission logged only.", { name, email, phone, message, service, vehicle });
       return new Response(JSON.stringify({ ok: true, dev: true }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    }
+
+    // Check if API key looks valid (Resend keys start with "re_")
+    if (!RESEND_API_KEY.startsWith("re_") || RESEND_API_KEY.includes("your_actual_resend_api_key_here")) {
+      console.warn("RESEND_API_KEY not configured properly. Using development fallback.");
+      console.log("Contact submission details:", { name, email, phone, message, service, vehicle });
+      return new Response(JSON.stringify({
+        ok: true,
+        dev: true,
+        message: "Email not sent (dev mode) - check server logs for submission details"
+      }), {
         status: 200,
         headers: { "content-type": "application/json" },
       });
@@ -124,6 +138,9 @@ export async function POST({ request }: APIContext) {
     const text = lines.join("\n");
 
     // Send via Resend REST API to avoid SDK dependency
+    console.log("Attempting to send email via Resend API...");
+    console.log("From:", FROM_EMAIL, "To:", TO_EMAIL, "Reply-to:", email);
+
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -139,10 +156,27 @@ export async function POST({ request }: APIContext) {
       }),
     });
 
+    console.log("Resend API response status:", res.status);
+
     if (!res.ok) {
       const errText = await res.text();
-      console.error("Resend error:", res.status, errText);
-      console.error("Resend request details - FROM:", FROM_EMAIL, "TO:", TO_EMAIL);
+      console.error("Resend API error response:", errText);
+      console.error("Request details - FROM:", FROM_EMAIL, "TO:", TO_EMAIL, "Subject:", subject);
+
+      // Check for common Resend errors
+      if (res.status === 401) {
+        return new Response(JSON.stringify({ ok: false, error: "Email service authentication failed. Please check API key." }), {
+          status: 500,
+          headers: { "content-type": "application/json" },
+        });
+      }
+      if (res.status === 403) {
+        return new Response(JSON.stringify({ ok: false, error: "Email service access denied. Domain may not be verified." }), {
+          status: 500,
+          headers: { "content-type": "application/json" },
+        });
+      }
+
       return new Response(JSON.stringify({ ok: false, error: `Email service error: ${res.status}` }), {
         status: 500,
         headers: { "content-type": "application/json" },

@@ -1,6 +1,6 @@
 import { e as createComponent, k as renderComponent, r as renderTemplate, m as maybeRenderHead } from '../../chunks/astro/server_CeE5WmXa.mjs';
 import 'piccolore';
-import { $ as $$PublicLayout } from '../../chunks/PublicLayout_GXblmFh_.mjs';
+import { $ as $$PublicLayout } from '../../chunks/PublicLayout_CmOuk8Rq.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const $$AutoPaintCorrection = createComponent(($$result, $$props, $$slots) => {

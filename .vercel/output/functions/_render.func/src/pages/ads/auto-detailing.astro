@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import QuoteModal from '../../components/features/QuoteModal.tsx';
 
 const title = "Professional Auto Detailing | Color Auto Detailing";
 const description = "Expert auto detailing services in Grand Junction. Hand wash, interior cleaning, exterior protection. Book your appointment now!";
@@ -20,9 +21,12 @@ const keywords = ['auto detailing', 'car detailing', 'professional detailing', '
         <a href="tel:970-628-1505" class="bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition shadow-lg inline-block">
           Call Now: 970-628-1505
         </a>
-        <a href="/contact" class="bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-lg inline-block">
+        <button
+          class="bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-lg"
+          onclick="document.getElementById('quote-modal').classList.remove('hidden')"
+        >
           Get Free Quote
-        </a>
+        </button>
       </div>
     </div>
   </section>
@@ -96,4 +100,27 @@ const keywords = ['auto detailing', 'car detailing', 'professional detailing', '
       <p class="text-sm text-gray-500 mt-6">📍 562 S. Westgate Drive, Grand Junction, CO</p>
     </div>
   </section>
+
+  <!-- Quote Modal -->
+  <div id="quote-modal" class="hidden">
+    <QuoteModal service="Auto Detailing" client:load />
+  </div>
+
+  <script>
+    // Simple modal management
+    function closeModal() {
+      document.getElementById('quote-modal').classList.add('hidden');
+    }
+
+    // Close modal when clicking outside
+    document.addEventListener('click', function(event) {
+      const modal = document.getElementById('quote-modal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
+
+    // Make closeModal available globally for the modal component
+    window.closeQuoteModal = closeModal;
+  </script>
 </Layout>
