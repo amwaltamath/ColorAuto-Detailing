@@ -20,7 +20,7 @@ const keywords = ['paint correction', 'swirl mark removal', 'paint restoration',
         <a href="tel:970-628-1505" class="bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition shadow-lg inline-block">
           Call Now: 970-628-1505
         </a>
-        <a href="/contact" class="bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-lg inline-block">
+        <a href="/contact" data-quote-popup class="bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-lg inline-block">
           Get Free Quote
         </a>
       </div>
@@ -89,11 +89,42 @@ const keywords = ['paint correction', 'swirl mark removal', 'paint restoration',
         <a href="tel:970-628-1505" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition">
           ☎️ Call: 970-628-1505
         </a>
-        <a href="/contact" class="bg-green-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-green-700 transition">
+        <a href="/contact" data-quote-popup class="bg-green-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-green-700 transition">
           📧 Get Free Quote
         </a>
       </div>
       <p class="text-sm text-gray-500 mt-6">📍 562 S. Westgate Drive, Grand Junction, CO</p>
     </div>
   </section>
+  <script>
+    const showQuoteToast = (() => {
+      let toast;
+      return (message) => {
+        if (!toast) {
+          toast = document.createElement('div');
+          toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:12px 18px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.2);z-index:9999;font-weight:600;opacity:0;transition:opacity .15s ease,transform .15s ease';
+          document.body.appendChild(toast);
+        }
+        toast.textContent = message;
+        toast.style.opacity = '1';
+        toast.style.transform = 'translate(-50%,0)';
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translate(-50%,10px)';
+        }, 1800);
+      };
+    })();
+
+    document.querySelectorAll('[data-quote-popup]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const href = btn.getAttribute('href');
+        if (!href) return;
+        e.preventDefault();
+        showQuoteToast('Thanks! Taking you to the quote form…');
+        setTimeout(() => {
+          window.location.href = href;
+        }, 350);
+      });
+    });
+  </script>
 </Layout>
