@@ -94,37 +94,53 @@ export async function POST({ request }: APIContext) {
       });
     }
 
-    const RESEND_API_KEY = process.env.RESEND_API_KEY;
-    const TO_EMAIL = process.env.CONTACT_TO_EMAIL || "admin@colorautodetailing.com";
-    const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || "no-reply@colorautodetailing.com";
+    const RESEND_API_KEY = (process.env.RESEND_API_KEY || "").trim();
+    const TO_EMAIL = (process.env.CONTACT_TO_EMAIL || "admin@colorautodetailing.com").trim();
+    const FROM_EMAIL = (process.env.CONTACT_FROM_EMAIL || "no-reply@colorautodetailing.com").trim();
+
+    // Validate email addresses
+    if (!TO_EMAIL || !isValidEmail(TO_EMAIL)) {
+      console.error("Configuration error: Invalid TO_EMAIL.", { TO_EMAIL });
+      return new Response(JSON.stringify({ ok: false, error: "Email service misconfigured (invalid recipient)" }), {
+        status: 500,
+        headers: { "content-type": "application/json" },
+      });
+    }
+    if (!FROM_EMAIL || !isValidEmail(FROM_EMAIL)) {
+      console.error("Configuration error: Invalid FROM_EMAIL.", { FROM_EMAIL });
+      return new Response(JSON.stringify({ ok: false, error: "Email service misconfigured (invalid sender)" }), {
+        status: 500,
+        headers: { "content-type": "application/json" },
+      });
+    }
 
     if (!RESEND_API_KEY) {
-      // Fallback: log but respond OK to avoid blocking UX in dev
-      console.warn("Missing RESEND_API_KEY. Contact submission logged only.", { name, email, phone, message, service, vehicle });
-      return new Response(JSON.stringify({ ok: true, dev: true }), {
+      console.warn("[DEV MODE] RESEND_API_KEY not configured. Logging submission only.", { name, email, phone, message, service, vehicle });
+      return new Response(JSON.stringify({ ok: true, dev: true, message: "Email not sent (dev mode) — check logs" }), {
         status: 200,
         headers: { "content-type": "application/json" },
       });
     }
 
-    // Check if API key looks valid (Resend keys start with "re_")
-    if (!RESEND_API_KEY.startsWith("re_") || RESEND_API_KEY.includes("your_actual_resend_api_key_here")) {
-      console.warn("RESEND_API_KEY not configured properly. Using development fallback.");
-      console.log("Contact submission details:", { name, email, phone, message, service, vehicle });
-      return new Response(JSON.stringify({
-        ok: true,
-        dev: true,
-        message: "Email not sent (dev mode) - check server logs for submission details"
-      }), {
-        status: 200,
+    // Validate API key format (must start with 're_' and not be placeholder)
+    if (!RESEND_API_KEY.startsWith("re_") || RESEND_API_KEY.includes("your_actual_resend_api_key")) {
+      console.error("[ERROR] Invalid RESEND_API_KEY. Must be a real Resend key starting with 're_'. Check Vercel env vars.");
+      return new Response(JSON.stringify({ ok: false, error: "Email service not properly configured" }), {
+        status: 500,
         headers: { "content-type": "application/json" },
       });
     }
 
     const subject = `New Inquiry — ${service || "Contact"} — ${name}`;
 
-    // Derive absolute URL for assets (e.g., logo) from request headers
-    const host = request.headers.get("x-forwarded-host") || request.headers.get("host") || "www.colorautodetailing.com";
+    // Derive absolute URL for assets (e.g., logo) from request headers with safe fallback
+    let host: string;
+    try {
+      host = (request.headers.get("x-forwarded-host") || request.headers.get("host") || "www.colorautodetailing.com").trim();
+      if (!host) host = "www.colorautodetailing.com";
+    } catch (e) {
+      host = "www.colorautodetailing.com";
+    }
     const proto = request.headers.get("x-forwarded-proto") || (host.includes("localhost") ? "http" : "https");
     const baseUrl = `${proto}://${host}`;
     const logoUrl = `${baseUrl}/images/ColorAuto.png`;
