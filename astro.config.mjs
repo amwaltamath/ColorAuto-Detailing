@@ -11,7 +11,8 @@ export default defineConfig({
   // Enable server output so API routes deploy as Vercel functions
   output: 'server',
 
-  adapter: vercel(),
+  // Explicitly target the supported Vercel runtime to avoid deprecated defaults
+  adapter: vercel({ runtime: 'nodejs22.x' }),
 
   integrations: [react()],
 
