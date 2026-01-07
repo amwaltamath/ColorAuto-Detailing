@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import QuoteModal from '../../components/features/QuoteModal';
 
 const title = "Home Window Tinting | Residential Tint | Grand Junction";
 const description = "Professional home window tinting in Grand Junction. Energy savings, UV protection, privacy. Premium residential window film installation.";
@@ -7,6 +8,7 @@ const keywords = ['home window tinting', 'residential window tint', 'home energy
 ---
 
 <Layout {title} {description} {keywords} noindex={true}>
+  <QuoteModal client:load isOpen={false} service="Home Window Tinting" />
   <!-- Hero Section -->
   <section class="relative text-white py-70 overflow-hidden">
     <div class="absolute inset-0">
