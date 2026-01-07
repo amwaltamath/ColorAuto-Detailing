@@ -1,6 +1,4 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": ".vercel/output",
   "redirects": [
     {
       "source": "/auto-detailing/",
