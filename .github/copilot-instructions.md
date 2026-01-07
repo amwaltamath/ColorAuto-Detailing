@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-**Stack**: Astro 5 + React 19 + TypeScript + Tailwind v4 (via Vite plugin). Auto detailing business site with customer/employee portals. Deployed on Vercel with serverless API routes. Run `npm run dev|build|preview`.
+**Stack**: Astro 5 + React 19 + TypeScript + Tailwind v4 (via Vite plugin). Auto detailing business site with customer/employee portals. Deployed on Vercel with serverless API routes. Run `npm run dev|build|preview`. Build outputs to `.vercel` folder for Vercel deployment.
 
 **Data flow**: Browser → Zustand (auth state) → React components → `auth.ts` utils (`PUBLIC_API_URL`) → backend API. Server-side: Astro endpoints → `api.ts` utils (`API_URL`) → backend. Contact form: Browser → `/api/contact` (Resend) → Email delivery. Two separate API clients because Astro server vs browser contexts have different env var access.
 
@@ -43,7 +43,7 @@ login(user);  // Zustand
 - **Why two?** Astro's env vars: `PUBLIC_*` available everywhere, others only in server context.
 
 ### 5. Form Handling Patterns
-- Use React Hook Form for complex forms ([ContactForm.tsx](src/components/features/ContactForm.tsx)).
+- Use manual state management for forms ([ContactForm.tsx](src/components/features/ContactForm.tsx)).
 - Status states: `idle` → `loading` → `success`/`error` with user feedback.
 - Fetch to `/api/contact` with JSON payload; handle network errors gracefully.
 - Honeypot field (`website`) to prevent spam; always empty in legitimate submissions.
