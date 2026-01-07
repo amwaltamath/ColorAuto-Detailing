@@ -1,19 +1,17 @@
-import { w as decryptString, x as createSlotValueFromString, y as isAstroComponentFactory, k as renderComponent, r as renderTemplate, z as ROUTE_TYPE_HEADER, B as REROUTE_DIRECTIVE_HEADER, A as AstroError, C as i18nNoLocaleFoundInPath, G as ResponseSentError, H as ActionNotFoundError, J as MiddlewareNoDataOrNextCalled, K as MiddlewareNotAResponse, O as originPathnameSymbol, P as RewriteWithBodyUsed, Q as GetStaticPathsRequired, S as InvalidGetStaticPathsReturn, T as InvalidGetStaticPathsEntry, V as GetStaticPathsExpectedParams, W as GetStaticPathsInvalidRouteParam, X as PageNumberParamNotFound, D as DEFAULT_404_COMPONENT, Y as NoMatchingStaticPathFound, Z as PrerenderDynamicEndpointPathCollide, _ as ReservedSlotName, $ as renderSlotToString, a0 as renderJSX, a1 as chunkToString, a2 as isRenderInstruction, a3 as ForbiddenRewrite, a4 as SessionStorageInitError, a5 as SessionStorageSaveError, a6 as ASTRO_VERSION, a7 as CspNotEnabled, a8 as LocalsReassigned, a9 as generateCspDigest, aa as PrerenderClientAddressNotAvailable, ab as clientAddressSymbol, ac as ClientAddressNotAvailable, ad as StaticClientAddressNotAvailable, ae as AstroResponseHeadersReassigned, af as responseSentSymbol$1, ag as renderPage, ah as REWRITE_DIRECTIVE_HEADER_KEY, ai as REWRITE_DIRECTIVE_HEADER_VALUE, aj as renderEndpoint, ak as LocalsNotAnObject, al as REROUTABLE_STATUS_CODES, am as nodeRequestAbortControllerCleanupSymbol } from './astro/server_CeE5WmXa.mjs';
+import { w as decryptString, x as createSlotValueFromString, y as isAstroComponentFactory, k as renderComponent, r as renderTemplate, z as ROUTE_TYPE_HEADER, B as REROUTE_DIRECTIVE_HEADER, A as AstroError, C as i18nNoLocaleFoundInPath, G as ResponseSentError, H as ActionNotFoundError, J as MiddlewareNoDataOrNextCalled, K as MiddlewareNotAResponse, O as originPathnameSymbol, P as RewriteWithBodyUsed, Q as GetStaticPathsRequired, S as InvalidGetStaticPathsReturn, T as InvalidGetStaticPathsEntry, V as GetStaticPathsExpectedParams, W as GetStaticPathsInvalidRouteParam, X as PageNumberParamNotFound, D as DEFAULT_404_COMPONENT, Y as NoMatchingStaticPathFound, Z as PrerenderDynamicEndpointPathCollide, _ as ReservedSlotName, $ as renderSlotToString, a0 as renderJSX, a1 as chunkToString, a2 as isRenderInstruction, a3 as ForbiddenRewrite, a4 as SessionStorageInitError, a5 as SessionStorageSaveError, a6 as ASTRO_VERSION, a7 as CspNotEnabled, a8 as LocalsReassigned, a9 as generateCspDigest, aa as PrerenderClientAddressNotAvailable, ab as clientAddressSymbol, ac as ClientAddressNotAvailable, ad as StaticClientAddressNotAvailable, ae as AstroResponseHeadersReassigned, af as responseSentSymbol$1, ag as renderPage, ah as REWRITE_DIRECTIVE_HEADER_KEY, ai as REWRITE_DIRECTIVE_HEADER_VALUE, aj as renderEndpoint, ak as LocalsNotAnObject, al as REROUTABLE_STATUS_CODES, am as nodeRequestAbortControllerCleanupSymbol } from './astro/server_DoXgqcN7.mjs';
 import colors from 'piccolore';
 import 'clsx';
-import { A as ActionError, d as deserializeActionResult, s as serializeActionResult, a as ACTION_RPC_ROUTE_PATTERN, b as ACTION_QUERY_PARAMS, g as getActionQueryString, D as DEFAULT_404_ROUTE, c as default404Instance, N as NOOP_MIDDLEWARE_FN, e as ensure404Route } from './astro-designed-error-pages_DKKTsJQ5.mjs';
+import { A as ActionError, d as deserializeActionResult, s as serializeActionResult, a as ACTION_RPC_ROUTE_PATTERN, b as ACTION_QUERY_PARAMS, g as getActionQueryString, D as DEFAULT_404_ROUTE, c as default404Instance, N as NOOP_MIDDLEWARE_FN, e as ensure404Route } from './astro-designed-error-pages_BlfstveB.mjs';
 import 'es-module-lexer';
 import buffer from 'node:buffer';
 import crypto$1 from 'node:crypto';
 import { Http2ServerResponse } from 'node:http2';
-import { c as appendForwardSlash, j as joinPaths, f as fileExtension, s as slash, p as prependForwardSlash, r as removeTrailingForwardSlash, d as trimSlashes, m as matchPattern, e as isInternalPath, g as collapseDuplicateTrailingSlashes, h as hasFileExtension } from './index_ChlblgGj.mjs';
+import { b as appendForwardSlash, j as joinPaths, f as fileExtension, s as slash, p as prependForwardSlash, r as removeTrailingForwardSlash, t as trimSlashes, m as matchPattern, c as isInternalPath, d as collapseDuplicateTrailingSlashes, h as hasFileExtension } from './remote_CV0Stlf0.mjs';
 import { serialize, parse } from 'cookie';
 import { unflatten as unflatten$1, stringify as stringify$1 } from 'devalue';
 import { createStorage, builtinDrivers } from 'unstorage';
-import '@vercel/routing-utils';
-import 'deterministic-object-hash';
+import 'fast-glob';
 import nodePath from 'node:path';
-import { builtinModules } from 'node:module';
 
 function shouldAppendForwardSlash(trailingSlash, buildFormat) {
   switch (trailingSlash) {
@@ -4024,55 +4022,55 @@ apply();
 
 nodePath.posix.join;
 
-new RegExp(
-  builtinModules.map((mod) => `(^${mod}$|^node:${mod}$)`).join("|")
-);
+/**
+ * The edge function calls the node server at /_render,
+ * with the original path as the value of this header.
+ */
+const ASTRO_PATH_HEADER = 'x-astro-path';
+const ASTRO_PATH_PARAM = 'x_astro_path';
+/**
+ * The edge function calls the node server at /_render,
+ * with the locals serialized into this header.
+ */
+const ASTRO_LOCALS_HEADER = 'x-astro-locals';
+const ASTRO_MIDDLEWARE_SECRET_HEADER = 'x-astro-middleware-secret';
 
-const ASTRO_PATH_HEADER = "x-astro-path";
-const ASTRO_PATH_PARAM = "x_astro_path";
-const ASTRO_LOCALS_HEADER = "x-astro-locals";
-const ASTRO_MIDDLEWARE_SECRET_HEADER = "x-astro-middleware-secret";
-
-const createExports = (manifest, {
-  middlewareSecret,
-  skewProtection
-}) => {
-  const app = new NodeApp(manifest);
-  const handler = async (req, res) => {
-    const url = new URL(`https://example.com${req.url}`);
-    const clientAddress = req.headers["x-forwarded-for"];
-    const localsHeader = req.headers[ASTRO_LOCALS_HEADER];
-    const middlewareSecretHeader = req.headers[ASTRO_MIDDLEWARE_SECRET_HEADER];
-    const realPath = req.headers[ASTRO_PATH_HEADER] ?? url.searchParams.get(ASTRO_PATH_PARAM);
-    if (typeof realPath === "string") {
-      req.url = realPath;
-    }
-    let locals = {};
-    if (localsHeader) {
-      if (middlewareSecretHeader !== middlewareSecret) {
-        res.statusCode = 403;
-        res.end("Forbidden");
-        return;
-      }
-      locals = typeof localsHeader === "string" ? JSON.parse(localsHeader) : JSON.parse(localsHeader[0]);
-    }
-    delete req.headers[ASTRO_MIDDLEWARE_SECRET_HEADER];
-    if (skewProtection && process.env.VERCEL_SKEW_PROTECTION_ENABLED === "1") {
-      req.headers["x-deployment-id"] = process.env.VERCEL_DEPLOYMENT_ID;
-    }
-    const webResponse = await app.render(req, {
-      addCookieHeader: true,
-      clientAddress,
-      locals
-    });
-    await NodeApp.writeResponse(webResponse, res);
-  };
-  return {
-    default: handler
-  };
+// Keep at the top
+const createExports = (manifest, { middlewareSecret, skewProtection }) => {
+    const app = new NodeApp(manifest);
+    const handler = async (req, res) => {
+        const url = new URL(`https://example.com${req.url}`);
+        const clientAddress = req.headers['x-forwarded-for'];
+        const localsHeader = req.headers[ASTRO_LOCALS_HEADER];
+        const middlewareSecretHeader = req.headers[ASTRO_MIDDLEWARE_SECRET_HEADER];
+        const realPath = req.headers[ASTRO_PATH_HEADER] ?? url.searchParams.get(ASTRO_PATH_PARAM);
+        if (typeof realPath === 'string') {
+            req.url = realPath;
+        }
+        let locals = {};
+        if (localsHeader) {
+            if (middlewareSecretHeader !== middlewareSecret) {
+                res.statusCode = 403;
+                res.end('Forbidden');
+                return;
+            }
+            locals =
+                typeof localsHeader === 'string' ? JSON.parse(localsHeader) : JSON.parse(localsHeader[0]);
+        }
+        // hide the secret from the rest of user code
+        delete req.headers[ASTRO_MIDDLEWARE_SECRET_HEADER];
+        // https://vercel.com/docs/deployments/skew-protection#supported-frameworks
+        if (skewProtection && process.env.VERCEL_SKEW_PROTECTION_ENABLED === '1') {
+            req.headers['x-deployment-id'] = process.env.VERCEL_DEPLOYMENT_ID;
+        }
+        const webResponse = await app.render(req, { addCookieHeader: true, clientAddress, locals });
+        await NodeApp.writeResponse(webResponse, res);
+    };
+    return { default: handler };
 };
-function start() {
-}
+// HACK: prevent warning
+// @astrojs-ssr-virtual-entry (22:23) "start" is not exported by "dist/serverless/entrypoint.js", imported by "@astrojs-ssr-virtual-entry".
+function start() { }
 
 const serverEntrypointModule = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,

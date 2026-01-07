@@ -1,6 +1,6 @@
-import { e as createComponent, m as maybeRenderHead, l as renderScript, r as renderTemplate, f as createAstro, k as renderComponent, n as renderSlot } from './astro/server_CeE5WmXa.mjs';
+import { e as createComponent, m as maybeRenderHead, l as renderScript, r as renderTemplate, f as createAstro, k as renderComponent, n as renderSlot } from './astro/server_DoXgqcN7.mjs';
 import 'piccolore';
-import { $ as $$Layout } from './Layout_D3BXhY_Q.mjs';
+import { $ as $$Layout } from './Layout_Cl2g-nRv.mjs';
 import 'clsx';
 
 const $$Navigation = createComponent(($$result, $$props, $$slots) => {

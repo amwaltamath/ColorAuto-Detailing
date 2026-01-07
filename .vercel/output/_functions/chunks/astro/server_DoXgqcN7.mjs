@@ -5,7 +5,7 @@ import { decodeBase64, encodeBase64, encodeHexUpperCase, decodeHex } from '@oslo
 import { z } from 'zod';
 import 'cssesc';
 
-const ASTRO_VERSION = "5.16.6";
+const ASTRO_VERSION = "5.16.7";
 const REROUTE_DIRECTIVE_HEADER = "X-Astro-Reroute";
 const REWRITE_DIRECTIVE_HEADER_KEY = "X-Astro-Rewrite";
 const REWRITE_DIRECTIVE_HEADER_VALUE = "yes";
@@ -1694,6 +1694,13 @@ function chunkToByteArray(result, chunk) {
     return encoder.encode(stringified.toString());
   }
 }
+function chunkToByteArrayOrString(result, chunk) {
+  if (ArrayBuffer.isView(chunk)) {
+    return chunk;
+  } else {
+    return stringifyChunk(result, chunk).toString();
+  }
+}
 function isRenderInstance(obj) {
   return !!obj && typeof obj === "object" && "render" in obj && typeof obj.render === "function";
 }
@@ -2022,13 +2029,31 @@ async function renderToAsyncIterable(result, componentFactory, props, children, 
         throw error;
       }
       let length = 0;
+      let stringToEncode = "";
       for (let i = 0, len = buffer.length; i < len; i++) {
-        length += buffer[i].length;
+        const bufferEntry = buffer[i];
+        if (typeof bufferEntry === "string") {
+          const nextIsString = i + 1 < len && typeof buffer[i + 1] === "string";
+          stringToEncode += bufferEntry;
+          if (!nextIsString) {
+            const encoded = encoder.encode(stringToEncode);
+            length += encoded.length;
+            stringToEncode = "";
+            buffer[i] = encoded;
+          } else {
+            buffer[i] = "";
+          }
+        } else {
+          length += bufferEntry.length;
+        }
       }
       let mergedArray = new Uint8Array(length);
       let offset = 0;
       for (let i = 0, len = buffer.length; i < len; i++) {
         const item = buffer[i];
+        if (item === "") {
+          continue;
+        }
         mergedArray.set(item, offset);
         offset += item.length;
       }
@@ -2058,7 +2083,7 @@ async function renderToAsyncIterable(result, componentFactory, props, children, 
       if (chunk instanceof Response) {
         throw new AstroError(ResponseSentError);
       }
-      const bytes = chunkToByteArray(result, chunk);
+      const bytes = chunkToByteArrayOrString(result, chunk);
       if (bytes.length > 0) {
         buffer.push(bytes);
         next?.resolve();

@@ -71,20 +71,53 @@ async function POST({ request }) {
         headers: { "content-type": "application/json" }
       });
     }
-    const RESEND_API_KEY = process.env.RESEND_API_KEY;
-    const TO_EMAIL = process.env.CONTACT_TO_EMAIL || "admin@colorautodetailing.com";
-    const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || "no-reply@colorautodetailing.com";
+    const RESEND_API_KEY = (process.env.RESEND_API_KEY || "").trim();
+    const TO_EMAIL = (process.env.CONTACT_TO_EMAIL || "admin@colorautodetailing.com").trim();
+    const FROM_EMAIL = (process.env.CONTACT_FROM_EMAIL || "no-reply@colorautodetailing.com").trim();
+    if (!TO_EMAIL || !isValidEmail(TO_EMAIL)) {
+      console.error("Configuration error: Invalid TO_EMAIL.", { TO_EMAIL });
+      return new Response(JSON.stringify({ ok: false, error: "Email service misconfigured (invalid recipient)" }), {
+        status: 500,
+        headers: { "content-type": "application/json" }
+      });
+    }
+    if (!FROM_EMAIL || !isValidEmail(FROM_EMAIL)) {
+      console.error("Configuration error: Invalid FROM_EMAIL.", { FROM_EMAIL });
+      return new Response(JSON.stringify({ ok: false, error: "Email service misconfigured (invalid sender)" }), {
+        status: 500,
+        headers: { "content-type": "application/json" }
+      });
+    }
     if (!RESEND_API_KEY) {
-      console.warn("Missing RESEND_API_KEY. Contact submission logged only.", { name, email, phone, message });
-      return new Response(JSON.stringify({ ok: true, dev: true }), {
+      console.warn("[DEV MODE] RESEND_API_KEY not configured. Logging submission only.", { name, email, phone, message, service, vehicle });
+      return new Response(JSON.stringify({ ok: true, dev: true, message: "Email not sent (dev mode) — check logs" }), {
         status: 200,
         headers: { "content-type": "application/json" }
       });
     }
-    const subject = `New Contact Form Submission — ${name}`;
-    const lines = [
-      "New inquiry from ColorAuto site",
-      "",
+    if (!RESEND_API_KEY.startsWith("re_") || RESEND_API_KEY.includes("your_actual_resend_api_key")) {
+      console.error("[ERROR] Invalid RESEND_API_KEY. Must be a real Resend key starting with 're_'. Check Vercel env vars.");
+      return new Response(JSON.stringify({ ok: false, error: "Email service not properly configured" }), {
+        status: 500,
+        headers: { "content-type": "application/json" }
+      });
+    }
+    const subject = `New Inquiry — ${service || "Contact"} — ${name}`;
+    let host;
+    try {
+      host = (request.headers.get("x-forwarded-host") || request.headers.get("host") || "www.colorautodetailing.com").trim();
+      if (!host) host = "www.colorautodetailing.com";
+    } catch (e) {
+      host = "www.colorautodetailing.com";
+    }
+    const proto = request.headers.get("x-forwarded-proto") || (host.includes("localhost") ? "http" : "https");
+    const baseUrl = `${proto}://${host}`;
+    const logoUrl = `${baseUrl}/images/ColorAuto.png`;
+    const escapeHtml = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#39;");
+    const createdAt = (/* @__PURE__ */ new Date()).toISOString();
+    const textLines = [
+      "New inquiry from Color Auto Detailing",
+      `Submitted: ${createdAt}`,
       `Name: ${name}`,
       `Email: ${email}`,
       `Phone: ${phone || "N/A"}`,
@@ -94,7 +127,78 @@ async function POST({ request }) {
       "Message:",
       message
     ].filter(Boolean);
-    const text = lines.join("\n");
+    const text = textLines.join("\n");
+    const html = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background:#f6f7f9; padding:24px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,0.06);">
+          <tr>
+            <td style="padding:16px 20px; background:linear-gradient(90deg,#1e40af,#2563eb); color:#fff;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="vertical-align:middle; width:1%; white-space:nowrap;">
+                    <img src="${logoUrl}" alt="Color Auto Detailing" style="display:block; height:28px; border:0; outline:none; text-decoration:none;"/>
+                  </td>
+                  <td style="vertical-align:middle; padding-left:12px;">
+                    <div style="font-size:16px; font-weight:700; margin:0;">New Inquiry${service ? ` — ${escapeHtml(service)}` : ""}</div>
+                    <div style="margin:4px 0 0 0; opacity:0.9; font-size:12px;">${escapeHtml(createdAt)}</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:24px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+                <tr>
+                  <td style="padding:8px 0; width:140px; color:#64748b; font-weight:600;">Name</td>
+                  <td style="padding:8px 0; color:#0f172a;">${escapeHtml(name)}</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0; width:140px; color:#64748b; font-weight:600;">Email</td>
+                  <td style="padding:8px 0; color:#0f172a;">${escapeHtml(email)}</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0; width:140px; color:#64748b; font-weight:600;">Phone</td>
+                  <td style="padding:8px 0; color:#0f172a;">${escapeHtml(phone || "N/A")}</td>
+                </tr>
+                ${service ? `
+                <tr>
+                  <td style="padding:8px 0; width:140px; color:#64748b; font-weight:600;">Service</td>
+                  <td style="padding:8px 0; color:#0f172a;">${escapeHtml(service)}</td>
+                </tr>` : ""}
+                ${vehicle ? `
+                <tr>
+                  <td style="padding:8px 0; width:140px; color:#64748b; font-weight:600;">Vehicle</td>
+                  <td style="padding:8px 0; color:#0f172a;">${escapeHtml(vehicle)}</td>
+                </tr>` : ""}
+              </table>
+
+              <div style="margin-top:16px; padding:16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px;">
+                <div style="color:#64748b; font-weight:700; margin-bottom:8px;">Message</div>
+                <div style="white-space:pre-wrap; color:#0f172a; line-height:1.6;">${escapeHtml(message)}</div>
+              </div>
+
+              <p style="margin-top:20px; font-size:12px; color:#64748b;">Reply directly to this email to respond to the customer.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#0b1220; color:#cbd5e1; padding:16px 20px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="font-size:12px; line-height:1.4;">
+                    <div style="font-weight:700; color:#e2e8f0;">Color Auto Detailing</div>
+                    <div>562 S. Westgate Drive, Grand Junction, CO</div>
+                    <div><a href="tel:9706281505" style="color:#93c5fd; text-decoration:none;">(970) 628-1505</a> • <a href="${baseUrl}" style="color:#93c5fd; text-decoration:none;">${baseUrl.replace(/^https?:\/\//, "")}</a></div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+    `;
+    console.log("Attempting to send email via Resend API...");
+    console.log("From:", FROM_EMAIL, "To:", TO_EMAIL, "Reply-to:", email);
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -106,13 +210,27 @@ async function POST({ request }) {
         to: [TO_EMAIL],
         reply_to: email,
         subject,
-        text
+        text,
+        html
       })
     });
+    console.log("Resend API response status:", res.status);
     if (!res.ok) {
       const errText = await res.text();
-      console.error("Resend error:", res.status, errText);
-      console.error("Resend request details - FROM:", FROM_EMAIL, "TO:", TO_EMAIL);
+      console.error("Resend API error response:", errText);
+      console.error("Request details - FROM:", FROM_EMAIL, "TO:", TO_EMAIL, "Subject:", subject);
+      if (res.status === 401) {
+        return new Response(JSON.stringify({ ok: false, error: "Email service authentication failed. Please check API key." }), {
+          status: 500,
+          headers: { "content-type": "application/json" }
+        });
+      }
+      if (res.status === 403) {
+        return new Response(JSON.stringify({ ok: false, error: "Email service access denied. Domain may not be verified." }), {
+          status: 500,
+          headers: { "content-type": "application/json" }
+        });
+      }
       return new Response(JSON.stringify({ ok: false, error: `Email service error: ${res.status}` }), {
         status: 500,
         headers: { "content-type": "application/json" }

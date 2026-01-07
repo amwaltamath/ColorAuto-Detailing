@@ -2,9 +2,6 @@
 	"version": 3,
 	"routes": [
 		{
-			"handle": "filesystem"
-		},
-		{
 			"src": "^/_astro/(.*)$",
 			"headers": {
 				"cache-control": "public, max-age=31536000, immutable"
@@ -12,115 +9,118 @@
 			"continue": true
 		},
 		{
-			"src": "^/_server-islands/([^/]+?)/?$",
+			"handle": "filesystem"
+		},
+		{
+			"src": "^\\/_server-islands\\/([^/]+?)\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/_image/?$",
+			"src": "^\\/_image\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/ads/auto-detailing/?$",
+			"src": "^\\/ads\\/auto-detailing\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/ads/auto-paint-correction/?$",
+			"src": "^\\/ads\\/auto-paint-correction\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/ads/ceramic-coating/?$",
+			"src": "^\\/ads\\/ceramic-coating\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/ads/color-ppf/?$",
+			"src": "^\\/ads\\/color-ppf\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/ads/home-window-tint/?$",
+			"src": "^\\/ads\\/home-window-tint\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/ads/office-window-tint/?$",
+			"src": "^\\/ads\\/office-window-tint\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/ads/paint-protection-film/?$",
+			"src": "^\\/ads\\/paint-protection-film\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/ads/window-tinting/?$",
+			"src": "^\\/ads\\/window-tinting\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/api/contact/?$",
+			"src": "^\\/api\\/contact\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/contact/?$",
+			"src": "^\\/contact\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/customer/dashboard/?$",
+			"src": "^\\/customer\\/dashboard\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/customer/login/?$",
+			"src": "^\\/customer\\/login\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/employee/dashboard/?$",
+			"src": "^\\/employee\\/dashboard\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/employee/login/?$",
+			"src": "^\\/employee\\/login\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/our-team/?$",
+			"src": "^\\/our-team\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/our-work/?$",
+			"src": "^\\/our-work\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/services/auto-detailing/?$",
+			"src": "^\\/services\\/auto-detailing\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/services/auto-paint-correction/?$",
+			"src": "^\\/services\\/auto-paint-correction\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/services/ceramic-coating/?$",
+			"src": "^\\/services\\/ceramic-coating\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/services/color-ppf/?$",
+			"src": "^\\/services\\/color-ppf\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/services/home-window-tint/?$",
+			"src": "^\\/services\\/home-window-tint\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/services/office-window-tint/?$",
+			"src": "^\\/services\\/office-window-tint\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/services/paint-protection-film/?$",
+			"src": "^\\/services\\/paint-protection-film\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/services/window-tinting/?$",
+			"src": "^\\/services\\/window-tinting\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/services/?$",
+			"src": "^\\/services\\/?$",
 			"dest": "_render"
 		},
 		{
-			"src": "^/$",
+			"src": "^\\/$",
 			"dest": "_render"
 		}
 	]
