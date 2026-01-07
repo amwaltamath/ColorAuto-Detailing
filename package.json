@@ -2,9 +2,6 @@
   "name": "colorautodetailing",
   "type": "module",
   "version": "0.0.1",
-  "engines": {
-    "node": "20.x"
-  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -13,11 +10,11 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
-    "@astrojs/vercel": "^9.0.2",
+    "@astrojs/vercel": "^8.0.4",
     "@tailwindcss/vite": "^4.1.18",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
-    "astro": "^5.16.6",
+    "astro": "^5.16.7",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-hook-form": "^7.69.0",
