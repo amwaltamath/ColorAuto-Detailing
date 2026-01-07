@@ -123,6 +123,12 @@ export async function POST({ request }: APIContext) {
 
     const subject = `New Inquiry — ${service || "Contact"} — ${name}`;
 
+    // Derive absolute URL for assets (e.g., logo) from request headers
+    const host = request.headers.get("x-forwarded-host") || request.headers.get("host") || "www.colorautodetailing.com";
+    const proto = request.headers.get("x-forwarded-proto") || (host.includes("localhost") ? "http" : "https");
+    const baseUrl = `${proto}://${host}`;
+    const logoUrl = `${baseUrl}/images/ColorAuto.png`;
+
     // Escape HTML to prevent injection in email markup
     const escapeHtml = (s: string) =>
       s
@@ -154,9 +160,18 @@ export async function POST({ request }: APIContext) {
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background:#f6f7f9; padding:24px;">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,0.06);">
           <tr>
-            <td style="padding:24px 24px 8px 24px; background:linear-gradient(90deg,#1e40af,#2563eb); color:#fff;">
-              <h1 style="margin:0; font-size:20px;">Color Auto Detailing — New Inquiry</h1>
-              <p style="margin:6px 0 0 0; opacity:0.9; font-size:13px;">${escapeHtml(createdAt)}</p>
+            <td style="padding:16px 20px; background:linear-gradient(90deg,#1e40af,#2563eb); color:#fff;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="vertical-align:middle; width:1%; white-space:nowrap;">
+                    <img src="${logoUrl}" alt="Color Auto Detailing" style="display:block; height:28px; border:0; outline:none; text-decoration:none;"/>
+                  </td>
+                  <td style="vertical-align:middle; padding-left:12px;">
+                    <div style="font-size:16px; font-weight:700; margin:0;">New Inquiry${service ? ` — ${escapeHtml(service)}` : ''}</div>
+                    <div style="margin:4px 0 0 0; opacity:0.9; font-size:12px;">${escapeHtml(createdAt)}</div>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
           <tr>
@@ -192,6 +207,19 @@ export async function POST({ request }: APIContext) {
               </div>
 
               <p style="margin-top:20px; font-size:12px; color:#64748b;">Reply directly to this email to respond to the customer.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#0b1220; color:#cbd5e1; padding:16px 20px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="font-size:12px; line-height:1.4;">
+                    <div style="font-weight:700; color:#e2e8f0;">Color Auto Detailing</div>
+                    <div>562 S. Westgate Drive, Grand Junction, CO</div>
+                    <div><a href="tel:9706281505" style="color:#93c5fd; text-decoration:none;">(970) 628-1505</a> • <a href="${baseUrl}" style="color:#93c5fd; text-decoration:none;">${baseUrl.replace(/^https?:\/\//, '')}</a></div>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
         </table>
