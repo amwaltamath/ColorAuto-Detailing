@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import QuoteModal from '../../components/features/QuoteModal.tsx';
 
 const title = "ColorPPF | Paint Protection Film in Custom Colors | Grand Junction";
 const description = "ColorPPF paint protection film in custom colors. Transform your vehicle's appearance while protecting the paint. Available in multiple finishes.";
@@ -20,9 +21,12 @@ const keywords = ['ColorPPF', 'colored PPF', 'paint protection film colors', 'Gr
         <a href="tel:970-628-1505" class="bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition shadow-lg inline-block">
           Call Now: 970-628-1505
         </a>
-        <a href="/contact" class="bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-lg inline-block">
+        <button
+          class="bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-lg"
+          onclick="document.getElementById('quote-modal').classList.remove('hidden')"
+        >
           Get Free Quote
-        </a>
+        </button>
       </div>
     </div>
   </section>
@@ -89,11 +93,37 @@ const keywords = ['ColorPPF', 'colored PPF', 'paint protection film colors', 'Gr
         <a href="tel:970-628-1505" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition">
           ☎️ Call: 970-628-1505
         </a>
-        <a href="/contact" class="bg-green-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-green-700 transition">
+        <button
+          class="bg-green-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-green-700 transition"
+          onclick="document.getElementById('quote-modal').classList.remove('hidden')"
+        >
           📧 Get Free Quote
-        </a>
+        </button>
       </div>
       <p class="text-sm text-gray-500 mt-6">📍 562 S. Westgate Drive, Grand Junction, CO</p>
     </div>
   </section>
+
+  <!-- Quote Modal -->
+  <div id="quote-modal" class="hidden">
+    <QuoteModal service="Color PPF" client:load />
+  </div>
+
+  <script>
+    // Simple modal management
+    function closeModal() {
+      document.getElementById('quote-modal').classList.add('hidden');
+    }
+
+    // Close modal when clicking outside
+    document.addEventListener('click', function(event) {
+      const modal = document.getElementById('quote-modal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
+
+    // Make closeModal available globally for the modal component
+    window.closeQuoteModal = closeModal;
+  </script>
 </Layout>

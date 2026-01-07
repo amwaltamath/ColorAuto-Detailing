@@ -1,0 +1,127 @@
+{
+	"version": 3,
+	"routes": [
+		{
+			"handle": "filesystem"
+		},
+		{
+			"src": "^/_astro/(.*)$",
+			"headers": {
+				"cache-control": "public, max-age=31536000, immutable"
+			},
+			"continue": true
+		},
+		{
+			"src": "^/_server-islands/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/_image/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/ads/auto-detailing/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/ads/auto-paint-correction/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/ads/ceramic-coating/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/ads/color-ppf/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/ads/home-window-tint/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/ads/office-window-tint/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/ads/paint-protection-film/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/ads/window-tinting/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/contact/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/contact/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/customer/dashboard/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/customer/login/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/employee/dashboard/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/employee/login/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/our-team/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/our-work/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/services/auto-detailing/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/services/auto-paint-correction/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/services/ceramic-coating/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/services/color-ppf/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/services/home-window-tint/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/services/office-window-tint/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/services/paint-protection-film/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/services/window-tinting/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/services/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/$",
+			"dest": "_render"
+		}
+	]
+}
