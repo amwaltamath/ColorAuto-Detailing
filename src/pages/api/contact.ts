@@ -121,10 +121,23 @@ export async function POST({ request }: APIContext) {
       });
     }
 
-    const subject = `New Contact Form Submission — ${name}`;
-    const lines = [
-      "New inquiry from ColorAuto site",
-      "",
+    const subject = `New Inquiry — ${service || "Contact"} — ${name}`;
+
+    // Escape HTML to prevent injection in email markup
+    const escapeHtml = (s: string) =>
+      s
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
+    const createdAt = new Date().toISOString();
+
+    // Plain-text fallback
+    const textLines = [
+      "New inquiry from Color Auto Detailing",
+      `Submitted: ${createdAt}`,
       `Name: ${name}`,
       `Email: ${email}`,
       `Phone: ${phone || "N/A"}`,
@@ -134,8 +147,56 @@ export async function POST({ request }: APIContext) {
       "Message:",
       message,
     ].filter(Boolean);
+    const text = textLines.join("\n");
 
-    const text = lines.join("\n");
+    // HTML version (email friendly, minimal inline styles)
+    const html = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background:#f6f7f9; padding:24px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,0.06);">
+          <tr>
+            <td style="padding:24px 24px 8px 24px; background:linear-gradient(90deg,#1e40af,#2563eb); color:#fff;">
+              <h1 style="margin:0; font-size:20px;">Color Auto Detailing — New Inquiry</h1>
+              <p style="margin:6px 0 0 0; opacity:0.9; font-size:13px;">${escapeHtml(createdAt)}</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:24px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+                <tr>
+                  <td style="padding:8px 0; width:140px; color:#64748b; font-weight:600;">Name</td>
+                  <td style="padding:8px 0; color:#0f172a;">${escapeHtml(name)}</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0; width:140px; color:#64748b; font-weight:600;">Email</td>
+                  <td style="padding:8px 0; color:#0f172a;">${escapeHtml(email)}</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0; width:140px; color:#64748b; font-weight:600;">Phone</td>
+                  <td style="padding:8px 0; color:#0f172a;">${escapeHtml(phone || 'N/A')}</td>
+                </tr>
+                ${service ? `
+                <tr>
+                  <td style="padding:8px 0; width:140px; color:#64748b; font-weight:600;">Service</td>
+                  <td style="padding:8px 0; color:#0f172a;">${escapeHtml(service)}</td>
+                </tr>` : ''}
+                ${vehicle ? `
+                <tr>
+                  <td style="padding:8px 0; width:140px; color:#64748b; font-weight:600;">Vehicle</td>
+                  <td style="padding:8px 0; color:#0f172a;">${escapeHtml(vehicle)}</td>
+                </tr>` : ''}
+              </table>
+
+              <div style="margin-top:16px; padding:16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px;">
+                <div style="color:#64748b; font-weight:700; margin-bottom:8px;">Message</div>
+                <div style="white-space:pre-wrap; color:#0f172a; line-height:1.6;">${escapeHtml(message)}</div>
+              </div>
+
+              <p style="margin-top:20px; font-size:12px; color:#64748b;">Reply directly to this email to respond to the customer.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+    `;
 
     // Send via Resend REST API to avoid SDK dependency
     console.log("Attempting to send email via Resend API...");
@@ -153,6 +214,7 @@ export async function POST({ request }: APIContext) {
         reply_to: email,
         subject,
         text,
+        html,
       }),
     });
 
