@@ -11,9 +11,7 @@ export default defineConfig({
   // Enable server output so API routes deploy as Vercel functions
   output: 'server',
 
-  adapter: vercel({
-    webAnalytics: { enabled: false },
-  }),
+  adapter: vercel(),
 
   integrations: [react()],
 

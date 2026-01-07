@@ -1,7 +1,4 @@
 {
-  "framework": "astro",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
   "redirects": [
     {
       "source": "/auto-detailing/",
@@ -146,11 +143,6 @@
     {
       "source": "/services",
       "destination": "/services",
-      "permanent": true
-    },
-    {
-      "source": "/contact-us/",
-      "destination": "/contact",
       "permanent": true
     }
   ]
