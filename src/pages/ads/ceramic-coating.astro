@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import QuoteModal from '../../components/features/QuoteModal';
 
 const title = "Ceramic Coating | Protect Your Paint | Color Auto Detailing";
 const description = "Professional ceramic coating in Grand Junction. Long-lasting paint protection, hydrophobic coating, 5-year warranty. Book now!";
@@ -78,6 +79,155 @@ const keywords = ['ceramic coating', 'paint protection', 'hydrophobic coating', 
           <span>Reduced washing and maintenance time</span>
         </li>
       </ul>
+    </div>
+  </section>
+
+  <!-- Application Process -->
+  <section class="bg-white py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-12">Professional Application Process</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="text-center">
+          <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-blue-600">1</div>
+          <h3 class="font-bold text-xl mb-2">Paint Prep</h3>
+          <p class="text-gray-600">Thorough wash, clay bar, and decontamination</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-blue-600">2</div>
+          <h3 class="font-bold text-xl mb-2">Paint Correction</h3>
+          <p class="text-gray-600">Remove swirls and imperfections for perfect bonding</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-blue-600">3</div>
+          <h3 class="font-bold text-xl mb-2">Coating Application</h3>
+          <p class="text-gray-600">Precision application in controlled environment</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-blue-600">4</div>
+          <h3 class="font-bold text-xl mb-2">Curing</h3>
+          <p class="text-gray-600">24-48 hour cure time for maximum hardness</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Coating Packages -->
+  <section class="bg-gradient-to-b from-gray-100 to-white py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-12">Ceramic Coating Packages</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-8 border-2 border-gray-200 hover:border-blue-500 transition">
+          <h3 class="text-2xl font-bold mb-4">Level 1</h3>
+          <p class="text-3xl font-bold text-blue-600 mb-2">4-Year</p>
+          <p class="text-gray-600 mb-6">Professional protection</p>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-start">
+              <span class="text-green-600 mr-2">✓</span>
+              <span>Paint decontamination</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-green-600 mr-2">✓</span>
+              <span>Single-layer coating</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-green-600 mr-2">✓</span>
+              <span>4-year warranty</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-green-600 mr-2">✓</span>
+              <span>Enhanced gloss</span>
+            </li>
+          </ul>
+          <button data-quote-popup class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition border-0 cursor-pointer">Get Quote</button>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg p-8 border-2 border-blue-600 hover:border-blue-700 transition transform scale-105">
+          <div class="bg-blue-600 text-white text-sm font-bold py-1 px-3 rounded-full inline-block mb-4">POPULAR</div>
+          <h3 class="text-2xl font-bold mb-4">Level 2</h3>
+          <p class="text-3xl font-bold text-blue-600 mb-2">4-Year</p>
+          <p class="text-gray-600 mb-6">Complete protection</p>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-start">
+              <span class="text-green-600 mr-2">✓</span>
+              <span>Everything in Level 1</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-green-600 mr-2">✓</span>
+              <span>Paint correction included</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-green-600 mr-2">✓</span>
+              <span>Multi-layer coating</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-green-600 mr-2">✓</span>
+              <span>4-year warranty</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-green-600 mr-2">✓</span>
+              <span>Wheel coating included</span>
+            </li>
+          </ul>
+          <button data-quote-popup class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition border-0 cursor-pointer">Get Quote</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Protection Comparison -->
+  <section class="bg-white py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-4">Ceramic Coating vs. Traditional Wax</h2>
+      <p class="text-xl text-gray-600 text-center mb-12">See why ceramic coating is the superior choice</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="relative overflow-hidden rounded-lg shadow-xl">
+          <img src="/images/protection.jpg" alt="Protected paint" class="w-full h-80 object-cover" />
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+            <h3 class="text-white font-bold text-2xl mb-2">Ceramic Coating</h3>
+            <ul class="text-white space-y-1">
+              <li>✓ Lasts 4+ years</li>
+              <li>✓ Chemical resistant</li>
+              <li>✓ Superior gloss</li>
+              <li>✓ Self-cleaning effect</li>
+            </ul>
+          </div>
+        </div>
+        <div class="relative overflow-hidden rounded-lg shadow-xl opacity-75">
+          <img src="/images/autodetailing.jpg" alt="Waxed paint" class="w-full h-80 object-cover" />
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+            <h3 class="text-white font-bold text-2xl mb-2">Traditional Wax</h3>
+            <ul class="text-white space-y-1">
+              <li>• Lasts 2-3 months</li>
+              <li>• Washes away easily</li>
+              <li>• Limited protection</li>
+              <li>• Frequent reapplication</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="bg-gray-50 py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-12">Customer Reviews</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-lg p-8 shadow-lg">
+          <div class="text-yellow-500 text-2xl mb-4">★★★★★</div>
+          <p class="text-gray-700 mb-4 italic">"The ceramic coating has been amazing! Water literally rolls right off. My car stays cleaner longer and the shine is incredible."</p>
+          <p class="font-bold">- David M.</p>
+        </div>
+        <div class="bg-white rounded-lg p-8 shadow-lg">
+          <div class="text-yellow-500 text-2xl mb-4">★★★★★</div>
+          <p class="text-gray-700 mb-4 italic">"Best investment for my new car. The paint looks wet even when dry. Professional installation and great customer service."</p>
+          <p class="font-bold">- Jennifer L.</p>
+        </div>
+        <div class="bg-white rounded-lg p-8 shadow-lg">
+          <div class="text-yellow-500 text-2xl mb-4">★★★★★</div>
+          <p class="text-gray-700 mb-4 italic">"Two years later and still looks like the day it was applied. Worth every penny for the long-term protection."</p>
+          <p class="font-bold">- Robert S.</p>
+        </div>
+      </div>
     </div>
   </section>
 

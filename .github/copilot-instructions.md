@@ -1,138 +1,91 @@
-# Color Auto Detailing - Copilot Instructions
+# Color Auto Detailing - AI Agent Guide
 
-## Architecture Overview
+## Stack & Architecture
 
-**Stack**: Astro 5 + React 19 + TypeScript + Tailwind v4 (via Vite plugin). Auto detailing business site with customer/employee portals. Deployed on Vercel with serverless API routes. Run `npm run dev|build|preview`.
+**Tech**: Astro 5 + React 19 + TypeScript + Tailwind v4 (via Vite plugin). Auto detailing business site with customer/employee portals. Deployed on Vercel serverless.
 
-**Data flow**: Browser → Zustand (auth state) → React components → `auth.ts` utils (`PUBLIC_API_URL`) → backend API. Server-side: Astro endpoints → `api.ts` utils (`API_URL`) → backend. Contact form: Browser → `/api/contact` (Resend) → Email delivery. Two separate API clients because Astro server vs browser contexts have different env var access.
+**Commands**: `npm run dev` (localhost:4321) | `npm run build` | `npm run preview`
 
-**Deployment**: Uses `@astrojs/vercel` adapter with `output: 'server'` for serverless API routes. Static pages prerendered, API routes deploy as Vercel functions. URL redirects configured in `vercel.json` for SEO preservation from old site URLs.
+**Data Flow**: Browser → Zustand auth → React → `auth.ts` (`PUBLIC_API_URL`) → backend. Server: Astro endpoints → `api.ts` (`API_URL`) → backend. Contact: Browser → `/api/contact` (Resend) → email.
+
+**Deployment**: `@astrojs/vercel` adapter with `output: 'server'`. Static pages prerendered, API routes as Vercel functions. SEO redirects in `vercel.json` (301s from old URLs).
 
 ## Critical Patterns
 
-### 1. Layout Hierarchy (3 Levels)
-- [Layout.astro](src/layouts/Layout.astro): Base `<html>`, SEO metadata (OG/Twitter/JSON-LD), global CSS import. Pass `title|description|keywords|canonical|image|noindex` as props.
-- [PublicLayout.astro](src/layouts/PublicLayout.astro): Wraps `Layout` + adds `Navigation`/`Footer`. Use for marketing pages.
-- [AuthLayout.astro](src/layouts/AuthLayout.astro): Wraps `Layout` with gradient background, no nav/footer. Use for login/register screens.
+### 1. Three-Tier Layouts
+- **Layout.astro**: Base `<html>`, SEO (OG/Twitter/JSON-LD), GTM injection, global CSS. Props: `title|description|keywords|canonical|image|noindex`.
+- **PublicLayout.astro**: Wraps Layout + Navigation/Footer. Use for marketing.
+- **AuthLayout.astro**: Wraps Layout, gradient bg, no nav/footer. Use for login/register.
 
 ### 2. Astro ↔ React Hydration
-- `.astro` files are **server-rendered by default** (no JS shipped). Use for static content.
-- Hydrate React components with `client:load` directive: `<LoginForm client:load role="customer" />` ([example](src/pages/customer/login.astro)).
-- **When to use React**: Forms, auth state, interactive UI. **When to use Astro**: Static sections, SEO-critical content.
-- Components in `src/components/` can be `.astro` (server-only) or `.tsx` (interactive).
+- `.astro` files are **server-rendered** (zero JS). Use for static content.
+- Hydrate React with `client:load`: `<QuoteModal client:load service="Ceramic Coating" />` (see [ads pages](src/pages/ads/)).
+- **React**: Forms, auth, modals. **Astro**: Static sections, SEO content.
 
-### 3. Authentication Architecture
-**Current state** (mock): [LoginForm.tsx](src/components/auth/LoginForm.tsx) creates fake user → calls Zustand `login()` → `window.location.href` redirect.
+### 3. Dual API Clients (Browser vs Server)
+- **Browser** ([auth.ts](src/utils/auth.ts)): Uses `PUBLIC_API_URL`. Functions: `loginUser`, `saveAuthToken`, `getAuthToken`, `isAuthenticated`. Always check `typeof window !== 'undefined'` for localStorage.
+- **Server** ([api.ts](src/utils/api.ts)): Uses `API_URL` (server-only). Functions: `apiFetch<T>`, `getBookings`, `createBooking`. Bearer tokens in headers.
+- **Contact API** ([api/contact.ts](src/pages/api/contact.ts)): Resend integration. Handles JSON/form-data, honeypot (`website` field), validation. Env: `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`.
 
-**Production path**: Replace mock with real API flow:
-```tsx
-// In LoginForm.tsx handleSubmit:
-const { token, user } = await loginUser(email, password, role);  // auth.ts
-saveAuthToken(token);  // localStorage
-login(user);  // Zustand
-```
+### 4. Auth Flow (Currently Mock)
+- **Zustand Store** ([authStore.ts](src/stores/authStore.ts)): `user|isLoggedIn|login|logout|setUser`. Import via `useAuthStore()`.
+- **Mock Login** ([LoginForm.tsx](src/components/auth/LoginForm.tsx)): Creates fake user → Zustand `login()` → redirect.
+- **Production Path**: Call `loginUser()` → `saveAuthToken()` → Zustand `login()` → redirect.
 
-**State management**: [authStore.ts](src/stores/authStore.ts) is global Zustand store with `user|isLoggedIn|login|logout|setUser`. Import via `useAuthStore()` in React.
-
-**Token storage**: `auth.ts` helpers use `localStorage` with browser checks (`typeof window !== 'undefined'`). Always gate localStorage access.
-
-### 4. API Client Separation
-- **Browser-side** ([auth.ts](src/utils/auth.ts)): Uses `PUBLIC_API_URL` env var (accessible in browser). Functions: `loginUser`, `saveAuthToken`, `getAuthToken`, `isAuthenticated`.
-- **Server-side** ([api.ts](src/utils/api.ts)): Uses `API_URL` env var (server-only). Functions: `apiFetch<T>`, `getBookings`, `createBooking`. Pass bearer token in headers.
-- **Contact form** ([api/contact.ts](src/pages/api/contact.ts)): Uses `RESEND_API_KEY` env var. Sends emails via Resend REST API. Supports JSON/form-data payloads, includes honeypot protection, validation, and rate limiting.
-- **Why two?** Astro's env vars: `PUBLIC_*` available everywhere, others only in server context.
-
-### 5. Form Handling Patterns
-- Use React Hook Form for complex forms ([ContactForm.tsx](src/components/features/ContactForm.tsx)).
-- Status states: `idle` → `loading` → `success`/`error` with user feedback.
-- Fetch to `/api/contact` with JSON payload; handle network errors gracefully.
-- Honeypot field (`website`) to prevent spam; always empty in legitimate submissions.
+### 5. Form Patterns
+- React Hook Form for complex forms ([ContactForm.tsx](src/components/features/ContactForm.tsx)).
+- States: `idle` → `loading` → `success`/`error`.
+- POST to `/api/contact` with JSON. Honeypot field always empty in legit submissions.
+- Quote modal ([QuoteModal.tsx](src/components/features/QuoteModal.tsx)): Custom event `openQuoteModal`, fetches `/api/contact`.
 
 ## Development Workflow
 
 ### Adding Pages
 1. Create `.astro` in `src/pages/` (file-based routing).
-2. Import layout: `PublicLayout` (public pages), `AuthLayout` (login/register), or raw `Layout` (custom).
-3. Compose static sections with Tailwind classes.
-4. Hydrate React components only where needed with `client:load`.
+2. Import layout (PublicLayout/AuthLayout/Layout).
+3. Static sections with Tailwind. Hydrate React only where needed.
 
-### Styling Conventions
-- Tailwind config ([tailwind.config.mjs](tailwind.config.mjs)): Custom colors `primary: '#2563eb'`, `secondary: '#1e40af'`. Content scoped to `./src/**/*`.
-- Global styles in [src/styles/global.css](src/styles/global.css), imported once in `Layout.astro`.
-- Use utility classes directly in templates. No CSS modules.
+### Styling
+- **Tailwind Config** ([tailwind.config.mjs](tailwind.config.mjs)): `primary: '#2563eb'`, `secondary: '#1e40af'`.
+- Global CSS in [src/styles/global.css](src/styles/global.css), imported in Layout.astro.
+- Utility-first. No CSS modules.
 
 ### Environment Variables
-- `local.env` file (not committed): `PUBLIC_API_URL` and `API_URL` both point to `http://localhost:3001/api`.
-- **Resend Email**: `RESEND_API_KEY`, `CONTACT_TO_EMAIL=admin@colorautodetailing.com`, `CONTACT_FROM_EMAIL=no-reply@colorautodetailing.com`
-- **Rule**: Only `PUBLIC_*` vars accessible in browser. Use `API_URL` for server-side API calls in Astro endpoints.
+- `PUBLIC_API_URL` / `API_URL`: Both `http://localhost:3001/api` in local.env.
+- `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL` for email.
+- `PUBLIC_GTM_ID`: Default `GTM-PMBBJ2B6`.
+- **Rule**: Only `PUBLIC_*` accessible in browser.
 
-### Asset Management
-- Images in `public/images/` served directly (e.g., `/images/services/auto-detailing.jpg`).
-- Structure: `services/`, `gallery/`, `team/`, `colorppf/` folders + root files. See [public/images/README.md](public/images/README.md) for conventions.
-- ColorPPF gallery uses `.avif` format for GTI hero images (e.g., `GTI_Front_Hero_Gloss_Monza_Red.avif`).
+### Assets
+- Images in `public/images/`: `/images/services/`, `/images/colorppf/`, etc.
+- ColorPPF gallery uses `.avif` format (e.g., `GTI_Front_Hero_Gloss_Monza_Red.avif`).
 
-## Recent Updates (January 2026)
+## Key Features & Recent Changes
 
-### Deployment & Architecture
-- **Vercel Deployment**: Added `@astrojs/vercel` adapter with `output: 'server'` for serverless API routes
-- **Contact Form**: Implemented with Resend email service, includes honeypot protection and validation
-- **API Routes**: `/api/contact` now deploys as Vercel serverless function
+### Google Ads Landing Pages (src/pages/ads/)
+- 8 conversion-optimized pages (auto-detailing, ceramic-coating, paint-protection-film, window-tinting, home-window-tint, office-window-tint, auto-paint-correction, color-ppf).
+- All use `noindex={true}` (paid traffic only).
+- QuoteModal hydrated with `client:load`, submits to `/api/contact`.
 
-### Homepage Updates
-- **Before & After Section**: Temporarily hidden (commented out) for future content addition
-- **Hero Sections**: Unified styling across all service pages with image overlay (`bg-black/60`)
+### SEO & Analytics
+- **Redirects**: 32 permanent (301) mappings in `vercel.json` (e.g., `/auto-detailing/` → `/services/auto-detailing`).
+- **GTM**: Injected in Layout.astro via `define:vars` to avoid ReferenceError.
+- **Schema.org**: LocalBusiness JSON-LD in Layout.astro.
 
-### PPF Page Updates
-- **Color PPF Hero Banner**: Converted small purple box to full-width hero banner with `/images/colorppf.jpg` background
-- **Pricing Added**: Added pricing to all PPF Coverage Options (Partial Front $800, Full Front $1,600, Drivers Package $2,500, Full Coverage $5,500+)
-- **Coverage Gallery**: Visual coverage options with bullet points and check marks, Full Front marked as Popular
-- **Improved Presentation**: Better visual hierarchy with consistent pricing styling
-
-### Ceramic Coating Updates
-- **Pricing Consistency**: Made Level 1 pricing color match Level 2 (both now use `text-blue-600 font-bold`)
-- **Visual Consistency**: Both package prices now display in the same blue, bold format
-
-### Service Name Changes
-- **Home Window Tint**: All "Residential" references changed to "Home" for consistency.
-- **Office Window Tint**: All "Commercial" references changed to "Office" throughout page.
-- **Navigation**: "Home Service" menu label updated to "Home and Office Service".
-
-### URL Redirects Configuration
-- **Vercel Redirects**: Added comprehensive `vercel.json` with 32 redirect mappings for old site URLs
-- **SEO Preservation**: All redirects configured as permanent (301) to maintain search engine rankings
-- **Coverage**: Includes service variations, common typos, and navigation page redirects
-- **Examples**: `/auto-detailing/` → `/services/auto-detailing`, `/contact-us/` → `/contact`, `/portfolio/` → `/our-work`
-
-### Google Ads Landing Pages
-- New directory: `src/pages/ads/` contains **8 conversion-optimized landing pages** for Google Ads campaigns (one per service). All pages use `noindex={true}` to prevent organic ranking and focus on paid traffic.
-- Landing pages include:
-  - Compelling hero with service image and primary CTA
-  - **Why/Benefits section** with gradient background (`bg-gradient-to-b from-blue-600 to-blue-800`), backdrop blur cards (`backdrop-blur-md`), hover effects (`hover:-translate-y-2`, `hover:shadow-2xl`), large 6xl icons, bold 2xl headings
-  - Service features/benefits list
-  - Multiple CTAs (phone call in blue, quote form in green)
-  - Local business info (address, phone)
-  - Minimal navigation to reduce bounce rate
-- Files: [ads/auto-detailing.astro](src/pages/ads/auto-detailing.astro), [ads/ceramic-coating.astro](src/pages/ads/ceramic-coating.astro), [ads/paint-protection-film.astro](src/pages/ads/paint-protection-film.astro), [ads/window-tinting.astro](src/pages/ads/window-tinting.astro), [ads/home-window-tint.astro](src/pages/ads/home-window-tint.astro), [ads/office-window-tint.astro](src/pages/ads/office-window-tint.astro), [ads/auto-paint-correction.astro](src/pages/ads/auto-paint-correction.astro), [ads/color-ppf.astro](src/pages/ads/color-ppf.astro).
+### Service Pages
+- All service pages use PublicLayout, unified hero styling (`bg-black/60` overlay).
+- PPF page has pricing (Partial Front $800, Full Front $1,600, Drivers $2,500, Full $5,500+).
+- Ceramic Coating: Blue bold pricing for both levels.
 
 ## Known Limitations
-
-- **Dashboards are stubs**: [customer/dashboard.astro](src/pages/customer/dashboard.astro) shows hardcoded metrics (5 bookings, $450 spent). Replace with real `getBookings()` calls.
-- **Mock auth**: LoginForm doesn't validate credentials or call backend. Wire to `auth.ts` helpers before production.
-- **Contact form**: [api/contact.ts](src/pages/api/contact.ts) implemented with Resend email service. Requires domain verification in Resend for production delivery.
-- **No automated tests**: Validate changes manually via `npm run build` and browser testing. Add tests when backend integration is complete.
-
-## Integration Points
-
-- **Backend API**: Expects `POST /auth/login` with `{ email, password, role }` → returns `{ token, user }`.
-- **Booking API**: `GET /bookings/:userId` and `POST /bookings` with bearer token (see `api.ts`).
-- **Contact Form API**: `POST /api/contact` with form data → sends email via Resend API.
-- **Resend Email Service**: Requires `RESEND_API_KEY` and domain verification for production delivery.
-- **Role-based routing**: `/customer/*` vs `/employee/*` pages. Auth check not enforced yet—add middleware/guards before launch.
+- **Dashboards are stubs**: Hardcoded metrics. Wire to `getBookings()` for real data.
+- **Mock auth**: LoginForm doesn't validate. Wire to `auth.ts` before production.
+- **Contact form**: Requires Resend domain verification for production.
+- **No tests**: Validate via `npm run build` and browser.
 
 ## Quick Reference
-
-- **New service page**: Copy `src/pages/services/auto-detailing.astro` → update content → add navigation link.
-- **Add auth check**: Import `useAuthStore()`, check `isLoggedIn`, redirect if false.
-- **Call API from page**: Use `apiFetch()` in frontmatter; use `loginUser()` in React components.
-- **SEO override**: Pass props to layout: `<PublicLayout title="Custom Title" description="..." keywords={['auto', 'detail']} />`.
-- **URL redirects**: Edit `vercel.json` to add permanent redirects from old URLs to new routes for SEO preservation.
+- **New service page**: Copy `src/pages/services/auto-detailing.astro` → update → add nav link.
+- **Auth check**: Import `useAuthStore()`, check `isLoggedIn`.
+- **API calls**: `apiFetch()` in frontmatter, `loginUser()` in React.
+- **SEO**: Pass props to layout: `<PublicLayout title="..." description="..." keywords={[...]} />`.
+- **Redirects**: Edit `vercel.json` for 301s.

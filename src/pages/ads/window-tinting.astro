@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import QuoteModal from '../../components/features/QuoteModal';
 
 const title = "Window Tinting | UV Protection | Heat Reduction | Grand Junction";
 const description = "Professional automotive window tinting in Grand Junction. UV protection, heat reduction, privacy tint. Premium films with lifetime warranty.";
@@ -78,6 +79,171 @@ const keywords = ['window tinting', 'car window tint', 'UV protection', 'Grand J
           <span>Professional bubble-free installation</span>
         </li>
       </ul>
+    </div>
+  </section>
+
+  <!-- Film Options -->
+  <section class="bg-white py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-12">Premium Tint Films</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden border-2 border-gray-200 hover:border-blue-500 transition">
+          <img src="/images/primecs.jpg" alt="Carbon Tint" class="w-full h-48 object-cover" />
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-4">Prime CS</h3>
+            <p class="text-gray-600 mb-6">Carbon-based film with superior heat rejection</p>
+            <ul class="space-y-2 text-sm mb-6">
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Non-metallic carbon</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Won't interfere with signals</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Matte black finish</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Lifetime warranty</span>
+              </li>
+            </ul>
+            <button data-quote-popup class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition border-0 cursor-pointer">Get Quote</button>
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden border-2 border-blue-600 hover:border-blue-700 transition transform scale-105">
+          <div class="bg-blue-600 text-white text-sm font-bold py-1 px-3 text-center">POPULAR</div>
+          <img src="/images/primexr.jpg" alt="Ceramic Tint" class="w-full h-48 object-cover" />
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-4">Prime XR</h3>
+            <p class="text-gray-600 mb-6">Ceramic film with maximum heat rejection</p>
+            <ul class="space-y-2 text-sm mb-6">
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>90% infrared rejection</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Superior clarity</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Non-reflective finish</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Lifetime warranty</span>
+              </li>
+            </ul>
+            <button data-quote-popup class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition border-0 cursor-pointer">Get Quote</button>
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden border-2 border-gray-200 hover:border-blue-500 transition">
+          <img src="/images/primexrplus.jpg" alt="Premium Ceramic Tint" class="w-full h-48 object-cover" />
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-4">Prime XR Plus</h3>
+            <p class="text-gray-600 mb-6">Ultimate ceramic protection and clarity</p>
+            <ul class="space-y-2 text-sm mb-6">
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>98% IR rejection</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Color stable technology</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Crystal clear optics</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Lifetime warranty</span>
+              </li>
+            </ul>
+            <button data-quote-popup class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition border-0 cursor-pointer">Get Quote</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Installation Process -->
+  <section class="bg-gradient-to-b from-gray-100 to-white py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-12">Professional Installation</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="text-center">
+          <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-blue-600">1</div>
+          <h3 class="font-bold text-xl mb-2">Clean Windows</h3>
+          <p class="text-gray-600">Thorough cleaning and surface preparation</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-blue-600">2</div>
+          <h3 class="font-bold text-xl mb-2">Precision Cut</h3>
+          <p class="text-gray-600">Computer-cut film for perfect fit</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-blue-600">3</div>
+          <h3 class="font-bold text-xl mb-2">Expert Application</h3>
+          <p class="text-gray-600">Bubble-free installation by certified technicians</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-blue-600">4</div>
+          <h3 class="font-bold text-xl mb-2">Quality Check</h3>
+          <p class="text-gray-600">Final inspection and cure time guidance</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Before/After -->
+  <section class="bg-white py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-4">See The Difference</h2>
+      <p class="text-xl text-gray-600 text-center mb-12">Professional tinting transforms your driving experience</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="relative overflow-hidden rounded-lg shadow-xl">
+          <img src="/images/window tint.jpg" alt="Tinted windows" class="w-full h-80 object-cover" />
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+            <h3 class="text-white font-bold text-2xl mb-2">Cool & Comfortable</h3>
+            <p class="text-white">Stay cooler with up to 90% heat rejection</p>
+          </div>
+        </div>
+        <div class="relative overflow-hidden rounded-lg shadow-xl">
+          <img src="/images/autodetailing.jpg" alt="Interior protection" class="w-full h-80 object-cover" />
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+            <h3 class="text-white font-bold text-2xl mb-2">Protected Interior</h3>
+            <p class="text-white">Block 99% UV rays that fade and damage your interior</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="bg-gray-50 py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-12">What Customers Say</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-lg p-8 shadow-lg">
+          <div class="text-yellow-500 text-2xl mb-4">★★★★★</div>
+          <p class="text-gray-700 mb-4 italic">"Huge difference in how cool my car stays. The ceramic tint was worth the investment. Perfect installation with no bubbles."</p>
+          <p class="font-bold">- Tom W.</p>
+        </div>
+        <div class="bg-white rounded-lg p-8 shadow-lg">
+          <div class="text-yellow-500 text-2xl mb-4">★★★★★</div>
+          <p class="text-gray-700 mb-4 italic">"Finally can see clearly without squinting from glare. The team was professional and completed the job in a few hours."</p>
+          <p class="font-bold">- Amanda K.</p>
+        </div>
+        <div class="bg-white rounded-lg p-8 shadow-lg">
+          <div class="text-yellow-500 text-2xl mb-4">★★★★★</div>
+          <p class="text-gray-700 mb-4 italic">"My interior isn't fading anymore and my AC doesn't have to work as hard. Great work by ColorAuto!"</p>
+          <p class="font-bold">- Kevin R.</p>
+        </div>
+      </div>
     </div>
   </section>
 

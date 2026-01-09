@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import QuoteModal from '../../components/features/QuoteModal';
 
 const title = "Paint Protection Film (PPF) | Grand Junction | Color Auto Detailing";
 const description = "Invisible paint protection film shields your car from damage. Professional PPF installation, self-healing coating, lifetime warranty available.";
@@ -78,6 +79,193 @@ const keywords = ['paint protection film', 'PPF', 'paint protection', 'Grand Jun
           <span>Minor scratches and swirl marks</span>
         </li>
       </ul>
+    </div>
+  </section>
+
+  <!-- Coverage Packages -->
+  <section class="bg-white py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-12">PPF Coverage Options</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden border-2 border-gray-200 hover:border-blue-500 transition">
+          <img src="/images/Partialfront.jpg" alt="Partial Front Coverage" class="w-full h-48 object-cover" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2">Partial Front</h3>
+            <p class="text-3xl font-bold text-blue-600 mb-3">$800+</p>
+            <ul class="space-y-2 text-sm">
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Hood (partial)</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Front bumper</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Headlights</span>
+              </li>
+            </ul>
+            <button data-quote-popup class="w-full mt-6 bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 transition border-0 cursor-pointer">Get Quote</button>
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden border-2 border-blue-600 hover:border-blue-700 transition transform scale-105">
+          <div class="bg-blue-600 text-white text-xs font-bold py-1 px-3 text-center">POPULAR</div>
+          <img src="/images/fullfront.jpg" alt="Full Front Coverage" class="w-full h-48 object-cover" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2">Full Front</h3>
+            <p class="text-3xl font-bold text-blue-600 mb-3">$1,600+</p>
+            <ul class="space-y-2 text-sm">
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Full hood</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Full fenders</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Bumper & mirrors</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Headlights</span>
+              </li>
+            </ul>
+            <button data-quote-popup class="w-full mt-6 bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 transition border-0 cursor-pointer">Get Quote</button>
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden border-2 border-gray-200 hover:border-blue-500 transition">
+          <img src="/images/driverspackage.jpg" alt="Drivers Package" class="w-full h-48 object-cover" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2">Drivers Package</h3>
+            <p class="text-3xl font-bold text-blue-600 mb-3">$2,500+</p>
+            <ul class="space-y-2 text-sm">
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Full front coverage</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>A-pillars & roof</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Rocker panels</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Door edges</span>
+              </li>
+            </ul>
+            <button data-quote-popup class="w-full mt-6 bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 transition border-0 cursor-pointer">Get Quote</button>
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden border-2 border-gray-200 hover:border-blue-500 transition">
+          <img src="/images/full.jpg" alt="Full Coverage" class="w-full h-48 object-cover" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2">Full Coverage</h3>
+            <p class="text-3xl font-bold text-blue-600 mb-3">$5,500+</p>
+            <ul class="space-y-2 text-sm">
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Entire vehicle</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Maximum protection</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Lifetime warranty</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-600 mr-2">✓</span>
+                <span>Paint preservation</span>
+              </li>
+            </ul>
+            <button data-quote-popup class="w-full mt-6 bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 transition border-0 cursor-pointer">Get Quote</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Installation Process -->
+  <section class="bg-gradient-to-b from-gray-100 to-white py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-12">Professional Installation Process</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="text-center">
+          <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-blue-600">1</div>
+          <h3 class="font-bold text-xl mb-2">Surface Prep</h3>
+          <p class="text-gray-600">Deep clean and decontamination of all surfaces</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-blue-600">2</div>
+          <h3 class="font-bold text-xl mb-2">Precision Cut</h3>
+          <p class="text-gray-600">Computer-cut film for perfect fit on your vehicle</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-blue-600">3</div>
+          <h3 class="font-bold text-xl mb-2">Expert Install</h3>
+          <p class="text-gray-600">Bubble-free application by certified technicians</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-blue-600">4</div>
+          <h3 class="font-bold text-xl mb-2">Quality Check</h3>
+          <p class="text-gray-600">Final inspection and 48-hour curing period</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why PPF Section -->
+  <section class="bg-white py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-4">Protect Your Paint Investment</h2>
+      <p class="text-xl text-gray-600 text-center mb-12">PPF is the ultimate defense against daily driving hazards</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="relative overflow-hidden rounded-lg shadow-xl">
+          <img src="/images/Paint Protection Film.jpg" alt="Protected vehicle" class="w-full h-80 object-cover" />
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+            <h3 class="text-white font-bold text-2xl mb-2">Self-Healing Technology</h3>
+            <p class="text-white">Minor scratches disappear with heat from the sun or warm water</p>
+          </div>
+        </div>
+        <div class="relative overflow-hidden rounded-lg shadow-xl">
+          <img src="/images/protection.jpg" alt="Long-term protection" class="w-full h-80 object-cover" />
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+            <h3 class="text-white font-bold text-2xl mb-2">Maintain Resale Value</h3>
+            <p class="text-white">Keep your paint pristine and your vehicle value high</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="bg-gray-50 py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-12">Customer Reviews</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-lg p-8 shadow-lg">
+          <div class="text-yellow-500 text-2xl mb-4">★★★★★</div>
+          <p class="text-gray-700 mb-4 italic">"Best decision I made for my new truck. The PPF has already saved my paint from several rock chips. You can't even tell it's there!"</p>
+          <p class="font-bold">- Mark B.</p>
+        </div>
+        <div class="bg-white rounded-lg p-8 shadow-lg">
+          <div class="text-yellow-500 text-2xl mb-4">★★★★★</div>
+          <p class="text-gray-700 mb-4 italic">"The self-healing feature is amazing. A shopping cart scratch completely disappeared in the sun. Professional installation, worth every penny."</p>
+          <p class="font-bold">- Lisa H.</p>
+        </div>
+        <div class="bg-white rounded-lg p-8 shadow-lg">
+          <div class="text-yellow-500 text-2xl mb-4">★★★★★</div>
+          <p class="text-gray-700 mb-4 italic">"ColorAuto did an excellent job on my BMW. The film is completely invisible and the warranty gives me peace of mind."</p>
+          <p class="font-bold">- Chris P.</p>
+        </div>
+      </div>
     </div>
   </section>
 
