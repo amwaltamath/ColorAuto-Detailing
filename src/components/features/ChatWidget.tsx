@@ -1,0 +1,300 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { useChatStore } from '../../stores/chatStore';
+import { supabaseBrowser } from '../../utils/supabaseClient';
+
+function ChatWidgetInner() {
+  const {
+    sessionId,
+    messages,
+    isOpen,
+    isLoading,
+    unreadCount,
+    initializeSession,
+    toggleChat,
+    addMessage,
+    setMessages,
+    setIsLoading,
+    markMessagesAsRead,
+  } = useChatStore();
+
+  const [input, setInput] = useState('');
+  const [visitorEmail, setVisitorEmail] = useState('');
+  const [visitorName, setVisitorName] = useState('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef(messages);
+  const [isPolling, setIsPolling] = useState(false);
+
+  // Initialize session on mount
+  useEffect(() => {
+    if (!sessionId) {
+      const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+      initializeSession(newSessionId);
+    }
+  }, [sessionId, initializeSession]);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    messagesRef.current = messages;
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  // Fetch once on open and subscribe to realtime updates
+  useEffect(() => {
+    if (!isOpen || !sessionId) return;
+
+    markMessagesAsRead();
+
+    const fetchMessages = async () => {
+      try {
+        const response = await fetch(`/api/messages?sessionId=${sessionId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setMessages(data.messages || []);
+        }
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+      }
+    };
+
+    fetchMessages();
+
+    // Subscribe to Supabase realtime for new messages in this session (guard if not configured or env missing)
+    const realtimeEnabled = Boolean(import.meta.env.PUBLIC_SUPABASE_URL && import.meta.env.PUBLIC_SUPABASE_ANON_KEY && supabaseBrowser);
+    if (!realtimeEnabled || !supabaseBrowser) return;
+
+    try {
+      const channel = supabaseBrowser
+        .channel(`chat:${sessionId}`)
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'chat_messages',
+          filter: `session_id=eq.${sessionId}`,
+        }, (payload) => {
+          const m: any = payload.new;
+          // Avoid duplicates
+          if (messagesRef.current.some((x) => x.id === m.id)) return;
+          addMessage({
+            id: m.id,
+            sessionId: m.session_id,
+            senderType: m.sender_type,
+            senderName: m.sender_name || undefined,
+            message: m.message,
+            timestamp: m.timestamp,
+            isRead: m.is_read,
+          });
+        })
+        .subscribe();
+
+      return () => {
+        if (supabaseBrowser) supabaseBrowser.removeChannel(channel);
+      };
+    } catch (err) {
+      console.error('Realtime subscribe failed', err);
+      return;
+    }
+  }, [isOpen, sessionId, setMessages, markMessagesAsRead, addMessage]);
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!input.trim() || !sessionId || isLoading) return;
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId,
+          message: input,
+          visitorEmail: visitorEmail || undefined,
+          visitorName: visitorName || undefined,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.message) {
+          addMessage(data.message);
+        }
+        setInput('');
+        // Clear email/name after first message
+        if (visitorEmail || visitorName) {
+          setVisitorEmail('');
+          setVisitorName('');
+        }
+      } else {
+        console.error('Failed to send message');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <>
+      {/* Chat Widget Button */}
+      <button
+        onClick={toggleChat}
+        className={`fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center z-40 ${
+          isOpen
+            ? 'bg-blue-600 hover:bg-blue-700'
+            : 'bg-blue-500 hover:bg-blue-600'
+        }`}
+        aria-label="Open chat"
+      >
+        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v6a2 2 0 01-2 2h-2.93a1 1 0 00-.7.29l-1.14 1.14A1 1 0 008.05 15H8a1 1 0 01-1-1v-2.05a1 1 0 00-.29-.71l-1.14-1.14A1 1 0 005.93 10H4a2 2 0 01-2-2V5z" />
+        </svg>
+        {unreadCount > 0 && (
+          <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+            {unreadCount}
+          </span>
+        )}
+      </button>
+
+      {/* Chat Window */}
+      {isOpen && (
+        <div className="fixed bottom-24 right-6 w-96 h-96 bg-white rounded-lg shadow-2xl flex flex-col z-50 border border-gray-200">
+          {/* Header */}
+          <div className="bg-blue-600 text-white p-4 rounded-t-lg">
+            <div className="flex justify-between items-center">
+              <h3 className="font-semibold">ColorAuto Support</h3>
+              <button
+                onClick={toggleChat}
+                className="text-white hover:text-gray-200 transition"
+                aria-label="Close chat"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <p className="text-sm text-blue-100 mt-1">We typically reply in minutes</p>
+          </div>
+
+          {/* Messages Container */}
+          <div className="flex-1 overflow-y-auto p-4 bg-gray-50 space-y-3">
+            {messages.length === 0 ? (
+              <div className="flex items-center justify-center h-full text-gray-500">
+                <p className="text-sm">Start a conversation</p>
+              </div>
+            ) : (
+              <>
+                {messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`flex ${msg.senderType === 'visitor' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-xs px-4 py-2 rounded-lg ${
+                        msg.senderType === 'visitor'
+                          ? 'bg-blue-500 text-white rounded-br-none'
+                          : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none'
+                      }`}
+                    >
+                      {msg.senderType !== 'visitor' && (
+                        <p className="text-xs font-semibold text-gray-600 mb-1">
+                          {msg.senderName || 'Support'}
+                        </p>
+                      )}
+                      <p className="text-sm">{msg.message}</p>
+                      <p className="text-xs mt-1 opacity-70">
+                        {new Date(msg.timestamp).toLocaleTimeString([], { 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </>
+            )}
+          </div>
+
+          {/* Input Form */}
+          <form onSubmit={handleSendMessage} className="border-t border-gray-200 p-4 bg-white rounded-b-lg">
+            {/* Show email/name inputs only on first message */}
+            {messages.filter((m) => m.senderType === 'visitor').length === 0 && (
+              <>
+                <input
+                  type="text"
+                  placeholder="Your name (optional)"
+                  value={visitorName}
+                  onChange={(e) => setVisitorName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded mb-2 text-sm focus:outline-none focus:border-blue-500"
+                />
+                <input
+                  type="email"
+                  placeholder="Your email (optional)"
+                  value={visitorEmail}
+                  onChange={(e) => setVisitorEmail(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded mb-2 text-sm focus:outline-none focus:border-blue-500"
+                />
+              </>
+            )}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Type a message..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                disabled={isLoading}
+                className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500 disabled:bg-gray-100"
+              />
+              <button
+                type="submit"
+                disabled={isLoading || !input.trim()}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400 transition text-sm font-medium"
+              >
+                {isLoading ? '...' : 'Send'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+    </>
+  );
+}
+
+class ChatWidgetErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error('ChatWidget error:', error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <button
+          onClick={() => this.setState({ hasError: false })}
+          className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-red-600 text-white shadow-lg z-40"
+        >
+          !
+        </button>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+export function ChatWidget() {
+  return (
+    <ChatWidgetErrorBoundary>
+      <ChatWidgetInner />
+    </ChatWidgetErrorBoundary>
+  );
+}

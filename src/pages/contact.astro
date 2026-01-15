@@ -222,6 +222,7 @@ import PublicLayout from '../layouts/PublicLayout.astro';
         if (res.ok && json.ok) {
           setStatus("Thanks! We received your message.", "text-green-600");
           form.reset();
+          try { if (window && (window as any).fbq) { (window as any).fbq('track', 'Lead'); } } catch {}
         } else {
           setStatus(json.error || "Unable to send right now. Please call 970-628-1505.", "text-red-600");
         }

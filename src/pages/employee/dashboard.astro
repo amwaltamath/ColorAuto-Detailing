@@ -1,62 +1,179 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import EmployeeLayout from '../../layouts/EmployeeLayout.astro';
+import { ChatManager } from '../../components/features/ChatManager';
+import { SchedulesTable } from '../../components/employee/SchedulesTable';
+import { TeamsTable } from '../../components/employee/TeamsTable';
+import { ProfileSettings } from '../../components/employee/ProfileSettings';
 ---
 
-<Layout title="Employee Dashboard">
-  <div class="max-w-7xl mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold mb-8">Employee Dashboard</h1>
+<EmployeeLayout title="Employee Dashboard">
+  <div class="space-y-8">
     
+    <!-- Quick Stats -->
     <div class="grid grid-cols-4 gap-6 mb-8">
-      <div class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-2">12</h2>
-        <p class="text-gray-600">Today's Jobs</p>
+      <div class="bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
+        <h2 class="text-2xl font-bold mb-2 text-white">12</h2>
+        <p class="text-slate-300">Today's Jobs</p>
       </div>
-      <div class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-2">8</h2>
-        <p class="text-gray-600">Completed</p>
+      <div class="bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
+        <h2 class="text-2xl font-bold mb-2 text-white">8</h2>
+        <p class="text-slate-300">Completed</p>
       </div>
-      <div class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-2">3</h2>
-        <p class="text-gray-600">In Progress</p>
+      <div class="bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
+        <h2 class="text-2xl font-bold mb-2 text-white">3</h2>
+        <p class="text-slate-300">In Progress</p>
       </div>
-      <div class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-2">1</h2>
-        <p class="text-gray-600">Pending</p>
+      <div class="bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
+        <h2 class="text-2xl font-bold mb-2 text-white">1</h2>
+        <p class="text-slate-300">Pending</p>
       </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-8">
-      <div class="bg-white p-8 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-6">Today's Schedule</h2>
-        <div class="space-y-4">
-          <div class="border-l-4 border-yellow-500 p-4 bg-yellow-50">
-            <h3 class="font-bold">10:00 AM - Full Service Detail</h3>
-            <p class="text-gray-600">Vehicle: BMW 3 Series - Customer: John Smith</p>
-          </div>
-          <div class="border-l-4 border-green-500 p-4 bg-green-50">
-            <h3 class="font-bold">1:00 PM - Exterior Detail</h3>
-            <p class="text-gray-600">Vehicle: Honda Civic - Customer: Sarah Johnson</p>
-          </div>
-        </div>
+    <!-- Tabs Navigation -->
+    <div class="border-b border-slate-700 mb-8">
+      <div class="flex space-x-8">
+        <button type="button" onclick="switchTab('schedules')" class="tab-button active pb-4 text-white font-semibold border-b-2 border-blue-500 cursor-pointer hover:text-slate-200 transition duration-200" data-tab="schedules">
+          📅 Schedules
+        </button>
+        <button type="button" onclick="switchTab('teams')" class="tab-button pb-4 text-slate-400 font-semibold border-b-2 border-transparent cursor-pointer hover:text-slate-300 transition duration-200" data-tab="teams">
+          👥 Teams
+        </button>
+        <button type="button" onclick="switchTab('messages')" class="tab-button pb-4 text-slate-400 font-semibold border-b-2 border-transparent cursor-pointer hover:text-slate-300 transition duration-200" data-tab="messages">
+          💬 Messages
+        </button>
+        <button type="button" onclick="switchTab('chat')" class="tab-button pb-4 text-slate-400 font-semibold border-b-2 border-transparent cursor-pointer hover:text-slate-300 transition duration-200" data-tab="chat">
+          🎧 Customer Chat
+        </button>
+        <button type="button" onclick="switchTab('profile')" class="tab-button pb-4 text-slate-400 font-semibold border-b-2 border-transparent cursor-pointer hover:text-slate-300 transition duration-200" data-tab="profile">
+          ⚙️ Profile Settings
+        </button>
       </div>
+    </div>
 
-      <div class="bg-white p-8 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-6">Quick Actions</h2>
-        <div class="space-y-3">
-          <button class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
-            Clock In
-          </button>
-          <button class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">
-            View My Schedule
-          </button>
-          <button class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 transition">
-            Update Job Status
-          </button>
-          <button class="w-full bg-gray-600 text-white py-2 rounded hover:bg-gray-700 transition">
-            View Reports
-          </button>
+    <!-- Tab Content -->
+    <div id="schedules" class="tab-content active">
+      <div class="bg-slate-800 p-8 rounded-lg shadow-lg border border-slate-700">
+        <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
+          <span class="mr-3">📅</span> Your Service Schedules
+        </h2>
+        <SchedulesTable client:load />
+      </div>
+    </div>
+
+    <div id="teams" class="tab-content hidden">
+      <div class="bg-slate-800 p-8 rounded-lg shadow-lg border border-slate-700">
+        <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
+          <span class="mr-3">👥</span> Your Teams
+        </h2>
+        <TeamsTable client:load />
+      </div>
+    </div>
+
+    <div id="messages" class="tab-content hidden">
+      <div class="bg-slate-800 p-8 rounded-lg shadow-lg border border-slate-700">
+        <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
+          <span class="mr-3">💬</span> Team Messages
+        </h2>
+        <div class="bg-slate-700/50 p-6 rounded border border-slate-600 text-center text-slate-400">
+          <p>Team messaging feature coming soon</p>
         </div>
       </div>
     </div>
+
+    <div id="chat" class="tab-content hidden">
+      <div class="bg-slate-800 p-8 rounded-lg shadow-lg border border-slate-700">
+        <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
+          <span class="mr-3">🎧</span> Customer Chat Support
+        </h2>
+        <ChatManager client:load />
+      </div>
+    </div>
+
+    <div id="profile" class="tab-content hidden">
+      <div class="bg-slate-800 p-8 rounded-lg shadow-lg border border-slate-700">
+        <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
+          <span class="mr-3">⚙️</span> Profile Settings
+        </h2>
+        <ProfileSettings client:load />
+      </div>
+    </div>
+
   </div>
-</Layout>
+</EmployeeLayout>
+
+<script>
+  // Make switchTab available globally
+  window.switchTab = function(tabName) {
+    console.log('Switching to tab:', tabName);
+    
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => {
+      tab.classList.add('hidden');
+      tab.classList.remove('active');
+    });
+
+    // Remove active state from all buttons
+    document.querySelectorAll('.tab-button').forEach(btn => {
+      btn.classList.remove('text-white', 'border-blue-500');
+      btn.classList.add('text-slate-400', 'border-transparent');
+    });
+
+    // Show selected tab
+    const selectedTab = document.getElementById(tabName);
+    if (selectedTab) {
+      selectedTab.classList.remove('hidden');
+      selectedTab.classList.add('active');
+    }
+
+    // Set active state on button
+    const activeButton = document.querySelector(`[data-tab="${tabName}"]`);
+    if (activeButton) {
+      activeButton.classList.remove('text-slate-400', 'border-transparent');
+      activeButton.classList.add('text-white', 'border-blue-500');
+    }
+
+    // Store preference in localStorage
+    localStorage.setItem('activeTab', tabName);
+  };
+
+  // Restore last active tab on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    const lastTab = localStorage.getItem('activeTab') || 'schedules';
+    window.switchTab(lastTab);
+  });
+</script>
+
+<style>
+  .tab-button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tab-button:focus {
+    outline: none;
+  }
+  
+  .tab-button:active {
+    transform: scale(0.98);
+  }
+  
+  .tab-content {
+    transition: opacity 0.3s ease;
+  }
+  
+  .tab-content.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .tab-content.hidden {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+  }
+</style>

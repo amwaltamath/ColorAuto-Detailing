@@ -1,0 +1,48 @@
+---
+import '../styles/global.css';
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  keywords?: string[];
+  canonical?: string;
+  image?: string;
+  noindex?: boolean;
+}
+
+const { title, description, keywords, canonical, image, noindex } = Astro.props;
+---
+
+<Layout title={title} description={description} keywords={keywords} canonical={canonical} image={image} noindex={noindex}>
+  <div class="min-h-screen bg-slate-900">
+    <!-- Employee Header -->
+    <header class="bg-slate-800 shadow-lg border-b border-slate-700">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div>
+          <h1 class="text-2xl font-bold text-white">{title}</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+          <a href="/employee/dashboard" class="text-slate-300 hover:text-white transition">Dashboard</a>
+          <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
+            Logout
+          </button>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+      <slot />
+    </main>
+  </div>
+</Layout>
+
+<script>
+  function logout() {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('authToken');
+      window.location.href = '/employee/login';
+    }
+  }
+</script>

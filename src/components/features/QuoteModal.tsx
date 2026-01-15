@@ -51,6 +51,9 @@ export default function QuoteModal({ isOpen: initialOpen = false, onClose, servi
       }
       setStatus({ type: "success", message: "Thanks! We'll reach out shortly with your quote." });
       form.reset();
+      if (typeof window !== 'undefined' && (window as any).fbq) {
+        (window as any).fbq('track', 'Lead', { content_name: service || 'Quote' });
+      }
       // Close modal after 2 seconds on success
       setTimeout(() => {
         handleClose();
