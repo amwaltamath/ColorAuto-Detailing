@@ -174,17 +174,17 @@ function ChatWidgetInner() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-96 h-96 bg-white rounded-lg shadow-2xl flex flex-col z-50 border border-gray-200">
+        <div className="fixed inset-0 md:bottom-24 md:right-6 md:w-96 md:h-96 md:rounded-lg bg-white rounded-none md:rounded-lg shadow-2xl flex flex-col z-50 border border-gray-200">
           {/* Header */}
-          <div className="bg-blue-600 text-white p-4 rounded-t-lg">
+          <div className="bg-blue-600 text-white p-4 md:rounded-t-lg">
             <div className="flex justify-between items-center">
-              <h3 className="font-semibold">ColorAuto Support</h3>
+              <h3 className="font-semibold text-base md:text-lg">ColorAuto Support</h3>
               <button
                 onClick={toggleChat}
-                className="text-white hover:text-gray-200 transition"
+                className="text-white hover:text-gray-200 transition p-1.5 md:p-1"
                 aria-label="Close chat"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -193,10 +193,10 @@ function ChatWidgetInner() {
           </div>
 
           {/* Messages Container */}
-          <div className="flex-1 overflow-y-auto p-4 bg-gray-50 space-y-3">
+          <div className="flex-1 overflow-y-auto p-3 md:p-4 bg-gray-50 space-y-2 md:space-y-3">
             {messages.length === 0 ? (
               <div className="flex items-center justify-center h-full text-gray-500">
-                <p className="text-sm">Start a conversation</p>
+                <p className="text-sm md:text-base">Start a conversation</p>
               </div>
             ) : (
               <>
@@ -205,8 +205,17 @@ function ChatWidgetInner() {
                     key={msg.id}
                     className={`flex ${msg.senderType === 'visitor' ? 'justify-end' : 'justify-start'} group`}
                   >
+                    {msg.senderType === 'visitor' && (
+                      <button
+                        onClick={() => handleDeleteMessage(msg.id)}
+                        className="hidden md:block absolute -right-8 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 transition-opacity text-xs font-bold"
+                        title="Delete message"
+                      >
+                        ✕
+                      </button>
+                    )}
                     <div
-                      className={`max-w-xs px-4 py-2 rounded-lg relative ${
+                      className={`max-w-xs md:max-w-xs px-3 md:px-4 py-2 rounded-lg relative ${
                         msg.senderType === 'visitor'
                           ? 'bg-blue-500 text-white rounded-br-none'
                           : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none'
@@ -242,7 +251,7 @@ function ChatWidgetInner() {
           </div>
 
           {/* Input Form */}
-          <form onSubmit={handleSendMessage} className="border-t border-gray-200 p-4 bg-white rounded-b-lg">
+          <form onSubmit={handleSendMessage} className="border-t border-gray-200 p-3 md:p-4 bg-white md:rounded-b-lg rounded-none space-y-2 md:space-y-3">
             {/* Show email/name inputs only on first message */}
             {messages.filter((m) => m.senderType === 'visitor').length === 0 && (
               <>
@@ -251,14 +260,14 @@ function ChatWidgetInner() {
                   placeholder="Your name (optional)"
                   value={visitorName}
                   onChange={(e) => setVisitorName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded mb-2 text-sm focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
                 />
                 <input
                   type="email"
                   placeholder="Your email (optional)"
                   value={visitorEmail}
                   onChange={(e) => setVisitorEmail(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded mb-2 text-sm focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
                 />
               </>
             )}
@@ -274,7 +283,7 @@ function ChatWidgetInner() {
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400 transition text-sm font-medium"
+                className="bg-blue-600 text-white px-4 md:px-5 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400 transition text-sm font-medium touch-manipulation min-w-16 md:min-w-12"
               >
                 {isLoading ? '...' : 'Send'}
               </button>

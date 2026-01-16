@@ -33,6 +33,7 @@ export function ChatManager() {
   const [showTeamChat, setShowTeamChat] = useState(false);
   const [teamMessages, setTeamMessages] = useState<ChatMessage[]>([]);
   const [teamText, setTeamText] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Request notification permission on mount
   useEffect(() => {
@@ -196,11 +197,27 @@ export function ChatManager() {
   };
 
   return (
-    <div className="flex min-h-[70vh] rounded-xl overflow-hidden border border-slate-800 bg-slate-900 text-slate-100 shadow-xl">
-      {/* Sessions List */}
-      <div className="w-72 bg-slate-850/80 border-r border-slate-800">
+    <div className="flex flex-col lg:flex-row min-h-[70vh] rounded-xl overflow-hidden border border-slate-800 bg-slate-900 text-slate-100 shadow-xl">
+      {/* Mobile Header with Sidebar Toggle */}
+      <div className="lg:hidden bg-slate-850 border-b border-slate-800 p-3 flex items-center justify-between">
+        <h2 className="font-semibold text-sm uppercase tracking-wide text-slate-200">Chat</h2>
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="text-slate-400 hover:text-slate-200 transition p-1.5"
+          aria-label="Toggle sidebar"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Sessions List - Sidebar */}
+      <div className={`${
+        sidebarOpen ? 'block' : 'hidden'
+      } lg:block w-full lg:w-72 bg-slate-850/80 border-b lg:border-b-0 lg:border-r border-slate-800 max-h-[60vh] lg:max-h-none overflow-y-auto`}>
         <div className="p-4 border-b border-slate-800 bg-slate-850">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold text-sm uppercase tracking-wide text-slate-200">Chat Sessions</h2>
             {unreadCount > 0 && (
               <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full">
@@ -263,21 +280,39 @@ export function ChatManager() {
       </div>
 
       {/* Chat View */}
-      <div className="flex-1 flex flex-col bg-slate-900/80">
+      <div className="flex-1 flex flex-col bg-slate-900/80 min-h-0">
+        {!selectedSession && !showTeamChat && (
+          <div className="flex-1 flex items-center justify-center text-slate-400">
+            <p className="text-center text-sm">
+              {sessions.length === 0 ? 'No active chats' : 'Select a chat to start'}
+            </p>
+          </div>
+        )}
         {showTeamChat ? (
           <>
-            <div className="bg-slate-850 border-b border-slate-800 px-6 py-4 flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold text-slate-50 text-sm">Team Chat</h3>
+            <div className="bg-slate-850 border-b border-slate-800 px-3 md:px-6 py-3 md:py-4 flex items-center justify-between">
+              <div className="flex-1">
+                <h3 className="font-semibold text-slate-50 text-sm md:text-base">Team Chat</h3>
                 <p className="text-xs text-slate-400">Collaborate with your team</p>
               </div>
-              <span className="text-[11px] text-slate-500">{teamMessages.length} messages</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-slate-500">{teamMessages.length} messages</span>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="lg:hidden text-slate-400 hover:text-slate-200 transition p-1"
+                  aria-label="Hide sidebar"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gradient-to-b from-slate-900/50 to-slate-950">
+            <div className="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 md:space-y-4 bg-gradient-to-b from-slate-900/50 to-slate-950">
               {teamMessages.length === 0 ? (
                 <div className="flex items-center justify-center h-full text-slate-500">
-                  <p>Start the conversation with your team</p>
+                  <p className="text-sm md:text-base">Start the conversation with your team</p>
                 </div>
               ) : (
                 teamMessages.map((msg) => (
@@ -323,8 +358,8 @@ export function ChatManager() {
               )}
             </div>
 
-            <form onSubmit={handleSendTeamMessage} className="bg-slate-850 border-t border-slate-800 p-4 space-y-3">
-              <div className="flex gap-2">
+            <form onSubmit={handleSendTeamMessage} className="bg-slate-850 border-t border-slate-800 p-3 md:p-4 space-y-2 md:space-y-3">
+              <div className="flex flex-col md:flex-row gap-2">
                 <input
                   type="text"
                   placeholder="Send a message to your team..."
@@ -335,7 +370,7 @@ export function ChatManager() {
                 <button
                   type="submit"
                   disabled={!teamText.trim()}
-                  className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:bg-slate-700 transition text-sm font-medium"
+                  className="bg-blue-600 text-white px-4 md:px-6 py-2 rounded hover:bg-blue-700 disabled:bg-slate-700 transition text-sm font-medium touch-manipulation w-full md:w-auto"
                 >
                   Send
                 </button>
@@ -345,19 +380,30 @@ export function ChatManager() {
         ) : selectedSession ? (
           <>
             {/* Header */}
-            <div className="bg-slate-850 border-b border-slate-800 px-6 py-4 flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold text-slate-50 text-sm">Session {selectedSession.slice(0, 6)}…</h3>
+            <div className="bg-slate-850 border-b border-slate-800 px-3 md:px-6 py-3 md:py-4 flex items-center justify-between">
+              <div className="flex-1">
+                <h3 className="font-semibold text-slate-50 text-sm md:text-base">Session {selectedSession.slice(0, 6)}…</h3>
                 <p className="text-xs text-slate-400">Live customer support</p>
               </div>
-              <span className="text-[11px] text-slate-500">{messages.length} messages</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-slate-500">{messages.length} messages</span>
+                <button
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  className="lg:hidden text-slate-400 hover:text-slate-200 transition p-1"
+                  aria-label="Toggle sidebar"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gradient-to-b from-slate-900/50 to-slate-950">
+            <div className="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 md:space-y-4 bg-gradient-to-b from-slate-900/50 to-slate-950">
               {messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full text-slate-500">
-                  <p>No messages in this session</p>
+                  <p className="text-sm md:text-base">No messages in this session</p>
                 </div>
               ) : (
                 messages.map((msg) => (
@@ -398,7 +444,7 @@ export function ChatManager() {
             </div>
 
             {/* Response Input */}
-            <form onSubmit={handleSendResponse} className="bg-slate-850 border-t border-slate-800 p-4 space-y-3">
+            <form onSubmit={handleSendResponse} className="bg-slate-850 border-t border-slate-800 p-3 md:p-4 space-y-2 md:space-y-3">
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1">Your name</label>
                 <input
@@ -408,7 +454,7 @@ export function ChatManager() {
                   className="w-full px-3 py-2 border border-slate-700 rounded text-sm bg-slate-900 text-slate-100 focus:outline-none focus:border-blue-500"
                 />
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-col md:flex-row gap-2">
                 <input
                   type="text"
                   placeholder="Type your response..."
@@ -420,7 +466,7 @@ export function ChatManager() {
                 <button
                   type="submit"
                   disabled={isLoading || !responseText.trim()}
-                  className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:bg-slate-700 transition text-sm font-medium"
+                  className="bg-blue-600 text-white px-4 md:px-6 py-2 rounded hover:bg-blue-700 disabled:bg-slate-700 transition text-sm font-medium touch-manipulation w-full md:w-auto"
                 >
                   {isLoading ? 'Sending...' : 'Send'}
                 </button>
