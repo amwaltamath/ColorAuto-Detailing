@@ -95,12 +95,27 @@ function ChatWidgetInner() {
     }
   }, [isOpen, sessionId, setMessages, markMessagesAsRead, addMessage]);
 
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleDeleteMessage = async (messageId: string) => {
+    if (!confirm('Delete this message?')) return;
 
-    if (!input.trim() || !sessionId || isLoading) return;
+    try {
+      const response = await fetch('/api/messages/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messageId }),
+      });
 
-    setIsLoading(true);
+      if (response.ok) {
+        // Remove from local state
+        const updatedMessages = messages.filter((m) => m.id !== messageId);
+        setMessages(updatedMessages);
+      } else {
+        console.error('Failed to delete message');
+      }
+    } catch (error) {
+      console.error('Error deleting message:', error);
+    }
+  };
 
     try {
       const response = await fetch('/api/messages', {
@@ -188,10 +203,10 @@ function ChatWidgetInner() {
                 {messages.map((msg) => (
                   <div
                     key={msg.id}
-                    className={`flex ${msg.senderType === 'visitor' ? 'justify-end' : 'justify-start'}`}
+                    className={`flex ${msg.senderType === 'visitor' ? 'justify-end' : 'justify-start'} group`}
                   >
                     <div
-                      className={`max-w-xs px-4 py-2 rounded-lg ${
+                      className={`max-w-xs px-4 py-2 rounded-lg relative ${
                         msg.senderType === 'visitor'
                           ? 'bg-blue-500 text-white rounded-br-none'
                           : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none'
@@ -209,6 +224,15 @@ function ChatWidgetInner() {
                           minute: '2-digit' 
                         })}
                       </p>
+                      {msg.senderType === 'visitor' && (
+                        <button
+                          onClick={() => handleDeleteMessage(msg.id)}
+                          className="absolute -left-8 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition text-xs"
+                          title="Delete message"
+                        >
+                          ✕
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}

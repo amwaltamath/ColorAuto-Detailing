@@ -109,20 +109,30 @@ export function ChatManager() {
     audio.play().catch(() => {/* Ignore errors */});
   };
 
-  const handleSendTeamMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!teamText.trim()) return;
-    const newMsg: ChatMessage = {
-      id: crypto.randomUUID(),
-      sessionId: 'team',
-      senderType: 'employee',
-      senderName: employeeName || 'Team Member',
-      message: teamText.trim(),
-      timestamp: new Date().toISOString(),
-      isRead: true,
-    };
-    setTeamMessages((prev) => [...prev, newMsg]);
-    setTeamText('');
+  const handleDeleteMessage = async (messageId: string) => {
+    if (!confirm('Delete this message?')) return;
+
+    try {
+      const response = await fetch('/api/messages/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messageId }),
+      });
+
+      if (response.ok) {
+        // Remove from local state
+        setMessages(messages.filter((m) => m.id !== messageId));
+      } else {
+        console.error('Failed to delete message');
+      }
+    } catch (error) {
+      console.error('Error deleting message:', error);
+    }
+  };
+
+  const handleDeleteTeamMessage = (messageId: string) => {
+    if (!confirm('Delete this message?')) return;
+    setTeamMessages(teamMessages.filter((m) => m.id !== messageId));
   };
 
   const sendEmailNotification = async (sessions: ChatSession[]) => {
@@ -273,21 +283,38 @@ export function ChatManager() {
                 teamMessages.map((msg) => (
                   <div
                     key={msg.id}
-                    className={`flex ${msg.senderName === employeeName ? 'justify-end' : 'justify-start'}`}
+                    className={`flex ${msg.senderName === employeeName ? 'justify-end' : 'justify-start'} group`}
                   >
-                    <div
-                      className={`max-w-md px-4 py-3 rounded-xl shadow ${
-                        msg.senderName === employeeName
-                          ? 'bg-blue-600 text-white rounded-br-sm'
-                          : 'bg-slate-800 text-slate-100 rounded-bl-sm'
-                      }`}
-                    >
-                      <p className="text-[11px] font-semibold mb-1 opacity-90">{msg.senderName || 'Team'}</p>
-                      <p className="text-sm leading-relaxed">{msg.message}</p>
-                      <p className="text-[11px] mt-2 opacity-70">
-                        {new Date(msg.timestamp).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
+                    <div className="relative">
+                      <div
+                        className={`max-w-md px-4 py-3 rounded-xl shadow ${
+                          msg.senderName === employeeName
+                            ? 'bg-blue-600 text-white rounded-br-sm'
+                            : 'bg-slate-800 text-slate-100 rounded-bl-sm'
+                        }`}
+                      >
+                        <p className="text-[11px] font-semibold mb-1 opacity-90">{msg.senderName || 'Team'}</p>
+                        <p className="text-sm leading-relaxed">{msg.message}</p>
+                        <p className="text-[11px] mt-2 opacity-70">
+                          {new Date(msg.timestamp).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </p>
+                      </div>
+                      {msg.senderName === employeeName && (
+                        <button
+                          onClick={() => handleDeleteTeamMessage(msg.id)}
+                          className="absolute -right-8 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition text-xs"
+                          title="Delete message"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )
                         })}
                       </p>
                     </div>
@@ -336,10 +363,19 @@ export function ChatManager() {
                 messages.map((msg) => (
                   <div
                     key={msg.id}
-                    className={`flex ${msg.senderType === 'visitor' ? 'justify-start' : 'justify-end'}`}
+                    className={`flex group ${msg.senderType === 'visitor' ? 'justify-start' : 'justify-end'}`}
                   >
+                    {msg.senderType !== 'visitor' && (
+                      <button
+                        onClick={() => handleDeleteMessage(msg.id)}
+                        className="absolute -right-8 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 transition-opacity text-sm font-bold"
+                        title="Delete message"
+                      >
+                        ✕
+                      </button>
+                    )}
                     <div
-                      className={`max-w-md px-4 py-3 rounded-xl shadow ${
+                      className={`max-w-md px-4 py-3 rounded-xl shadow relative ${
                         msg.senderType === 'visitor'
                           ? 'bg-slate-800 text-slate-100 rounded-bl-sm'
                           : 'bg-blue-600 text-white rounded-br-sm'
