@@ -30,9 +30,9 @@ export function ChatManager() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [previousMessageCount, setPreviousMessageCount] = useState(0);
-  const [showTeamChat, setShowTeamChat] = useState(false);
-  const [teamMessages, setTeamMessages] = useState<ChatMessage[]>([]);
-  const [teamText, setTeamText] = useState('');
+  const [showTeamChat] = useState(false); // Team chat hidden; handled via Teams section
+  const [teamMessages] = useState<ChatMessage[]>([]);
+  const [teamText] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Request notification permission on mount
@@ -226,19 +226,6 @@ export function ChatManager() {
             )}
           </div>
           <p className="text-xs text-slate-400">{sessions.length} active</p>
-          <div className="mt-3 flex flex-col gap-2">
-            <button
-              onClick={() => {
-                setShowTeamChat(true);
-                setSelectedSession(null);
-              }}
-              className={`w-full text-left text-xs font-semibold px-3 py-2 rounded border ${
-                showTeamChat ? 'border-blue-500 text-blue-200 bg-slate-800/80' : 'border-slate-700 text-slate-200 hover:border-blue-500'
-              }`}
-            >
-              🤝 Team Chat
-            </button>
-          </div>
           {!notificationsEnabled && (
             <button
               onClick={() => {
@@ -288,90 +275,7 @@ export function ChatManager() {
             </p>
           </div>
         )}
-        {showTeamChat ? (
-          <>
-            <div className="bg-slate-850 border-b border-slate-800 px-3 md:px-6 py-3 md:py-4 flex items-center justify-between">
-              <div className="flex-1">
-                <h3 className="font-semibold text-slate-50 text-sm md:text-base">Team Chat</h3>
-                <p className="text-xs text-slate-400">Collaborate with your team</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] text-slate-500">{teamMessages.length} messages</span>
-                <button
-                  onClick={() => setSidebarOpen(false)}
-                  className="lg:hidden text-slate-400 hover:text-slate-200 transition p-1"
-                  aria-label="Hide sidebar"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 md:space-y-4 bg-gradient-to-b from-slate-900/50 to-slate-950">
-              {teamMessages.length === 0 ? (
-                <div className="flex items-center justify-center h-full text-slate-500">
-                  <p className="text-sm md:text-base">Start the conversation with your team</p>
-                </div>
-              ) : (
-                teamMessages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex ${msg.senderName === employeeName ? 'justify-end' : 'justify-start'} group`}
-                  >
-                    <div className="relative">
-                      <div
-                        className={`max-w-md px-4 py-3 rounded-xl shadow ${
-                          msg.senderName === employeeName
-                            ? 'bg-blue-600 text-white rounded-br-sm'
-                            : 'bg-slate-800 text-slate-100 rounded-bl-sm'
-                        }`}
-                      >
-                        <p className="text-[11px] font-semibold mb-1 opacity-90">{msg.senderName || 'Team'}</p>
-                        <p className="text-sm leading-relaxed">{msg.message}</p>
-                        <p className="text-[11px] mt-2 opacity-70">
-                          {new Date(msg.timestamp).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </p>
-                      </div>
-                      {msg.senderName === employeeName && (
-                        <button
-                          onClick={() => handleDeleteTeamMessage(msg.id)}
-                          className="absolute -right-8 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition text-xs"
-                          title="Delete message"
-                        >
-                          ✕
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-
-            <form onSubmit={handleSendTeamMessage} className="bg-slate-850 border-t border-slate-800 p-3 md:p-4 space-y-2 md:space-y-3">
-              <div className="flex flex-col md:flex-row gap-2">
-                <input
-                  type="text"
-                  placeholder="Send a message to your team..."
-                  value={teamText}
-                  onChange={(e) => setTeamText(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-slate-700 rounded text-sm bg-slate-900 text-slate-100 focus:outline-none focus:border-blue-500"
-                />
-                <button
-                  type="submit"
-                  disabled={!teamText.trim()}
-                  className="bg-blue-600 text-white px-4 md:px-6 py-2 rounded hover:bg-blue-700 disabled:bg-slate-700 transition text-sm font-medium touch-manipulation w-full md:w-auto"
-                >
-                  Send
-                </button>
-              </div>
-            </form>
-          </>
-        ) : selectedSession ? (
+        {selectedSession ? (
           <>
             {/* Header */}
             <div className="bg-slate-850 border-b border-slate-800 px-3 md:px-6 py-3 md:py-4 flex items-center justify-between">
