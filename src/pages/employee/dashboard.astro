@@ -4,30 +4,14 @@ import { ChatManager } from '../../components/features/ChatManager';
 import { SchedulesTable } from '../../components/employee/SchedulesTable';
 import { TeamsTable } from '../../components/employee/TeamsTable';
 import { ProfileSettings } from '../../components/employee/ProfileSettings';
+import { DashboardStats } from '../../components/employee/DashboardStats';
 ---
 
 <EmployeeLayout title="Employee Dashboard">
   <div class="space-y-6 px-4 sm:px-0">
     
     <!-- Quick Stats -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8">
-      <div class="bg-slate-800 p-4 md:p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
-        <h2 class="text-lg md:text-2xl font-bold mb-1 md:mb-2 text-white">12</h2>
-        <p class="text-xs md:text-base text-slate-300">Today's Jobs</p>
-      </div>
-      <div class="bg-slate-800 p-4 md:p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
-        <h2 class="text-lg md:text-2xl font-bold mb-1 md:mb-2 text-white">8</h2>
-        <p class="text-xs md:text-base text-slate-300">Completed</p>
-      </div>
-      <div class="bg-slate-800 p-4 md:p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
-        <h2 class="text-lg md:text-2xl font-bold mb-1 md:mb-2 text-white">3</h2>
-        <p class="text-xs md:text-base text-slate-300">In Progress</p>
-      </div>
-      <div class="bg-slate-800 p-4 md:p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
-        <h2 class="text-lg md:text-2xl font-bold mb-1 md:mb-2 text-white">1</h2>
-        <p class="text-xs md:text-base text-slate-300">Pending</p>
-      </div>
-    </div>
+    <DashboardStats client:load />
 
     <!-- Tabs Navigation -->
     <div class="border-b border-slate-700 mb-6 md:mb-8 overflow-x-auto">
