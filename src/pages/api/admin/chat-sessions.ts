@@ -79,3 +79,56 @@ export async function GET({ request }: APIContext) {
     });
   }
 }
+
+export async function DELETE({ request }: APIContext) {
+  if (request.headers.get('content-type') !== 'application/json') {
+    return new Response(JSON.stringify({ ok: false, error: 'Invalid content type' }), {
+      status: 400,
+      headers: { 'content-type': 'application/json' },
+    });
+  }
+
+  if (!supabaseServer) {
+    return new Response(JSON.stringify({ ok: false, error: 'Database not configured' }), {
+      status: 503,
+      headers: { 'content-type': 'application/json' },
+    });
+  }
+
+  try {
+    const body = (await request.json()) as { sessionId: string };
+    const { sessionId } = body;
+
+    if (!sessionId) {
+      return new Response(JSON.stringify({ ok: false, error: 'Session ID required' }), {
+        status: 400,
+        headers: { 'content-type': 'application/json' },
+      });
+    }
+
+    // Delete all messages for this session
+    const { error: msgError } = await supabaseServer
+      .from('chat_messages')
+      .delete()
+      .eq('session_id', sessionId);
+
+    if (msgError) {
+      console.error('Error deleting messages:', msgError);
+      return new Response(JSON.stringify({ ok: false, error: msgError.message }), {
+        status: 500,
+        headers: { 'content-type': 'application/json' },
+      });
+    }
+
+    return new Response(JSON.stringify({ ok: true, deleted: true }), {
+      status: 200,
+      headers: { 'content-type': 'application/json' },
+    });
+  } catch (err: any) {
+    console.error('Error in DELETE /api/admin/chat-sessions:', err);
+    return new Response(JSON.stringify({ ok: false, error: err.message }), {
+      status: 500,
+      headers: { 'content-type': 'application/json' },
+    });
+  }
+}

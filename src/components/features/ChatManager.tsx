@@ -136,6 +136,34 @@ export function ChatManager() {
     setTeamMessages(teamMessages.filter((m) => m.id !== messageId));
   };
 
+  const handleDeleteSession = async (sessionId: string) => {
+    if (!confirm('Delete this entire conversation? This cannot be undone.')) return;
+
+    try {
+      const response = await fetch('/api/admin/chat-sessions', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId }),
+      });
+
+      if (response.ok) {
+        // Remove from local state
+        setSessions(sessions.filter((s) => s.id !== sessionId));
+        // Clear messages if this session was selected
+        if (selectedSession === sessionId) {
+          setSelectedSession(null);
+          setMessages([]);
+        }
+      } else {
+        console.error('Failed to delete session');
+        alert('Failed to delete conversation');
+      }
+    } catch (error) {
+      console.error('Error deleting session:', error);
+      alert('Error deleting conversation');
+    }
+  };
+
   const sendEmailNotification = async (sessions: ChatSession[]) => {
     // Only send if there are active sessions
     if (sessions.length === 0) return;
@@ -246,25 +274,44 @@ export function ChatManager() {
             </div>
           ) : (
             sessions.map((session) => (
-              <button
+              <div
                 key={session.id}
-                onClick={() => setSelectedSession(session.id)}
-                className={`w-full text-left p-4 transition ${
+                className={`flex items-center transition group ${
                   selectedSession === session.id
                     ? 'bg-slate-800/80 border-l-4 border-l-blue-500'
                     : 'hover:bg-slate-850'
                 }`}
               >
-                <p className="font-semibold text-sm truncate text-slate-100">
-                  {session.visitorName || session.visitorEmail || 'Visitor'}
-                </p>
-                <p className="text-xs text-slate-400 truncate">{session.visitorEmail}</p>
-                <p className="text-[11px] text-slate-500 mt-1">{session.messageCount} messages</p>
-              </button>
+                <button
+                  onClick={() => setSelectedSession(session.id)}
+                  className="flex-1 text-left p-4"
+                >
+                  <p className="font-semibold text-sm truncate text-slate-100">
+                    {session.visitorName || session.visitorEmail || 'Visitor'}
+                  </p>
+                  <p className="text-xs text-slate-400 truncate">{session.visitorEmail}</p>
+                  <p className="text-[11px] text-slate-500 mt-1">{session.messageCount} messages</p>
+                </button>
+                <button
+                  onClick={() => handleDeleteSession(session.id)}
+                  className="pr-4 opacity-0 group-hover:opacity-100 transition text-red-400 hover:text-red-300"
+                  title="Delete conversation"
+                  aria-label="Delete conversation"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
             ))
           )}
         </div>
       </div>
+
 
       {/* Chat View */}
       <div className="flex-1 flex flex-col bg-slate-900/80 min-h-0">
