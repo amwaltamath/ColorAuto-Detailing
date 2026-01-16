@@ -78,7 +78,25 @@ const { title, description, keywords, canonical, image, noindex } = Astro.props;
 
 <style>
   .nav-pill {
-    @apply px-3 py-2 text-xs md:text-sm rounded-full border border-slate-600 bg-slate-700 text-slate-100 whitespace-nowrap hover:border-blue-500 hover:text-white transition;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid rgb(71 85 105);
+    background-color: rgb(51 65 85);
+    color: rgb(241 245 249);
+    white-space: nowrap;
+    transition: all 150ms;
   }
-  .nav-pill:focus { outline: none; }
+  .nav-pill:hover {
+    border-color: rgb(59 130 246);
+    color: white;
+  }
+  .nav-pill:focus {
+    outline: none;
+  }
+  @media (min-width: 768px) {
+    .nav-pill {
+      font-size: 0.875rem;
+    }
+  }
 </style>
