@@ -349,12 +349,6 @@ export function ChatManager() {
                     </div>
                   </div>
                 ))
-              )
-                        })}
-                      </p>
-                    </div>
-                  </div>
-                ))
               )}
             </div>
 
