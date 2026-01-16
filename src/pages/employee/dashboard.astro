@@ -7,92 +7,98 @@ import { ProfileSettings } from '../../components/employee/ProfileSettings';
 ---
 
 <EmployeeLayout title="Employee Dashboard">
-  <div class="space-y-8">
+  <div class="space-y-6 px-4 sm:px-0">
     
     <!-- Quick Stats -->
-    <div class="grid grid-cols-4 gap-6 mb-8">
-      <div class="bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
-        <h2 class="text-2xl font-bold mb-2 text-white">12</h2>
-        <p class="text-slate-300">Today's Jobs</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8">
+      <div class="bg-slate-800 p-4 md:p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
+        <h2 class="text-lg md:text-2xl font-bold mb-1 md:mb-2 text-white">12</h2>
+        <p class="text-xs md:text-base text-slate-300">Today's Jobs</p>
       </div>
-      <div class="bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
-        <h2 class="text-2xl font-bold mb-2 text-white">8</h2>
-        <p class="text-slate-300">Completed</p>
+      <div class="bg-slate-800 p-4 md:p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
+        <h2 class="text-lg md:text-2xl font-bold mb-1 md:mb-2 text-white">8</h2>
+        <p class="text-xs md:text-base text-slate-300">Completed</p>
       </div>
-      <div class="bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
-        <h2 class="text-2xl font-bold mb-2 text-white">3</h2>
-        <p class="text-slate-300">In Progress</p>
+      <div class="bg-slate-800 p-4 md:p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
+        <h2 class="text-lg md:text-2xl font-bold mb-1 md:mb-2 text-white">3</h2>
+        <p class="text-xs md:text-base text-slate-300">In Progress</p>
       </div>
-      <div class="bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
-        <h2 class="text-2xl font-bold mb-2 text-white">1</h2>
-        <p class="text-slate-300">Pending</p>
+      <div class="bg-slate-800 p-4 md:p-6 rounded-lg shadow-lg border border-slate-700 hover:border-slate-600 transition">
+        <h2 class="text-lg md:text-2xl font-bold mb-1 md:mb-2 text-white">1</h2>
+        <p class="text-xs md:text-base text-slate-300">Pending</p>
       </div>
     </div>
 
     <!-- Tabs Navigation -->
-    <div class="border-b border-slate-700 mb-8">
-      <div class="flex space-x-8">
-        <button type="button" onclick="switchTab('schedules')" class="tab-button active pb-4 text-white font-semibold border-b-2 border-blue-500 cursor-pointer hover:text-slate-200 transition duration-200" data-tab="schedules">
+    <div class="border-b border-slate-700 mb-6 md:mb-8 overflow-x-auto">
+      <div class="flex space-x-4 md:space-x-8 min-w-min md:min-w-0">
+        <button type="button" onclick="switchTab('schedules')" class="tab-button active pb-3 md:pb-4 text-xs md:text-base text-white font-semibold border-b-2 border-blue-500 cursor-pointer hover:text-slate-200 transition duration-200 whitespace-nowrap" data-tab="schedules">
           📅 Schedules
         </button>
-        <button type="button" onclick="switchTab('teams')" class="tab-button pb-4 text-slate-400 font-semibold border-b-2 border-transparent cursor-pointer hover:text-slate-300 transition duration-200" data-tab="teams">
+        <button type="button" onclick="switchTab('teams')" class="tab-button pb-3 md:pb-4 text-xs md:text-base text-slate-400 font-semibold border-b-2 border-transparent cursor-pointer hover:text-slate-300 transition duration-200 whitespace-nowrap" data-tab="teams">
           👥 Teams
         </button>
-        <button type="button" onclick="switchTab('messages')" class="tab-button pb-4 text-slate-400 font-semibold border-b-2 border-transparent cursor-pointer hover:text-slate-300 transition duration-200" data-tab="messages">
+        <button type="button" onclick="switchTab('messages')" class="tab-button pb-3 md:pb-4 text-xs md:text-base text-slate-400 font-semibold border-b-2 border-transparent cursor-pointer hover:text-slate-300 transition duration-200 whitespace-nowrap" data-tab="messages">
           💬 Messages
         </button>
-        <button type="button" onclick="switchTab('chat')" class="tab-button pb-4 text-slate-400 font-semibold border-b-2 border-transparent cursor-pointer hover:text-slate-300 transition duration-200" data-tab="chat">
-          🎧 Customer Chat
+        <button type="button" onclick="switchTab('chat')" class="tab-button pb-3 md:pb-4 text-xs md:text-base text-slate-400 font-semibold border-b-2 border-transparent cursor-pointer hover:text-slate-300 transition duration-200 whitespace-nowrap" data-tab="chat">
+          🎧 Chat
         </button>
-        <button type="button" onclick="switchTab('profile')" class="tab-button pb-4 text-slate-400 font-semibold border-b-2 border-transparent cursor-pointer hover:text-slate-300 transition duration-200" data-tab="profile">
-          ⚙️ Profile Settings
+        <button type="button" onclick="switchTab('profile')" class="tab-button pb-3 md:pb-4 text-xs md:text-base text-slate-400 font-semibold border-b-2 border-transparent cursor-pointer hover:text-slate-300 transition duration-200 whitespace-nowrap" data-tab="profile">
+          ⚙️ Profile
         </button>
       </div>
     </div>
 
     <!-- Tab Content -->
     <div id="schedules" class="tab-content active">
-      <div class="bg-slate-800 p-8 rounded-lg shadow-lg border border-slate-700">
-        <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
-          <span class="mr-3">📅</span> Your Service Schedules
+      <div class="bg-slate-800 p-4 md:p-8 rounded-lg shadow-lg border border-slate-700">
+        <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-white flex items-center">
+          <span class="mr-2 md:mr-3">📅</span> Your Service Schedules
         </h2>
-        <SchedulesTable client:load />
+        <div class="overflow-x-auto">
+          <SchedulesTable client:load />
+        </div>
       </div>
     </div>
 
     <div id="teams" class="tab-content hidden">
-      <div class="bg-slate-800 p-8 rounded-lg shadow-lg border border-slate-700">
-        <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
-          <span class="mr-3">👥</span> Your Teams
+      <div class="bg-slate-800 p-4 md:p-8 rounded-lg shadow-lg border border-slate-700">
+        <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-white flex items-center">
+          <span class="mr-2 md:mr-3">👥</span> Your Teams
         </h2>
-        <TeamsTable client:load />
+        <div class="overflow-x-auto">
+          <TeamsTable client:load />
+        </div>
       </div>
     </div>
 
     <div id="messages" class="tab-content hidden">
-      <div class="bg-slate-800 p-8 rounded-lg shadow-lg border border-slate-700">
-        <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
-          <span class="mr-3">💬</span> Team Messages
+      <div class="bg-slate-800 p-4 md:p-8 rounded-lg shadow-lg border border-slate-700">
+        <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-white flex items-center">
+          <span class="mr-2 md:mr-3">💬</span> Team Messages
         </h2>
-        <div class="bg-slate-700/50 p-6 rounded border border-slate-600 text-center text-slate-400">
+        <div class="bg-slate-700/50 p-4 md:p-6 rounded border border-slate-600 text-center text-slate-400 text-sm md:text-base">
           <p>Team messaging feature coming soon</p>
         </div>
       </div>
     </div>
 
     <div id="chat" class="tab-content hidden">
-      <div class="bg-slate-800 p-8 rounded-lg shadow-lg border border-slate-700">
-        <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
-          <span class="mr-3">🎧</span> Customer Chat Support
+      <div class="bg-slate-800 p-4 md:p-8 rounded-lg shadow-lg border border-slate-700">
+        <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-white flex items-center">
+          <span class="mr-2 md:mr-3">🎧</span> Customer Chat Support
         </h2>
-        <ChatManager client:load />
+        <div class="overflow-x-auto">
+          <ChatManager client:load />
+        </div>
       </div>
     </div>
 
     <div id="profile" class="tab-content hidden">
-      <div class="bg-slate-800 p-8 rounded-lg shadow-lg border border-slate-700">
-        <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
-          <span class="mr-3">⚙️</span> Profile Settings
+      <div class="bg-slate-800 p-4 md:p-8 rounded-lg shadow-lg border border-slate-700">
+        <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-white flex items-center">
+          <span class="mr-2 md:mr-3">⚙️</span> Profile Settings
         </h2>
         <ProfileSettings client:load />
       </div>

@@ -11,6 +11,14 @@ interface Schedule {
 export const SchedulesTable = () => {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchSchedules = async () => {
@@ -44,9 +52,36 @@ export const SchedulesTable = () => {
   };
 
   if (loading) {
-    return <div className="text-slate-400">Loading schedules...</div>;
+    return <div className="text-slate-400 text-sm md:text-base">Loading schedules...</div>;
   }
 
+  // Mobile card view
+  if (isMobile) {
+    return (
+      <div className="space-y-3">
+        {schedules.length === 0 ? (
+          <div className="text-slate-400 text-center py-4 text-sm">No schedules yet</div>
+        ) : (
+          schedules.map((schedule) => (
+            <div key={schedule.id} className="bg-slate-700/50 p-4 rounded border border-slate-600">
+              <div className="flex justify-between items-start mb-3">
+                <h3 className="text-white font-semibold text-sm">{schedule.service_type}</h3>
+                <span className={`px-2 py-1 rounded border text-xs font-medium ${getStatusColor(schedule.status)}`}>
+                  {schedule.status}
+                </span>
+              </div>
+              <p className="text-slate-300 text-sm mb-2">👤 {schedule.customer_name}</p>
+              <p className="text-slate-400 text-xs">
+                🕐 {new Date(schedule.scheduled_date).toLocaleDateString()} {new Date(schedule.scheduled_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </p>
+            </div>
+          ))
+        )}
+      </div>
+    );
+  }
+
+  // Desktop table view
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">

@@ -65,77 +65,77 @@ export const ProfileSettings = () => {
   };
 
   return (
-    <form onSubmit={handleSave} className="space-y-6">
-      <div className="grid grid-cols-2 gap-4">
+    <form onSubmit={handleSave} className="space-y-4 md:space-y-6 max-w-2xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2">First Name</label>
+          <label className="block text-xs md:text-sm font-medium text-slate-300 mb-2">First Name</label>
           <input
             type="text"
             name="first_name"
             value={profile.first_name}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+            className="w-full px-3 md:px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 text-sm"
             placeholder="John"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2">Last Name</label>
+          <label className="block text-xs md:text-sm font-medium text-slate-300 mb-2">Last Name</label>
           <input
             type="text"
             name="last_name"
             value={profile.last_name}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+            className="w-full px-3 md:px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 text-sm"
             placeholder="Doe"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-slate-300 mb-2">Email</label>
+        <label className="block text-xs md:text-sm font-medium text-slate-300 mb-2">Email</label>
         <input
           type="email"
           name="email"
           value={profile.email}
           onChange={handleInputChange}
-          className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+          className="w-full px-3 md:px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 text-sm"
           placeholder="john@example.com"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-slate-300 mb-2">Phone</label>
+        <label className="block text-xs md:text-sm font-medium text-slate-300 mb-2">Phone</label>
         <input
           type="tel"
           name="phone"
           value={profile.phone}
           onChange={handleInputChange}
-          className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+          className="w-full px-3 md:px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 text-sm"
           placeholder="+1 (555) 123-4567"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-slate-300 mb-2">Bio</label>
+        <label className="block text-xs md:text-sm font-medium text-slate-300 mb-2">Bio</label>
         <textarea
           name="bio"
           value={profile.bio}
           onChange={handleInputChange}
           rows={3}
-          className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+          className="w-full px-3 md:px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 text-sm"
           placeholder="Tell us about yourself..."
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-slate-300 mb-3">Specialties</label>
-        <div className="grid grid-cols-2 gap-3">
+        <label className="block text-xs md:text-sm font-medium text-slate-300 mb-3">Specialties</label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
           {commonSpecialties.map((specialty) => (
             <button
               key={specialty}
               type="button"
               onClick={() => toggleSpecialty(specialty)}
-              className={`px-4 py-2 rounded border text-sm font-medium transition ${
+              className={`px-3 md:px-4 py-2 rounded border text-xs md:text-sm font-medium transition ${
                 profile.specialties.includes(specialty)
                   ? 'bg-blue-600 border-blue-500 text-white'
                   : 'bg-slate-700 border-slate-600 text-slate-300 hover:border-slate-500'
@@ -148,7 +148,7 @@ export const ProfileSettings = () => {
       </div>
 
       {message && (
-        <div className={`p-3 rounded text-sm ${message.includes('success') ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
+        <div className={`p-3 rounded text-xs md:text-sm ${message.includes('success') ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
           {message}
         </div>
       )}
@@ -156,7 +156,7 @@ export const ProfileSettings = () => {
       <button
         type="submit"
         disabled={saving}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded transition disabled:opacity-50"
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded transition disabled:opacity-50 text-sm md:text-base"
       >
         {saving ? 'Saving...' : 'Save Profile'}
       </button>
