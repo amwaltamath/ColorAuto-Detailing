@@ -117,6 +117,16 @@ function ChatWidgetInner() {
     }
   };
 
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!input.trim() || !sessionId || isLoading) {
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
       const response = await fetch('/api/messages', {
         method: 'POST',
