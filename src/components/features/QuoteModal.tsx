@@ -70,17 +70,22 @@ export default function QuoteModal({ isOpen: initialOpen = false, onClose, servi
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-gray-800">Get Your Free Quote</h2>
-            <button
-              onClick={() => {
-                handleClose();
-              }}
-              className="text-gray-400 hover:text-gray-600 text-2xl"
-              aria-label="Close modal"
-            >
-              ×
-            </button>
+          <div className="flex flex-col items-center mb-4">
+            <div className="w-24 h-24 mb-2 flex items-center justify-center">
+              <img src="/images/ColorAuto.png" alt="ColorAuto Logo" className="w-full h-full object-contain" />
+            </div>
+            <div className="flex w-full justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-800">Get Your Free Quote</h2>
+              <button
+                onClick={() => {
+                  handleClose();
+                }}
+                className="text-gray-400 hover:text-gray-600 text-2xl"
+                aria-label="Close modal"
+              >
+                ×
+              </button>
+            </div>
           </div>
 
           <form onSubmit={onSubmit} className="space-y-4">

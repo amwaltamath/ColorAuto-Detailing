@@ -1,5 +1,6 @@
 ---
 import PublicLayout from '../layouts/PublicLayout.astro';
+import QuoteModal from '../components/features/QuoteModal';
 ---
 
 <PublicLayout
@@ -16,6 +17,7 @@ import PublicLayout from '../layouts/PublicLayout.astro';
   ]}
   image="/images/background.jpg"
 >
+  <QuoteModal client:load isOpen={false} service="General Quote" />
   <!-- Hero Section -->
   <section class="relative min-h-[80vh] md:min-h-screen text-white overflow-hidden">
     <!-- Background Image + Gradient -->
@@ -34,12 +36,23 @@ import PublicLayout from '../layouts/PublicLayout.astro';
           Premium detailing, paint protection film, ceramic coating, and window tinting in Grand Junction.
         </p>
         <div class="flex flex-col sm:flex-row gap-4">
-          <a href="/contact" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition shadow-lg">Get a Free Quote</a>
+          <button data-quote-popup class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition shadow-lg border-0 cursor-pointer">Get a Free Quote</button>
           <a href="tel:970-628-1505" class="bg-white/10 backdrop-blur text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/20 transition border border-white/20">Call: 970-628-1505</a>
         </div>
       </div>
     </div>
   </section>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-quote-popup]').forEach((btn) => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const event = new CustomEvent('openQuoteModal');
+            document.dispatchEvent(event);
+          });
+        });
+      });
+    </script>
 
   <!-- Location Info -->
   <section class="bg-gray-100 py-6">
@@ -124,7 +137,7 @@ import PublicLayout from '../layouts/PublicLayout.astro';
   <section class="bg-gray-50 py-16">
     <div class="max-w-7xl mx-auto px-4">
       <h2 class="text-4xl font-bold text-center mb-12">Our Specialty Services</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <a href="/services/paint-protection-film" class="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden group">
           <div class="relative h-48 overflow-hidden bg-gray-200">
             <img src="/images/Paint Protection Film.jpg" alt="Paint Protection Film" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
@@ -142,9 +155,33 @@ import PublicLayout from '../layouts/PublicLayout.astro';
             <img src="/images/window tint.jpg" alt="Window Tinting" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
           </div>
           <div class="p-8">
-            <h3 class="text-xl font-bold mb-3 text-blue-600">Window Tinting</h3>
+            <h3 class="text-xl font-bold mb-3 text-blue-600">Automotive Window Tint</h3>
             <p class="text-gray-600 mb-4">
-              Professional window tinting for your vehicle, home, or office with premium quality films.
+              Professional tint for vehicles with premium heat rejection and clarity.
+            </p>
+            <span class="text-blue-600 font-semibold hover:underline">Learn More →</span>
+          </div>
+        </a>
+        <a href="/ads/home-window-tint" class="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden group">
+          <div class="relative h-48 overflow-hidden bg-gray-200">
+            <img src="/images/homewindowtint.jpg" alt="Home Window Tint" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+          </div>
+          <div class="p-8">
+            <h3 class="text-xl font-bold mb-3 text-blue-600">Home Window Tint</h3>
+            <p class="text-gray-600 mb-4">
+              Cut glare and heat while protecting interiors from UV at home.
+            </p>
+            <span class="text-blue-600 font-semibold hover:underline">Learn More →</span>
+          </div>
+        </a>
+        <a href="/ads/office-window-tint" class="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden group">
+          <div class="relative h-48 overflow-hidden bg-gray-200">
+            <img src="/images/officewindowtint.jpg" alt="Office Window Tint" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+          </div>
+          <div class="p-8">
+            <h3 class="text-xl font-bold mb-3 text-blue-600">Office / Commercial Tint</h3>
+            <p class="text-gray-600 mb-4">
+              Comfort, privacy, and energy savings for offices and storefronts.
             </p>
             <span class="text-blue-600 font-semibold hover:underline">Learn More →</span>
           </div>
