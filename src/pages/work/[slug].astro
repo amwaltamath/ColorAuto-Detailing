@@ -1,0 +1,139 @@
+---
+import { getCollection } from 'astro:content';
+import PublicLayout from '../../layouts/PublicLayout.astro';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+// Format date
+const formattedDate = post.data.publishDate.toLocaleDateString('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric'
+});
+---
+
+<PublicLayout
+  title={`${post.data.title} | ColorAuto`}
+  description={post.data.description}
+  keywords={[
+    post.data.category,
+    'Grand Junction',
+    'ColorAuto',
+    'auto detailing',
+    'paint protection',
+    post.data.location
+  ]}
+  image={post.data.image}
+>
+  <article class="bg-white">
+    <!-- Hero Image -->
+    <div class="relative h-96 overflow-hidden">
+      <img 
+        src={post.data.image} 
+        alt={post.data.imageAlt}
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+      <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+        <div class="max-w-4xl mx-auto">
+          <span class="inline-block bg-blue-600 px-3 py-1 rounded-full text-sm font-semibold mb-4 uppercase">
+            {post.data.category.replace('-', ' ')}
+          </span>
+          <h1 class="text-4xl md:text-5xl font-bold mb-2 drop-shadow-lg">{post.data.title}</h1>
+          <div class="flex items-center gap-4 text-sm text-gray-200">
+            <time>{formattedDate}</time>
+            <span>•</span>
+            <span>📍 {post.data.location}</span>
+            <span>•</span>
+            <span>By {post.data.author}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Content -->
+    <div class="max-w-4xl mx-auto px-4 py-12">
+      <div class="prose prose-lg max-w-none prose-headings:font-bold prose-h2:text-3xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-2xl prose-h3:mt-6 prose-p:text-gray-700 prose-p:leading-relaxed prose-ul:my-6 prose-li:my-2 prose-strong:text-gray-900">
+        <Content />
+      </div>
+
+      <!-- Image Gallery for Tacoma Post -->
+      {post.slug === 'f150-full-detail' && (
+        <div class="mt-12">
+          <h3 class="text-2xl font-bold mb-6 text-center">Project Gallery</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="overflow-hidden rounded-xl shadow-lg">
+              <img 
+                src="/images/Tacoma TRD PRO PPF.jpg" 
+                alt="Tacoma TRD PRO front PPF installation" 
+                class="w-full h-64 object-cover hover:scale-105 transition duration-300"
+              />
+            </div>
+            <div class="overflow-hidden rounded-xl shadow-lg">
+              <img 
+                src="/images/Tacoma TRD PRO PPF 2.jpg" 
+                alt="Tacoma TRD PRO PPF detail work" 
+                class="w-full h-64 object-cover hover:scale-105 transition duration-300"
+              />
+            </div>
+            <div class="overflow-hidden rounded-xl shadow-lg">
+              <img 
+                src="/images/Tacoma TRD PRO PPF 3.jpg" 
+                alt="Tacoma TRD PRO ceramic coating finish" 
+                class="w-full h-64 object-cover hover:scale-105 transition duration-300"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <!-- Share & CTA -->
+      <div class="mt-12 pt-8 border-t border-gray-200">
+        <div class="bg-blue-50 rounded-xl p-8 text-center">
+          <h3 class="text-2xl font-bold mb-4">Ready for Similar Results?</h3>
+          <p class="text-gray-600 mb-6">Get professional auto detailing, paint protection, and ceramic coating in Grand Junction.</p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/contact" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+              Get a Free Quote
+            </a>
+            <a href="tel:970-628-1505" class="bg-white text-blue-600 border-2 border-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition">
+              Call: 970-628-1505
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Back to Gallery -->
+      <div class="mt-8 text-center">
+        <a href="/our-work" class="text-blue-600 font-semibold hover:underline">
+          ← Back to Our Work
+        </a>
+      </div>
+    </div>
+  </article>
+</PublicLayout>
+
+<style>
+  .prose img {
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

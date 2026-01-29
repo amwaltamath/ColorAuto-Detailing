@@ -1,0 +1,166 @@
+---
+import { getCollection } from 'astro:content';
+import PublicLayout from '../../layouts/PublicLayout.astro';
+
+// Get all blog posts sorted by date
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts.sort((a, b) => 
+  b.data.publishDate.getTime() - a.data.publishDate.getTime()
+);
+
+// Group by category
+const categories = ['all', 'ppf', 'ceramic-coating', 'color-ppf', 'detailing', 'window-tint'];
+---
+
+<PublicLayout
+  title="All Projects - ColorAuto Grand Junction"
+  description="Browse all our recent auto detailing, PPF, ceramic coating, and window tinting projects in Grand Junction, CO. See real results from ColorAuto."
+  keywords={[
+    'auto detailing projects',
+    'PPF gallery',
+    'ceramic coating examples',
+    'Grand Junction detailing',
+    'ColorAuto portfolio'
+  ]}
+>
+  <!-- Hero -->
+  <section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <h1 class="text-5xl font-bold mb-4">All Projects</h1>
+      <p class="text-xl text-blue-100 max-w-2xl mx-auto">
+        Explore our complete portfolio of detailing, paint protection, and coating work in Grand Junction
+      </p>
+    </div>
+  </section>
+
+  <!-- Filter Tabs -->
+  <section class="bg-white border-b sticky top-0 z-10 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex gap-2 overflow-x-auto py-4" id="category-filters">
+        {categories.map((cat) => (
+          <button 
+            class="filter-btn px-4 py-2 rounded-lg font-semibold whitespace-nowrap transition"
+            data-category={cat}
+          >
+            {cat === 'all' ? 'All Projects' : cat.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Grid -->
+  <section class="bg-gray-50 py-16">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-grid">
+        {sortedPosts.map((post) => (
+          <article class="project-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition group" data-category={post.data.category}>
+            <a href={`/work/${post.slug}`}>
+              <div class="overflow-hidden">
+                <img 
+                  src={post.data.image} 
+                  alt={post.data.imageAlt} 
+                  class="w-full h-56 object-cover group-hover:scale-105 transition duration-300"
+                  loading="lazy"
+                />
+              </div>
+              <div class="p-6">
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="text-xs font-semibold text-blue-600 uppercase tracking-wide">
+                    {post.data.category.replace('-', ' ')}
+                  </span>
+                  <span class="text-xs text-gray-400">•</span>
+                  <time class="text-xs text-gray-500">
+                    {post.data.publishDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </time>
+                </div>
+                <h3 class="text-xl font-bold mb-2 group-hover:text-blue-600 transition">
+                  {post.data.title}
+                </h3>
+                <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                  {post.data.description}
+                </p>
+                <div class="flex items-center justify-between">
+                  <span class="text-blue-600 font-semibold text-sm group-hover:underline">
+                    Read More →
+                  </span>
+                  <span class="text-xs text-gray-400">
+                    📍 {post.data.location}
+                  </span>
+                </div>
+              </div>
+            </a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-blue-600 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-3">Ready for Professional Results?</h2>
+      <p class="text-lg text-blue-100 mb-6">Let us transform your vehicle with expert detailing and protection services.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/contact" class="bg-white text-blue-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">Get a Quote</a>
+        <a href="tel:970-628-1505" class="bg-blue-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-900 transition">Call: 970-628-1505</a>
+      </div>
+    </div>
+  </section>
+</PublicLayout>
+
+<style>
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .filter-btn {
+    background: #f3f4f6;
+    color: #4b5563;
+  }
+
+  .filter-btn.active {
+    background: #2563eb;
+    color: white;
+  }
+
+  .project-card {
+    transition: all 0.3s ease;
+  }
+
+  .project-card.hidden {
+    display: none;
+  }
+</style>
+
+<script>
+  // Category filtering
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const projectCards = document.querySelectorAll('.project-card');
+
+  // Set 'all' as active by default
+  filterButtons[0]?.classList.add('active');
+
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const category = button.getAttribute('data-category');
+      
+      // Update active button
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      
+      // Filter projects
+      projectCards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category');
+        if (category === 'all' || cardCategory === category) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    });
+  });
+</script>
