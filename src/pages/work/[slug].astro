@@ -47,51 +47,70 @@ const formattedDate = post.data.publishDate.toLocaleDateString('en-US', {
       <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
       <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
         <div class="max-w-4xl mx-auto">
-          <span class="inline-block bg-blue-600 px-3 py-1 rounded-full text-sm font-semibold mb-4 uppercase">
+          <div class="inline-flex items-center gap-2 bg-blue-600 px-4 py-2 rounded-full text-sm font-semibold mb-4 uppercase shadow-lg backdrop-blur-sm bg-opacity-95 border border-blue-500">
+            <span class="w-2 h-2 rounded-full bg-white"></span>
             {post.data.category.replace('-', ' ')}
-          </span>
-          <h1 class="text-4xl md:text-5xl font-bold mb-2 drop-shadow-lg">{post.data.title}</h1>
-          <div class="flex items-center gap-4 text-sm text-gray-200">
-            <time>{formattedDate}</time>
-            <span>•</span>
-            <span>📍 {post.data.location}</span>
-            <span>•</span>
-            <span>By {post.data.author}</span>
+          </div>
+          <h1 class="text-4xl md:text-5xl font-bold mb-3 drop-shadow-lg leading-tight">{post.data.title}</h1>
+          <div class="flex flex-wrap items-center gap-6 text-sm text-gray-200">
+            <div class="flex items-center gap-2">
+              <span>📅</span>
+              <time>{formattedDate}</time>
+            </div>
+            <span class="text-gray-400">•</span>
+            <div class="flex items-center gap-2">
+              <span>📍</span>
+              <span>{post.data.location}</span>
+            </div>
+            <span class="text-gray-400">•</span>
+            <div class="flex items-center gap-2">
+              <span>✍️</span>
+              <span>{post.data.author}</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Article Content -->
-    <div class="max-w-4xl mx-auto px-4 py-12">
-      <div class="prose prose-lg max-w-none prose-headings:font-bold prose-h2:text-3xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-2xl prose-h3:mt-6 prose-p:text-gray-700 prose-p:leading-relaxed prose-ul:my-6 prose-li:my-2 prose-strong:text-gray-900">
+    <div class="max-w-4xl mx-auto px-4 py-16">
+      <div class="prose prose-lg max-w-none 
+        prose-headings:font-bold prose-headings:text-gray-900
+        prose-h1:text-4xl prose-h1:mt-12 prose-h1:mb-6 prose-h1:leading-tight
+        prose-h2:text-3xl prose-h2:mt-10 prose-h2:mb-5 prose-h2:pt-4 prose-h2:border-t prose-h2:border-gray-200
+        prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-blue-900
+        prose-p:text-gray-700 prose-p:leading-relaxed prose-p:text-base
+        prose-ul:my-8 prose-ul:ml-0 prose-li:pl-8 prose-li:my-3 prose-li:text-gray-700
+        prose-li:relative prose-li:before:absolute prose-li:before:left-0 prose-li:before:content-['▸'] prose-li:before:text-blue-600 prose-li:before:font-bold
+        prose-strong:text-gray-900 prose-strong:font-bold
+        prose-em:text-gray-800 prose-em:italic">
         <Content />
       </div>
 
       <!-- Image Gallery for Tacoma Post -->
       {post.slug === 'f150-full-detail' && (
-        <div class="mt-12">
-          <h3 class="text-2xl font-bold mb-6 text-center">Project Gallery</h3>
+        <div class="mt-16 pt-12 border-t border-gray-200">
+          <h3 class="text-3xl font-bold mb-8 text-center text-gray-900">Project Gallery</h3>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="overflow-hidden rounded-xl shadow-lg">
+            <div class="group overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition duration-300">
               <img 
                 src="/images/Tacoma TRD PRO PPF.jpg" 
                 alt="Tacoma TRD PRO front PPF installation" 
-                class="w-full h-64 object-cover hover:scale-105 transition duration-300"
+                class="w-full h-64 object-cover group-hover:scale-110 transition duration-500"
               />
             </div>
-            <div class="overflow-hidden rounded-xl shadow-lg">
+            <div class="group overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition duration-300">
               <img 
                 src="/images/Tacoma TRD PRO PPF 2.jpg" 
                 alt="Tacoma TRD PRO PPF detail work" 
-                class="w-full h-64 object-cover hover:scale-105 transition duration-300"
+                class="w-full h-64 object-cover group-hover:scale-110 transition duration-500"
               />
             </div>
-            <div class="overflow-hidden rounded-xl shadow-lg">
+            <div class="group overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition duration-300">
               <img 
                 src="/images/Tacoma TRD PRO PPF 3.jpg" 
                 alt="Tacoma TRD PRO ceramic coating finish" 
-                class="w-full h-64 object-cover hover:scale-105 transition duration-300"
+                class="w-full h-64 object-cover group-hover:scale-110 transition duration-500"
               />
             </div>
           </div>
@@ -99,15 +118,15 @@ const formattedDate = post.data.publishDate.toLocaleDateString('en-US', {
       )}
 
       <!-- Share & CTA -->
-      <div class="mt-12 pt-8 border-t border-gray-200">
-        <div class="bg-blue-50 rounded-xl p-8 text-center">
-          <h3 class="text-2xl font-bold mb-4">Ready for Similar Results?</h3>
-          <p class="text-gray-600 mb-6">Get professional auto detailing, paint protection, and ceramic coating in Grand Junction.</p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/contact" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+      <div class="mt-16 pt-12 border-t-2 border-gray-200">
+        <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-10 text-white shadow-2xl">
+          <h3 class="text-3xl font-bold mb-3">Ready for Similar Results?</h3>
+          <p class="text-blue-100 mb-8 text-lg leading-relaxed">Get professional auto detailing, paint protection, and ceramic coating in Grand Junction. Let our experts transform your vehicle.</p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="/contact" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition duration-300 text-center shadow-lg hover:shadow-xl transform hover:-translate-y-1">
               Get a Free Quote
             </a>
-            <a href="tel:970-628-1505" class="bg-white text-blue-600 border-2 border-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition">
+            <a href="tel:970-628-1505" class="bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-900 transition duration-300 text-center border-2 border-white hover:shadow-lg transform hover:-translate-y-1">
               Call: 970-628-1505
             </a>
           </div>
@@ -115,9 +134,10 @@ const formattedDate = post.data.publishDate.toLocaleDateString('en-US', {
       </div>
 
       <!-- Back to Gallery -->
-      <div class="mt-8 text-center">
-        <a href="/our-work" class="text-blue-600 font-semibold hover:underline">
-          ← Back to Our Work
+      <div class="mt-12 text-center pb-4">
+        <a href="/our-work" class="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700 transition duration-300 group">
+          <span class="mr-2 transform group-hover:-translate-x-1 transition duration-300">←</span>
+          Back to Our Work
         </a>
       </div>
     </div>
@@ -127,7 +147,44 @@ const formattedDate = post.data.publishDate.toLocaleDateString('en-US', {
 <style>
   .prose img {
     border-radius: 0.75rem;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.15);
+    margin: 2rem 0;
+    transition: all 0.3s ease;
+  }
+  
+  .prose img:hover {
+    box-shadow: 0 30px 50px -5px rgba(0, 0, 0, 0.25);
+    transform: translateY(-4px);
+  }
+  
+  .prose a {
+    @apply text-blue-600 font-medium hover:text-blue-700 transition duration-200;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+  }
+  
+  .prose a:hover {
+    border-bottom-color: #2563eb;
+  }
+  
+  .prose blockquote {
+    @apply border-l-4 border-blue-600 bg-blue-50 rounded-r-lg;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    font-style: italic;
+    color: #374151;
+  }
+  
+  .prose code {
+    @apply bg-gray-100 text-gray-800 px-2 py-1 rounded;
+    font-size: 0.9em;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .prose pre {
+    @apply bg-gray-900 text-gray-100 p-6 rounded-lg overflow-x-auto;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
   }
   
   .line-clamp-3 {
@@ -135,5 +192,32 @@ const formattedDate = post.data.publishDate.toLocaleDateString('en-US', {
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  /* Enhanced list styling */
+  .prose ul {
+    list-style: none;
+  }
+
+  /* Table styling */
+  .prose table {
+    @apply w-full border-collapse my-6;
+  }
+
+  .prose table th {
+    @apply bg-blue-600 text-white px-4 py-3 text-left font-semibold;
+  }
+
+  .prose table td {
+    @apply border border-gray-200 px-4 py-3 text-gray-700;
+  }
+
+  .prose table tr:nth-child(even) {
+    @apply bg-gray-50;
+  }
+
+  /* Better spacing for hero section */
+  article {
+    @apply min-h-screen flex flex-col;
   }
 </style>
