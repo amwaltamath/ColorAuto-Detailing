@@ -158,18 +158,22 @@ const formattedDate = post.data.publishDate.toLocaleDateString('en-US', {
   }
   
   .prose a {
-    @apply text-blue-600 font-medium hover:text-blue-700 transition duration-200;
+    color: #2563eb;
+    font-weight: 500;
     text-decoration: none;
     border-bottom: 2px solid transparent;
     transition: all 0.3s ease;
   }
   
   .prose a:hover {
+    color: #1d4ed8;
     border-bottom-color: #2563eb;
   }
   
   .prose blockquote {
-    @apply border-l-4 border-blue-600 bg-blue-50 rounded-r-lg;
+    border-left: 4px solid #2563eb;
+    background-color: #f0f9ff;
+    border-radius: 0 0.5rem 0.5rem 0;
     padding: 1.5rem;
     margin: 2rem 0;
     font-style: italic;
@@ -177,13 +181,20 @@ const formattedDate = post.data.publishDate.toLocaleDateString('en-US', {
   }
   
   .prose code {
-    @apply bg-gray-100 text-gray-800 px-2 py-1 rounded;
+    background-color: #f3f4f6;
+    color: #1f2937;
+    padding: 0.5rem 0.5rem;
+    border-radius: 0.25rem;
     font-size: 0.9em;
     font-family: 'Courier New', monospace;
   }
   
   .prose pre {
-    @apply bg-gray-900 text-gray-100 p-6 rounded-lg overflow-x-auto;
+    background-color: #111827;
+    color: #f3f4f6;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
   }
   
@@ -201,23 +212,32 @@ const formattedDate = post.data.publishDate.toLocaleDateString('en-US', {
 
   /* Table styling */
   .prose table {
-    @apply w-full border-collapse my-6;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
   }
 
   .prose table th {
-    @apply bg-blue-600 text-white px-4 py-3 text-left font-semibold;
+    background-color: #2563eb;
+    color: white;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
   }
 
   .prose table td {
-    @apply border border-gray-200 px-4 py-3 text-gray-700;
+    border: 1px solid #e5e7eb;
+    padding: 0.75rem 1rem;
+    color: #374151;
   }
 
   .prose table tr:nth-child(even) {
-    @apply bg-gray-50;
+    background-color: #f9fafb;
   }
 
   /* Better spacing for hero section */
   article {
-    @apply min-h-screen flex flex-col;
+    display: flex;
+    flex-direction: column;
   }
 </style>
