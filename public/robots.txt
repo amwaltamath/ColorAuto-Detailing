@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Disallow: /api/
+Disallow: /employee/
+Disallow: /customer/
+
+Sitemap: https://colorautodetailing.com/sitemap-index.xml

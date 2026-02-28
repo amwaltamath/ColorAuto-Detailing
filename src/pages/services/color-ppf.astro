@@ -1,9 +1,10 @@
 ---
 import PublicLayout from '../../layouts/PublicLayout.astro';
+import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 ---
 
 <PublicLayout
-  title="Color PPF - ColorAuto"
+  title="Color PPF | Grand Junction, CO | ColorAuto"
   description="Color-match paint protection film in Grand Junction. Factory-like finish with the protection of PPF."
   keywords={[
     'color PPF',
@@ -14,9 +15,14 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
   ]}
   image="/images/colorppfhero.jpg"
 >
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Services', href: '/services' },
+    { label: 'Color PPF' }
+  ]} />
   <!-- Hero Section -->
   <section class="relative text-white py-70 overflow-hidden">
-    <img src="/images/colorppfhero.jpg" alt="Color PPF" class="absolute inset-0 w-full h-full object-cover" />
+    <img src="/images/colorppfhero.jpg" alt="Color paint protection film in vibrant custom finishes" class="absolute inset-0 w-full h-full object-cover" />
     <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-orange-900/60"></div>
     <div class="relative max-w-7xl mx-auto px-4 text-center">
       <h1 class="text-5xl font-bold mb-4">Color Paint Protection Film</h1>
@@ -29,7 +35,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
   <section class="color-picker">
     <div class="container">
       <div class="image-container">
-        <img id="vehicle-image" src="/images/colorppf/GTI_Front_Hero_Gloss_Grey_Black.avif" alt="Vehicle with Color PPF" />
+        <img id="vehicle-image" src="/images/colorppf/GTI_Front_Hero_Gloss_Grey_Black.avif" alt="Vehicle with Gloss Grey Black color paint protection film" loading="lazy" />
         <p class="disclaimer">Colors are for reference only. Visit us for physical samples.</p>
         <div class="vehicle-options">
           <label><input type="radio" name="vehicle" value="sedan" checked aria-label="Select Sedan"><span>Sedan</span></label>
@@ -37,7 +43,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
         </div>
       </div>
       <div class="content-container">
-        <h3>Customize Your Vehicle’s Style</h3>
+        <h2>Customize Your Vehicle's Style</h2>
         <p>Choose a vibrant color to enhance your vehicle with durable paint protection film.</p>
         <p id="selected-color" class="color-name">Moss Green</p>
         <div class="color-options">
@@ -305,7 +311,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
       <!-- Right Column -->
       <div>
         <div class="bg-gray-200 rounded-lg h-96 mb-6 flex items-center justify-center">
-          <img src="/images/colorppf.jpg" alt="Color Paint Protection Film" class="w-full h-full object-cover rounded-lg" />
+          <img src="/images/colorppf.jpg" alt="Color PPF custom wrap protecting and styling vehicle paint" class="w-full h-full object-cover rounded-lg" loading="lazy" />
         </div>
 
         <div class="bg-white p-8 rounded-lg shadow-lg border-2 border-purple-200">

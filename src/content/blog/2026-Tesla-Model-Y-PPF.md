@@ -47,7 +47,7 @@ The Model Y now has bulletproof protection against rock chips, bug splatter, and
 **Service Time**: 2 days  
 **Product**: XPEL Ultimate+ PPF
 
-Ready to protect your Tesla or EV? [Contact us for a quote](/contact) or call **970-628-1505**.
+Ready to protect your Tesla or EV? Learn more about our [paint protection film services](/services/paint-protection-film) or [contact us for a quote](/contact). Call **970-628-1505**.
 
 ---
 

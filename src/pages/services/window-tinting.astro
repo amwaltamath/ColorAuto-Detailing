@@ -1,5 +1,6 @@
 ---
 import PublicLayout from '../../layouts/PublicLayout.astro';
+import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 ---
 
 <PublicLayout
@@ -17,10 +18,16 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
     'tint installer Grand Junction'
   ]}
   image="/images/primexr.jpg"
+>
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Services', href: '/services' },
+    { label: 'Window Tinting' }
+  ]} />
   <!-- Hero Section -->
   <section class="relative text-white py-70 overflow-hidden">
     <div class="absolute inset-0">
-      <img src="/images/primexr.jpg" alt="Window Tinting" class="w-full h-full object-cover" />
+      <img src="/images/primexr.jpg" alt="Professional automotive window tinting in Grand Junction, CO" class="w-full h-full object-cover" />
       <div class="absolute inset-0 bg-black/60"></div>
     </div>
     <div class="relative max-w-7xl mx-auto px-4 text-center">
@@ -95,7 +102,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
       <!-- Right Column -->
       <div>
         <div class="bg-gray-200 rounded-lg h-96 mb-6 flex items-center justify-center">
-          <img src="/images/window tint.jpg" alt="Window Tinting" class="w-full h-full object-cover rounded-lg" />
+          <img src="/images/window tint.jpg" alt="XPEL window tint installation on vehicle side windows" class="w-full h-full object-cover rounded-lg" loading="lazy" />
         </div>
 
         <div class="bg-white p-8 rounded-lg shadow-lg">
@@ -160,7 +167,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- PRIME CS -->
         <div class="group relative rounded-2xl overflow-hidden shadow-2xl bg-black">
-          <img src="/images/primecs.jpg" alt="PRIME CS" class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110" />
+          <img src="/images/primecs.jpg" alt="XPEL PRIME CS color-stable window tint film" class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
           <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" aria-hidden="true"></div>
           <div class="absolute inset-0 flex flex-col justify-end items-center text-center px-6 pb-8 text-white">
             <h3 class="text-2xl font-bold mb-3 drop-shadow">PRIME CS</h3>
@@ -172,7 +179,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
         <!-- PRIME XR -->
         <div class="group relative rounded-2xl overflow-hidden shadow-2xl bg-black">
           <div class="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-amber-400 text-black px-4 py-2 rounded-full text-xs font-bold shadow-lg">MOST POPULAR</div>
-          <img src="/images/primexr.jpg" alt="PRIME XR" class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110" />
+          <img src="/images/primexr.jpg" alt="XPEL PRIME XR nano-ceramic window tint film" class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
           <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" aria-hidden="true"></div>
           <div class="absolute inset-0 flex flex-col justify-end items-center text-center px-6 pb-8 text-white">
             <h3 class="text-2xl font-bold mb-3 drop-shadow">PRIME XR</h3>
@@ -183,7 +190,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
 
         <!-- PRIME XR PLUS -->
         <div class="group relative rounded-2xl overflow-hidden shadow-2xl bg-black">
-          <img src="/images/primexrplus.jpg" alt="PRIME XR PLUS" class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110" />
+          <img src="/images/primexrplus.jpg" alt="XPEL PRIME XR PLUS flagship ceramic window tint film" class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
           <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" aria-hidden="true"></div>
           <div class="absolute inset-0 flex flex-col justify-end items-center text-center px-6 pb-8 text-white">
             <h3 class="text-2xl font-bold mb-3 drop-shadow">PRIME XR PLUS</h3>

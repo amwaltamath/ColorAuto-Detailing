@@ -1,9 +1,10 @@
 ---
 import PublicLayout from '../../layouts/PublicLayout.astro';
+import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 ---
 
 <PublicLayout
-  title="Paint Protection Film (PPF) - ColorAuto"
+  title="Paint Protection Film (PPF) | Grand Junction, CO | ColorAuto"
   description="XPEL paint protection film installation in Grand Junction. Self-healing PPF shields paint from rock chips, scratches, and UV."
   keywords={[
     'paint protection film',
@@ -14,10 +15,15 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
   ]}
   image="/images/Paint protection film hero.jpg"
 >
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Services', href: '/services' },
+    { label: 'Paint Protection Film' }
+  ]} />
   <!-- Hero Section -->
   <section class="relative text-white py-70 overflow-hidden">
     <div class="absolute inset-0">
-      <img src="/images/Paint protection film hero.jpg" alt="Paint Protection Film" class="w-full h-full object-cover" />
+      <img src="/images/Paint protection film hero.jpg" alt="XPEL paint protection film professionally installed on vehicle" class="w-full h-full object-cover" />
       <div class="absolute inset-0 bg-black/60"></div>
     </div>
     <div class="relative max-w-7xl mx-auto px-4 text-center">
@@ -86,7 +92,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
       <!-- Right Column -->
       <div>
         <div class="bg-gray-200 rounded-lg h-96 mb-6 flex items-center justify-center">
-          <img src="/images/Paint Protection Film.jpg" alt="Paint Protection Film" class="w-full h-full object-cover rounded-lg" />
+          <img src="/images/Paint Protection Film.jpg" alt="Clear paint protection film applied to vehicle hood and fenders" class="w-full h-full object-cover rounded-lg" loading="lazy" />
         </div>
 
         <div class="bg-white p-8 rounded-lg shadow-lg">
@@ -108,7 +114,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
   <!-- Color PPF Hero Banner -->
   <section class="relative text-white py-32 overflow-hidden">
     <div class="absolute inset-0">
-      <img src="/images/colorppf.jpg" alt="Color PPF" class="w-full h-full object-cover" />
+      <img src="/images/colorppf.jpg" alt="Color paint protection film transforming vehicle appearance" class="w-full h-full object-cover" loading="lazy" />
       <div class="absolute inset-0 bg-black/50"></div>
     </div>
     <div class="relative max-w-7xl mx-auto px-4 text-center">

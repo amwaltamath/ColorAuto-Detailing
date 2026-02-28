@@ -20,7 +20,7 @@ This one came in for the perfect combo: Level 1 Ceramic Coating + PRIME XR+ Tint
 - **Easier maintenance** — the coating keeps the paint slick, glossy, and way easier to wash.
 - **Long-term protection** — better gloss, better durability, better resale.
 
-If you want your new ride protected the right way from day one, hit us up. We’ll get you taken care of. 👊🏼🔥
+If you want your new ride protected the right way from day one, check out our [ceramic coating](/services/ceramic-coating) and [window tinting](/services/window-tinting) services, or hit us up. We'll get you taken care of. 👊🏼🔥
 
 **Location**: ColorAuto Detailing, Grand Junction, CO  
 **Service Time**: 1 day  

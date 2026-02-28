@@ -1,9 +1,10 @@
 ---
 import PublicLayout from '../../layouts/PublicLayout.astro';
+import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 ---
 
 <PublicLayout
-  title="Auto Detailing Services - ColorAuto"
+  title="Auto Detailing Services | Grand Junction, CO | ColorAuto"
   description="Comprehensive auto detailing in Grand Junction: hand wash, clay bar, interior deep clean, leather conditioning, wheels and tires."
   keywords={[
     'auto detailing Grand Junction',
@@ -13,10 +14,15 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
   ]}
   image="/images/autodetailing.jpg"
 >
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Services', href: '/services' },
+    { label: 'Auto Detailing' }
+  ]} />
   <!-- Hero Section -->
   <section class="relative text-white py-70 overflow-hidden">
     <div class="absolute inset-0">
-      <img src="/images/autodetailing.jpg" alt="Auto Detailing" class="w-full h-full object-cover" />
+      <img src="/images/autodetailing.jpg" alt="Professional auto detailing service in Grand Junction, CO" class="w-full h-full object-cover" />
       <div class="absolute inset-0 bg-black/60"></div>
     </div>
     <div class="relative max-w-7xl mx-auto px-4 text-center">
@@ -232,7 +238,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
       <!-- Right Column - Image & CTA -->
       <div>
         <div class="bg-gray-200 rounded-lg h-96 mb-6 flex items-center justify-center">
-          <img src="/images/professional auto detailing.jpg" alt="Auto Detailing Service" class="w-full h-full object-cover rounded-lg" />
+          <img src="/images/professional auto detailing.jpg" alt="Professional interior and exterior auto detailing in Grand Junction" class="w-full h-full object-cover rounded-lg" loading="lazy" />
         </div>
 
         <div class="bg-white p-8 rounded-lg shadow-lg">

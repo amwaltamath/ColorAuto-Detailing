@@ -1,22 +1,28 @@
 ---
 import PublicLayout from '../../layouts/PublicLayout.astro';
+import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 ---
 
 <PublicLayout
-  title="Office Window Tint - ColorAuto"
+  title="Office Window Tint | Grand Junction, CO | ColorAuto"
   description="Office window tinting in Grand Junction to improve comfort, reduce glare, and protect interiors."
   keywords={[
     'office window tint',
-    'office window tint',
+    'commercial window tinting',
     'glare reduction',
     'privacy film',
     'Grand Junction office tint'
   ]}
   image="/images/officewindowtint.jpg"
 >
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Services', href: '/services' },
+    { label: 'Office Window Tint' }
+  ]} />
   <!-- Hero Section -->
   <section class="relative text-white py-70 overflow-hidden">
-    <img src="/images/officewindowtint.jpg" alt="Office Window Tint" class="absolute inset-0 w-full h-full object-cover" />
+    <img src="/images/officewindowtint.jpg" alt="Commercial office window tinting for glare reduction and energy efficiency" class="absolute inset-0 w-full h-full object-cover" />
     <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-gray-900/60"></div>
     <div class="relative max-w-7xl mx-auto px-4 text-center">
       <h1 class="text-5xl font-bold mb-4">Office Window Tint</h1>
@@ -132,7 +138,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
       <!-- Right Column -->
       <div>
         <div class="bg-gray-200 rounded-lg h-96 mb-6 flex items-center justify-center">
-          <img src="/images/flatwindowtint.jpg" alt="Office Window Tinting" class="w-full h-full object-cover rounded-lg" />
+          <img src="/images/flatwindowtint.jpg" alt="Commercial office window tint for privacy and energy savings" class="w-full h-full object-cover rounded-lg" loading="lazy" />
         </div>
 
         <div class="bg-white p-8 rounded-lg shadow-lg">

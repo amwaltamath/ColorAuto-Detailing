@@ -15,13 +15,19 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID || 'GTM-PMBBJ2B6';
 const GA_ID = import.meta.env.PUBLIC_GA_ID;
 const GOOGLE_SITE_VERIFICATION = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
 const { title, description, keywords = [], canonical, image, noindex = false } = Astro.props;
+
+const siteUrl = 'https://colorautodetailing.com';
+const defaultDescription = "ColorAuto Detailing — Auto detailing, paint protection film, ceramic coating, and window tinting in Grand Junction, CO.";
+const pageDescription = description || defaultDescription;
+const canonicalUrl = canonical || new URL(Astro.url.pathname, siteUrl).href;
+const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorAuto.png`;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content={description || "ColorAuto Detailing — Auto detailing, paint protection film, ceramic coating, and window tinting in Grand Junction, CO."} />
+    <meta name="description" content={pageDescription} />
     {keywords.length ? (
       <meta name="keywords" content={keywords.join(', ')} />
     ) : null}
@@ -30,20 +36,27 @@ const { title, description, keywords = [], canonical, image, noindex = false } =
     <link rel="icon" type="image/png" href="/images/ColorAuto.png" />
     <meta name="generator" content={Astro.generator} />
     {GOOGLE_SITE_VERIFICATION && (<meta name="google-site-verification" content={GOOGLE_SITE_VERIFICATION} />)}
-    {canonical && (<link rel="canonical" href={canonical} />)}
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Preconnect to external origins for faster loading -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <link rel="preconnect" href="https://connect.facebook.net" />
+    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
-    <meta property="og:description" content={description || "ColorAuto Detailing — Auto detailing, paint protection film, ceramic coating, and window tinting in Grand Junction, CO."} />
-    {canonical && (<meta property="og:url" content={canonical} />)}
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:type" content="website" />
-    {image && (<meta property="og:image" content={image} />)}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="ColorAuto Detailing" />
+    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description || "ColorAuto Detailing — Auto detailing, paint protection film, ceramic coating, and window tinting in Grand Junction, CO."} />
-    {image && (<meta name="twitter:image" content={image} />)}
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImage} />
     {GTM_ID && (
       <script define:vars={{ GTM_ID }}>
         {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -87,24 +100,66 @@ const { title, description, keywords = [], canonical, image, noindex = false } =
     )}
     
     <title>{title}</title>
-    <script type="application/ld+json">
-      {JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "LocalBusiness",
-        name: "ColorAuto Detailing",
-        telephone: "970-628-1505",
-        address: {
-          "@type": "PostalAddress",
-          streetAddress: "562 S Westgate Drive",
-          addressLocality: "Grand Junction",
-          addressRegion: "CO",
-          postalCode: "81505",
-          addressCountry: "US"
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "AutoRepair",
+      name: "ColorAuto Detailing",
+      description: "Professional auto detailing, paint protection film (PPF), ceramic coating, and window tinting in Grand Junction, CO.",
+      url: "https://colorautodetailing.com",
+      telephone: "970-628-1505",
+      email: "admin@colorautodetailing.com",
+      image: "https://colorautodetailing.com/images/ColorAuto.png",
+      priceRange: "$$",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "562 S Westgate Drive",
+        addressLocality: "Grand Junction",
+        addressRegion: "CO",
+        postalCode: "81505",
+        addressCountry: "US"
+      },
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: 39.0639,
+        longitude: -108.5842
+      },
+      openingHoursSpecification: [
+        {
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          opens: "08:00",
+          closes: "17:00"
         }
-      })}
-    </script>
+      ],
+      sameAs: [
+        "https://www.facebook.com/ColorAutoDetailing",
+        "https://www.instagram.com/colorautodetailing",
+        "https://www.youtube.com/@colorautodetailing3388"
+      ],
+      areaServed: {
+        "@type": "City",
+        name: "Grand Junction",
+        "@id": "https://www.wikidata.org/wiki/Q162660"
+      },
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Auto Detailing Services",
+        itemListElement: [
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Auto Detailing" }},
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Paint Protection Film (PPF)" }},
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Ceramic Coating" }},
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Window Tinting" }},
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Color PPF" }},
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Paint Correction" }}
+        ]
+      }
+    })} />
   </head>
   <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-blue-600 focus:text-white focus:px-4 focus:py-2 focus:rounded focus:text-sm focus:font-semibold">
+      Skip to main content
+    </a>
     {GTM_ID && (
       <noscript>
         <iframe src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`} height="0" width="0" style="display:none;visibility:hidden"></iframe>

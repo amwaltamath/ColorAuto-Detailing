@@ -1,9 +1,10 @@
 ---
 import PublicLayout from '../../layouts/PublicLayout.astro';
+import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 ---
 
 <PublicLayout
-  title="Auto Paint Correction - ColorAuto"
+  title="Auto Paint Correction | Grand Junction, CO | ColorAuto"
   description="Professional auto paint correction in Grand Junction: remove swirl marks, scratches, and oxidation to restore your vehicle's original shine."
   keywords={[
     'paint correction Grand Junction',
@@ -14,10 +15,15 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
   ]}
   image="/images/paint correction.jpg"
 >
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Services', href: '/services' },
+    { label: 'Auto Paint Correction' }
+  ]} />
   <!-- Hero Section -->
   <section class="relative text-white py-70 overflow-hidden">
     <div class="absolute inset-0">
-      <img src="/images/paint correction.jpg" alt="Paint Correction" class="w-full h-full object-cover" />
+      <img src="/images/paint correction.jpg" alt="Paint correction removing swirl marks and scratches in Grand Junction" class="w-full h-full object-cover" />
       <div class="absolute inset-0 bg-black/60"></div>
     </div>
     <div class="relative max-w-7xl mx-auto px-4 text-center">
@@ -175,7 +181,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
       <!-- Right Column - Image & CTA -->
       <div>
         <div class="bg-gray-200 rounded-lg h-96 mb-6 flex items-center justify-center">
-          <img src="/images/paint correction.jpg" alt="Paint Correction Service" class="w-full h-full object-cover rounded-lg" />
+          <img src="/images/paint correction.jpg" alt="Before and after paint correction for a flawless finish" class="w-full h-full object-cover rounded-lg" loading="lazy" />
         </div>
 
         <div class="bg-white p-8 rounded-lg shadow-lg">

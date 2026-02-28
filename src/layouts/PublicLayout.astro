@@ -17,7 +17,7 @@ const { title, description, keywords, canonical, image, noindex } = Astro.props;
 
 <Layout title={title} description={description} keywords={keywords} canonical={canonical} image={image} noindex={noindex}>
   <Navigation />
-  <main class="min-h-screen">
+  <main id="main-content" class="min-h-screen">
     <slot />
   </main>
   <Footer />

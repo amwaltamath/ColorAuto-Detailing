@@ -1,9 +1,10 @@
 ---
 import PublicLayout from '../../layouts/PublicLayout.astro';
+import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 ---
 
 <PublicLayout
-  title="Ceramic Coating - ColorAuto"
+  title="Ceramic Coating | Grand Junction, CO | ColorAuto"
   description="Professional ceramic coating in Grand Junction for long-lasting gloss, hydrophobic protection, and UV resistance."
   keywords={[
     'ceramic coating',
@@ -14,9 +15,14 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
   ]}
   image="/images/ceramic coating.jpg"
 >
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Services', href: '/services' },
+    { label: 'Ceramic Coating' }
+  ]} />
   <!-- Hero Section -->
   <section class="relative text-white py-70 overflow-hidden">
-    <img src="/images/ceramic coating.jpg" alt="Ceramic Coating" class="absolute inset-0 w-full h-full object-cover" />
+    <img src="/images/ceramic coating.jpg" alt="Professional ceramic coating application for long-lasting paint protection" class="absolute inset-0 w-full h-full object-cover" />
     <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-blue-900/60"></div>
     <div class="relative max-w-7xl mx-auto px-4 text-center">
       <h1 class="text-5xl font-bold mb-4">Ceramic Coating</h1>
@@ -105,7 +111,7 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
       <!-- Right Column -->
       <div>
         <div class="bg-gray-200 rounded-lg h-96 mb-6 flex items-center justify-center">
-          <img src="/images/ceramic coating.jpg" alt="Ceramic Coating" class="w-full h-full object-cover rounded-lg" />
+          <img src="/images/ceramic coating.jpg" alt="Ceramic coating creating a glossy hydrophobic surface on vehicle paint" class="w-full h-full object-cover rounded-lg" loading="lazy" />
         </div>
 
         <div class="bg-white p-8 rounded-lg shadow-lg">

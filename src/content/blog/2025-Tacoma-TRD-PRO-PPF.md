@@ -59,4 +59,4 @@ The Tacoma TRD PRO now has bulletproof front-end protection while maintaining th
 **Service Time**: 4 days  
 **Products**: XPEL Ultimate+ PPF + Fusion Ceramic Coating
 
-Ready to protect your Tacoma or other vehicle? [Contact us for a quote](/contact) or call **970-628-1505** to discuss your protection needs in Grand Junction.
+Ready to protect your Tacoma or other vehicle? Explore our [paint protection film](/services/paint-protection-film) and [ceramic coating](/services/ceramic-coating) services, or [contact us for a quote](/contact). Call **970-628-1505** to discuss your protection needs in Grand Junction.

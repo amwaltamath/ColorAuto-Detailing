@@ -2,6 +2,59 @@
 
 A modern Astro + React web application for Color Auto Detailing with customer booking portal and employee dashboard.
 
+## AI Handoff (Feb 25, 2026)
+
+Use this section to quickly rehydrate context when an AI or new dev picks up the repo.
+
+### Current Stack
+
+- Astro 5 SSR + React 19 + TypeScript + Tailwind v4
+- Hosting: Vercel Functions (adapter set to `output: 'server'`)
+- Commands: `npm run dev` (default 4321), `npm run build`, `npm run preview`
+
+### Key Architecture
+
+- Public site: `src/pages/index.astro`, `src/pages/services/*`, `src/pages/contact.astro`
+- Customer portal: `src/pages/customer/*`
+- Employee dashboard: `src/pages/employee/*` with `src/layouts/EmployeeLayout.astro`
+- Layouts: `src/layouts/Layout.astro` (base), `PublicLayout.astro`, `AuthLayout.astro`
+- API helper: `src/utils/api.ts` (`apiFetch<T>()` adds Bearer token)
+- Auth flow: `src/components/auth/LoginForm.tsx` -> `src/utils/auth.ts` -> `src/stores/authStore.ts`
+
+### Environment Variables
+
+- `PUBLIC_API_URL` (browser)
+- `API_URL` (server only)
+- `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`
+- `PUBLIC_GTM_ID`
+
+### Chat Feature (Employee + Public)
+
+- Docs: `CHAT_FEATURE.md`
+- Widget: `src/components/features/ChatWidget.tsx` (public)
+- Manager: `src/components/features/ChatManager.tsx` (employee dashboard)
+- Endpoints: `src/pages/api/messages.ts`, `src/pages/api/messages/respond.ts`, `src/pages/api/admin/chat-sessions.ts`
+- Storage: in-memory (no persistence yet)
+
+### Recent Work / Branding
+
+- Branding updates described in `COLORAUTO_UPDATE.md`
+- Default design direction matches colorautodetailing.com
+
+### Known Gaps / Next Steps
+
+- Persist chat data (Supabase tables listed in `CHAT_FEATURE.md`)
+- Add auth checks for employee chat endpoints
+- Wire contact form to Resend (`/api/contact`)
+- Back-end booking and scheduling endpoints
+
+### Quick Pointers
+
+- Global styles: `src/styles/global.css`
+- Tailwind config: `tailwind.config.mjs`
+- Vercel redirects: `vercel.json`
+- Project guide for AI agents: `.github/copilot-instructions.md`
+
 ## Features
 
 - 🎨 **Public Website**: Service listings, pricing, contact information

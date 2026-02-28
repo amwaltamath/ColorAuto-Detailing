@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import PublicLayout from '../../layouts/PublicLayout.astro';
+import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 
 export const prerender = true;
 
@@ -15,12 +16,46 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await post.render();
 
+const siteUrl = 'https://colorautodetailing.com';
+
 // Format date
 const formattedDate = post.data.publishDate.toLocaleDateString('en-US', {
   month: 'long',
   day: 'numeric',
   year: 'numeric'
 });
+
+// ISO date for structured data
+const isoDate = post.data.publishDate.toISOString();
+
+// BlogPosting schema
+const blogPostingSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: post.data.description,
+  image: new URL(post.data.image, siteUrl).href,
+  datePublished: isoDate,
+  dateModified: isoDate,
+  author: {
+    "@type": "Organization",
+    name: post.data.author,
+    url: siteUrl,
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "ColorAuto Detailing",
+    logo: {
+      "@type": "ImageObject",
+      url: `${siteUrl}/images/ColorAuto.png`,
+    },
+  },
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": new URL(`/work/${post.slug}`, siteUrl).href,
+  },
+  keywords: [post.data.category, "Grand Junction", "ColorAuto", post.data.location],
+};
 ---
 
 <PublicLayout
@@ -36,6 +71,14 @@ const formattedDate = post.data.publishDate.toLocaleDateString('en-US', {
   ]}
   image={post.data.image}
 >
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Our Work', href: '/our-work' },
+    { label: post.data.title }
+  ]} />
+
+  <script type="application/ld+json" set:html={JSON.stringify(blogPostingSchema)} />
+
   <article class="bg-white">
     <!-- Hero Image -->
     <div class="relative h-96 overflow-hidden">
@@ -43,6 +86,7 @@ const formattedDate = post.data.publishDate.toLocaleDateString('en-US', {
         src={post.data.image} 
         alt={post.data.imageAlt}
         class="w-full h-full object-cover"
+        fetchpriority="high"
       />
       <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
       <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
@@ -95,22 +139,25 @@ const formattedDate = post.data.publishDate.toLocaleDateString('en-US', {
             <div class="group overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition duration-300">
               <img 
                 src="/images/Tacoma TRD PRO PPF.jpg" 
-                alt="Tacoma TRD PRO front PPF installation" 
+                alt="2025 Tacoma TRD PRO front end PPF installation at ColorAuto Grand Junction" 
                 class="w-full h-64 object-cover group-hover:scale-110 transition duration-500"
+                loading="lazy"
               />
             </div>
             <div class="group overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition duration-300">
               <img 
                 src="/images/Tacoma TRD PRO PPF 2.jpg" 
-                alt="Tacoma TRD PRO PPF detail work" 
+                alt="Tacoma TRD PRO XPEL PPF detail work on hood and fenders" 
                 class="w-full h-64 object-cover group-hover:scale-110 transition duration-500"
+                loading="lazy"
               />
             </div>
             <div class="group overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition duration-300">
               <img 
                 src="/images/Tacoma TRD PRO PPF 3.jpg" 
-                alt="Tacoma TRD PRO ceramic coating finish" 
+                alt="Tacoma TRD PRO after ceramic coating showing deep gloss finish" 
                 class="w-full h-64 object-cover group-hover:scale-110 transition duration-500"
+                loading="lazy"
               />
             </div>
           </div>

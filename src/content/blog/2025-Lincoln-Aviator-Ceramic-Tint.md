@@ -44,6 +44,8 @@ The Lincoln Aviator now boasts a mirror-like gloss, stays cleaner longer, and th
 **Service Time**: 2 days  
 **Products**: Level 2 Ceramic Coating, XPEL Prime XR Tint
 
+Explore our [ceramic coating](/services/ceramic-coating) and [window tinting](/services/window-tinting) services to protect your vehicle.
+
 Do this now... ⬇️⬇️  
 Call us TODAY! 📞 (970)628-1505
 

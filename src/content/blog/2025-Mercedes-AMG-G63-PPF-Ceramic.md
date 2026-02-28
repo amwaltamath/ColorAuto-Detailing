@@ -46,7 +46,7 @@ The Mercedes AMG G63 now boasts bulletproof protection and a mirror-like gloss. 
 **Service Time**: 3 days  
 **Products**: XPEL Ultimate+ PPF, Level 2 Ceramic Coating
 
-Ready to protect your luxury vehicle? [Contact us for a quote](/contact) or call **970-628-1505**.
+Ready to protect your luxury vehicle? Explore our [paint protection film](/services/paint-protection-film) and [ceramic coating](/services/ceramic-coating) services, or [contact us for a quote](/contact). Call **970-628-1505**.
 
 ---
 

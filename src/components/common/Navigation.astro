@@ -1,7 +1,23 @@
 ---
+const currentPath = Astro.url.pathname;
+const isAutoService = currentPath.startsWith('/services/auto-detailing') || currentPath.startsWith('/services/auto-paint-correction') || currentPath.startsWith('/services/paint-protection-film') || currentPath.startsWith('/services/ceramic-coating') || currentPath.startsWith('/services/window-tinting') || currentPath.startsWith('/services/color-ppf');
+const isHomeService = currentPath.startsWith('/services/home-window-tint') || currentPath.startsWith('/services/office-window-tint');
+
+function navLinkClass(href: string): string {
+  const isActive = currentPath === href || currentPath === href + '/';
+  return isActive ? 'text-blue-600 font-semibold text-sm transition' : 'text-gray-700 text-sm hover:text-blue-600 transition';
+}
+function dropdownLinkClass(href: string): string {
+  const isActive = currentPath === href || currentPath === href + '/';
+  return isActive ? 'block px-4 py-2 text-sm text-blue-600 bg-blue-50 font-semibold' : 'block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600';
+}
+function mobileLinkClass(href: string): string {
+  const isActive = currentPath === href || currentPath === href + '/';
+  return isActive ? 'block py-2 text-sm text-blue-600 font-semibold' : 'block py-2 text-sm text-gray-700 hover:text-blue-600';
+}
 ---
 
-<nav class="bg-white shadow-md sticky top-0 z-50">
+<nav class="bg-white shadow-md sticky top-0 z-50" aria-label="Main navigation">
   <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
     <!-- Logo -->
     <a href="/" class="flex items-center space-x-3">
@@ -14,7 +30,7 @@
       
       <!-- Auto Service Dropdown -->
       <div class="relative group">
-        <button class="text-gray-700 text-sm hover:text-blue-600 transition flex items-center">
+        <button class:list={[isAutoService ? 'text-blue-600 font-semibold' : 'text-gray-700', 'text-sm hover:text-blue-600 transition flex items-center']}>
           Auto Service
           <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -22,19 +38,19 @@
         </button>
         <div class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
           <div class="py-2">
-            <a href="/services/auto-detailing" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">Auto Detailing</a>
-            <a href="/services/auto-paint-correction" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">Auto Paint Correction</a>
-            <a href="/services/paint-protection-film" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">Paint Protection Film</a>
-            <a href="/services/ceramic-coating" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">Ceramic Coating</a>
-            <a href="/services/window-tinting" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">Window Tinting</a>
-            <a href="/services/color-ppf" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">Color PPF</a>
+            <a href="/services/auto-detailing" class={dropdownLinkClass('/services/auto-detailing')}>Auto Detailing</a>
+            <a href="/services/auto-paint-correction" class={dropdownLinkClass('/services/auto-paint-correction')}>Auto Paint Correction</a>
+            <a href="/services/paint-protection-film" class={dropdownLinkClass('/services/paint-protection-film')}>Paint Protection Film</a>
+            <a href="/services/ceramic-coating" class={dropdownLinkClass('/services/ceramic-coating')}>Ceramic Coating</a>
+            <a href="/services/window-tinting" class={dropdownLinkClass('/services/window-tinting')}>Window Tinting</a>
+            <a href="/services/color-ppf" class={dropdownLinkClass('/services/color-ppf')}>Color PPF</a>
           </div>
         </div>
       </div>
 
       <!-- Home Service Dropdown -->
       <div class="relative group">
-        <button class="text-gray-700 text-sm hover:text-blue-600 transition flex items-center">
+        <button class:list={[isHomeService ? 'text-blue-600 font-semibold' : 'text-gray-700', 'text-sm hover:text-blue-600 transition flex items-center']}>
             Home and Office Service
           <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -42,15 +58,15 @@
         </button>
         <div class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
           <div class="py-2">
-            <a href="/services/home-window-tint" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">Home Window Tint</a>
-            <a href="/services/office-window-tint" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">Office Window Tint</a>
+            <a href="/services/home-window-tint" class={dropdownLinkClass('/services/home-window-tint')}>Home Window Tint</a>
+            <a href="/services/office-window-tint" class={dropdownLinkClass('/services/office-window-tint')}>Office Window Tint</a>
           </div>
         </div>
       </div>
 
-      <a href="/our-work" class="text-gray-700 text-sm hover:text-blue-600 transition">Our Work</a>
-      <a href="/our-team" class="text-gray-700 text-sm hover:text-blue-600 transition">Our Team</a>
-      <a href="/contact" class="text-gray-700 text-sm hover:text-blue-600 transition">Contact</a>
+      <a href="/our-work" class={navLinkClass('/our-work')}>Our Work</a>
+      <a href="/our-team" class={navLinkClass('/our-team')}>Our Team</a>
+      <a href="/contact" class={navLinkClass('/contact')}>Contact</a>
     </div>
     
     <!-- Employee Portal Icon -->
@@ -74,29 +90,29 @@
     <div class="max-w-7xl mx-auto px-4 py-4 space-y-2">
       
 
-      <details class="group">
+      <details class="group" open={isAutoService}>
         <summary class="flex items-center justify-between py-2 text-gray-700 hover:text-blue-600 cursor-pointer">
           <span>Auto Service</span>
           <svg class="w-4 h-4 ml-2 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
         </summary>
         <div class="pl-4 mt-1 space-y-1">
-          <a href="/services/auto-detailing" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Auto Detailing</a>
-          <a href="/services/auto-paint-correction" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Auto Paint Correction</a>
-          <a href="/services/paint-protection-film" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Paint Protection Film</a>
-          <a href="/services/ceramic-coating" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Ceramic Coating</a>
-          <a href="/services/window-tinting" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Window Tinting</a>
-          <a href="/services/color-ppf" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Color PPF</a>
+          <a href="/services/auto-detailing" class={mobileLinkClass('/services/auto-detailing')}>Auto Detailing</a>
+          <a href="/services/auto-paint-correction" class={mobileLinkClass('/services/auto-paint-correction')}>Auto Paint Correction</a>
+          <a href="/services/paint-protection-film" class={mobileLinkClass('/services/paint-protection-film')}>Paint Protection Film</a>
+          <a href="/services/ceramic-coating" class={mobileLinkClass('/services/ceramic-coating')}>Ceramic Coating</a>
+          <a href="/services/window-tinting" class={mobileLinkClass('/services/window-tinting')}>Window Tinting</a>
+          <a href="/services/color-ppf" class={mobileLinkClass('/services/color-ppf')}>Color PPF</a>
         </div>
       </details>
 
-      <details class="group">
+      <details class="group" open={isHomeService}>
         <summary class="flex items-center justify-between py-2 text-gray-700 hover:text-blue-600 cursor-pointer">
           <span>Home and Office Service</span>
           <svg class="w-4 h-4 ml-2 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
         </summary>
         <div class="pl-4 mt-1 space-y-1">
-          <a href="/services/home-window-tint" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Home Window Tint</a>
-          <a href="/services/office-window-tint" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Office Window Tint</a>
+          <a href="/services/home-window-tint" class={mobileLinkClass('/services/home-window-tint')}>Home Window Tint</a>
+          <a href="/services/office-window-tint" class={mobileLinkClass('/services/office-window-tint')}>Office Window Tint</a>
         </div>
       </details>
 

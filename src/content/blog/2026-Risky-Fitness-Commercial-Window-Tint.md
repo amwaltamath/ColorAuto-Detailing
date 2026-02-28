@@ -58,4 +58,4 @@ We're proud to work with fellow local business owners doing great things in our 
 **Service**: XPEL Architectural Black Out Film Installation  
 **Product**: XPEL Architectural Film – Black Out
 
-Ready to enhance your commercial space? [Contact us for a consultation](/contact) or call **970-628-1505**.
+Ready to enhance your commercial space? Learn more about our [office window tinting](/services/office-window-tint) and [home window tinting](/services/home-window-tint) services, or [contact us for a consultation](/contact). Call **970-628-1505**.
