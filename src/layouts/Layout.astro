@@ -34,6 +34,7 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
     {noindex ? (<meta name="robots" content="noindex,nofollow" />) : (<meta name="robots" content="index,follow" />)}
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/png" href="/images/ColorAuto.png" />
+    <link rel="apple-touch-icon" href="/images/ColorAuto.png" />
     <meta name="generator" content={Astro.generator} />
     {GOOGLE_SITE_VERIFICATION && (<meta name="google-site-verification" content={GOOGLE_SITE_VERIFICATION} />)}
     <link rel="canonical" href={canonicalUrl} />
