@@ -1,6 +1,7 @@
 ---
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
+import ColorPPFVisualizer from '../../components/features/ColorPPFVisualizer';
 ---
 
 <PublicLayout
@@ -163,22 +164,22 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
         plum: '/images/colorppf/GTI_Front_Hero_Gloss_Ultra_Plum.avif',
       },
       suv: {
-          yellow: '/images/colorppf-suv/4Runner_Front_Hero_XPEL-Yellow.png',
-          orange: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_Molten_Orange.png',
-          beach_blue: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_South_Beach_Blue.png',
-          black: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_Obsidian_Black.png',
-          green: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_Moss_Green.png',
-          red: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_Monza_Red.png',
-          gray: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_Herritage_Grey.png',
-          gray_black: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_Grey_Black.png',
-          satin_thermal: '/images/colorppf-suv/4Runner_Front_Hero_Satin_Thermal_Biege.png',
-          satin_tarmac: '/images/colorppf-suv/4Runner_Front_Hero_Satin_Tarmac.png',
-          satin_midnight: '/images/colorppf-suv/4Runner_Front_Hero_Satin_Midnight_Black.png',
-          battle_green: '/images/colorppf-suv/4Runner_Front_Hero_Satin_Battle_Green.png',
-          abyss_blue: '/images/colorppf-suv/4Runner_Front_Hero_Satin_Blue_Abyss.png',
-          white: '/images/colorppf-suv/4Runner_Front_Hero_Metallic_Pearl_White.png',
-          silver: '/images/colorppf-suv/4Runner_Front_Hero_Metallic_Bonded_Silver.png',
-          plum: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_Ultra_Plum.png',
+          yellow: '/images/colorppf-suv/4Runner_Front_Hero_XPEL-Yellow.avif',
+          orange: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_Molten_Orange.avif',
+          beach_blue: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_South_Beach_Blue.avif',
+          black: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_Obsidian_Black.avif',
+          green: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_Moss_Green.avif',
+          red: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_Monza_Red.avif',
+          gray: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_Herritage_Grey.avif',
+          gray_black: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_Grey_Black.avif',
+          satin_thermal: '/images/colorppf-suv/4Runner_Front_Hero_Satin_Thermal_Biege.avif',
+          satin_tarmac: '/images/colorppf-suv/4Runner_Front_Hero_Satin_Tarmac.avif',
+          satin_midnight: '/images/colorppf-suv/4Runner_Front_Hero_Satin_Midnight_Black.avif',
+          battle_green: '/images/colorppf-suv/4Runner_Front_Hero_Satin_Battle_Green.avif',
+          abyss_blue: '/images/colorppf-suv/4Runner_Front_Hero_Satin_Blue_Abyss.avif',
+          white: '/images/colorppf-suv/4Runner_Front_Hero_Metallic_Pearl_White.avif',
+          silver: '/images/colorppf-suv/4Runner_Front_Hero_Metallic_Bonded_Silver.avif',
+          plum: '/images/colorppf-suv/4Runner_Front_Hero_Gloss_Ultra_Plum.avif',
       },
     };
 
@@ -207,6 +208,17 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
       updateImageAndColor();
     });
   </script>
+
+  <!-- Try It On Your Car Visualizer -->
+  <section class="bg-gradient-to-b from-gray-50 to-white py-16">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center mb-10">
+        <h2 class="text-3xl md:text-4xl font-bold mb-3">See It On <span class="bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">Your Car</span></h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">Upload a photo of your vehicle and preview different Color PPF options to find your perfect match.</p>
+      </div>
+      <ColorPPFVisualizer client:load />
+    </div>
+  </section>
 
   <!-- Main Content -->
   <div class="max-w-7xl mx-auto px-4 py-12">
