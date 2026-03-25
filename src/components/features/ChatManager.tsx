@@ -290,7 +290,15 @@ export function ChatManager() {
                     {session.visitorName || session.visitorEmail || 'Visitor'}
                   </p>
                   <p className="text-xs text-slate-400 truncate">{session.visitorEmail}</p>
-                  <p className="text-[11px] text-slate-500 mt-1">{session.messageCount} messages</p>
+                  <div className="flex justify-between items-center mt-1">
+                    <p className="text-[11px] text-slate-500">{session.messageCount} messages</p>
+                    {session.lastMessageTime && (
+                      <p className="text-[11px] text-slate-500">
+                        {new Date(session.lastMessageTime).toLocaleDateString([], { month: 'short', day: 'numeric' })}{' '}
+                        {new Date(session.lastMessageTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                    )}
+                  </div>
                 </button>
                 <button
                   onClick={() => handleDeleteSession(session.id)}
@@ -377,6 +385,7 @@ export function ChatManager() {
                       )}
                       <p className="text-sm leading-relaxed">{msg.message}</p>
                       <p className="text-[11px] mt-2 opacity-70">
+                        {new Date(msg.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' })}{' '}
                         {new Date(msg.timestamp).toLocaleTimeString([], {
                           hour: '2-digit',
                           minute: '2-digit',
