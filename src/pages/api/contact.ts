@@ -1,4 +1,5 @@
 import type { APIContext } from "astro";
+import { supabaseServer } from "../../utils/supabaseServer";
 
 interface ContactPayload {
   name: string;
@@ -287,6 +288,24 @@ export async function POST({ request }: APIContext) {
         status: 500,
         headers: { "content-type": "application/json" },
       });
+    }
+
+    // Auto-create lead in database
+    if (supabaseServer) {
+      try {
+        await supabaseServer.from('leads').insert({
+          name,
+          email: email || null,
+          phone: phone || null,
+          source: 'website',
+          service_interest: service || null,
+          vehicle_info: vehicle || null,
+          message: message || null,
+          status: 'new',
+        });
+      } catch (leadErr) {
+        console.error('Failed to create lead from contact form:', leadErr);
+      }
     }
 
     return new Response(JSON.stringify({ ok: true }), {
