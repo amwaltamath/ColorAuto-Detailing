@@ -1,0 +1,256 @@
+---
+import Layout from '../layouts/Layout.astro';
+import QRCode from 'qrcode';
+
+const siteUrl = 'https://colorautodetailing.com';
+const cardUrl = `${siteUrl}/business-card`;
+
+// Generate QR code as data URL (encodes vCard data directly)
+const vcardData = [
+  'BEGIN:VCARD',
+  'VERSION:3.0',
+  'FN:ColorAuto Detailing',
+  'ORG:ColorAuto Detailing',
+  'TEL;TYPE=WORK,VOICE:+19706281505',
+  'EMAIL;TYPE=WORK:admin@colorautodetailing.com',
+  'ADR;TYPE=WORK:;;562 S Westgate Drive;Grand Junction;CO;81505;USA',
+  `URL:${siteUrl}`,
+  'END:VCARD',
+].join('\n');
+
+const qrDataUrl = await QRCode.toDataURL(vcardData, {
+  width: 200,
+  margin: 2,
+  color: {
+    dark: '#1e293b',
+    light: '#ffffff',
+  },
+  errorCorrectionLevel: 'M',
+});
+---
+
+<Layout
+  title="Digital Business Card — ColorAuto Detailing"
+  description="Save ColorAuto Detailing's contact info instantly. Scan the QR code or tap to add to your phone contacts."
+  noindex={true}
+>
+  <main class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 flex items-center justify-center p-4 py-12">
+    <div class="w-full max-w-md">
+
+      <!-- Business Card -->
+      <div class="relative bg-white rounded-2xl shadow-2xl overflow-hidden">
+
+        <!-- Top accent bar -->
+        <div class="h-2 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400"></div>
+
+        <!-- Card Body -->
+        <div class="p-8 text-center">
+
+          <!-- Logo -->
+          <div class="mb-6">
+            <img
+              src="/images/ColorAuto.png"
+              alt="ColorAuto Detailing"
+              class="w-28 h-28 mx-auto rounded-full object-cover shadow-lg border-4 border-blue-100"
+              width="112"
+              height="112"
+            />
+          </div>
+
+          <!-- Name & Title -->
+          <h1 class="text-2xl font-bold text-gray-900">ColorAuto Detailing</h1>
+          <p class="text-blue-600 font-medium mt-1">Professional Auto Detailing</p>
+          <p class="text-gray-500 text-sm mt-1">Grand Junction, Colorado</p>
+
+          <!-- Divider -->
+          <div class="my-6 border-t border-gray-200"></div>
+
+          <!-- Contact Actions Grid -->
+          <div class="grid grid-cols-3 gap-3 mb-6">
+            <a
+              href="tel:970-628-1505"
+              class="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-blue-50 hover:bg-blue-100 transition group"
+            >
+              <svg class="w-6 h-6 text-blue-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+              </svg>
+              <span class="text-xs font-medium text-gray-700">Call</span>
+            </a>
+            <a
+              href="mailto:admin@colorautodetailing.com"
+              class="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-blue-50 hover:bg-blue-100 transition group"
+            >
+              <svg class="w-6 h-6 text-blue-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+              </svg>
+              <span class="text-xs font-medium text-gray-700">Email</span>
+            </a>
+            <a
+              href="https://maps.app.goo.gl/U8GewAAibaMwEZ8q8"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-blue-50 hover:bg-blue-100 transition group"
+            >
+              <svg class="w-6 h-6 text-blue-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+              </svg>
+              <span class="text-xs font-medium text-gray-700">Map</span>
+            </a>
+          </div>
+
+          <!-- Contact Details -->
+          <div class="text-left space-y-3 mb-6">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-blue-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+              </svg>
+              <div>
+                <p class="text-sm font-medium text-gray-900">970-628-1505</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-blue-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+              </svg>
+              <div>
+                <p class="text-sm font-medium text-gray-900">admin@colorautodetailing.com</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-blue-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+              </svg>
+              <div>
+                <p class="text-sm font-medium text-gray-900">562 S Westgate Drive</p>
+                <p class="text-sm text-gray-500">Grand Junction, CO 81505</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-blue-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <p class="text-sm font-medium text-gray-900">Mon – Fri: 8:00 AM – 5:00 PM</p>
+                <p class="text-sm text-gray-500">Sat – Sun: Closed</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-blue-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+              </svg>
+              <div>
+                <a href="https://colorautodetailing.com" class="text-sm font-medium text-blue-600 hover:underline">colorautodetailing.com</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Services Tags -->
+          <div class="flex flex-wrap justify-center gap-2 mb-6">
+            <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">Auto Detailing</span>
+            <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">Paint Correction</span>
+            <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">PPF</span>
+            <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">Ceramic Coating</span>
+            <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">Window Tinting</span>
+            <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">Color PPF</span>
+          </div>
+
+          <!-- QR Code -->
+          <div class="bg-gray-50 rounded-xl p-6 mb-6">
+            <p class="text-sm font-medium text-gray-700 mb-3">Scan to save contact</p>
+            <img
+              src={qrDataUrl}
+              alt="QR code — scan to save ColorAuto Detailing contact"
+              class="w-48 h-48 mx-auto rounded-lg"
+              width="200"
+              height="200"
+            />
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="space-y-3">
+
+            <!-- Save Contact (vCard download) -->
+            <a
+              href="/api/vcard"
+              class="flex items-center justify-center gap-2 w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+              </svg>
+              Save Contact
+            </a>
+
+            <!-- Add to Apple Wallet -->
+            <a
+              href="/api/wallet-pass"
+              class="flex items-center justify-center gap-2 w-full px-6 py-3 bg-black text-white font-semibold rounded-xl hover:bg-gray-800 transition shadow-lg hover:shadow-xl"
+            >
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+              </svg>
+              Add to Apple Wallet
+            </a>
+
+            <!-- Share Button -->
+            <button
+              id="share-btn"
+              class="flex items-center justify-center gap-2 w-full px-6 py-3 bg-gray-100 text-gray-800 font-semibold rounded-xl hover:bg-gray-200 transition"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+              </svg>
+              Share Card
+            </button>
+          </div>
+        </div>
+
+        <!-- Bottom accent bar -->
+        <div class="h-1 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600"></div>
+      </div>
+
+      <!-- Powered by footer -->
+      <p class="text-center text-slate-400 text-xs mt-6">
+        <a href="https://colorautodetailing.com" class="hover:text-white transition">colorautodetailing.com</a>
+      </p>
+    </div>
+  </main>
+
+  <script>
+    const shareBtn = document.getElementById('share-btn');
+    if (shareBtn) {
+      shareBtn.addEventListener('click', async () => {
+        const shareData = {
+          title: 'ColorAuto Detailing',
+          text: 'Check out ColorAuto Detailing — Professional Auto Detailing in Grand Junction, CO',
+          url: window.location.href,
+        };
+
+        if (navigator.share) {
+          try {
+            await navigator.share(shareData);
+          } catch {
+            // User cancelled share
+          }
+        } else {
+          // Fallback: copy URL to clipboard
+          try {
+            await navigator.clipboard.writeText(window.location.href);
+            shareBtn.textContent = 'Link Copied!';
+            setTimeout(() => {
+              shareBtn.innerHTML = `
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+                </svg>
+                Share Card
+              `;
+            }, 2000);
+          } catch {
+            // Clipboard not available
+          }
+        }
+      });
+    }
+  </script>
+</Layout>

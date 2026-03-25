@@ -14,13 +14,19 @@
     "@astrojs/vercel": "^9.0.2",
     "@supabase/supabase-js": "^2.90.1",
     "@tailwindcss/vite": "^4.1.18",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "astro": "^5.16.6",
+    "passkit-generator": "^3.5.7",
+    "qrcode": "^1.5.4",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-hook-form": "^7.69.0",
     "tailwindcss": "^4.1.18",
     "zustand": "^5.0.9"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5"
   }
 }

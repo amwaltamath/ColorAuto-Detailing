@@ -20,6 +20,9 @@ pnpm-debug.log*
 .env.production
 local.env
 
+# Apple Wallet signing certificates
+certs/
+
 # macOS-specific files
 .DS_Store
 
