@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNativePush } from '../../utils/useNativePush';
 
 interface ScheduleStats {
   today: number;
@@ -8,6 +9,7 @@ interface ScheduleStats {
 }
 
 export const DashboardStats = () => {
+  useNativePush();
   const [stats, setStats] = useState<ScheduleStats>({
     today: 0,
     completed: 0,
