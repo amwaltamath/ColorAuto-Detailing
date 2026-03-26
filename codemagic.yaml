@@ -26,9 +26,6 @@ workflows:
           include: true
           source: true
 
-    integrations:
-      app_store_connect: ColorAuto Admin  # Name of App Store Connect API key in Codemagic
-
     scripts:
       # ── 1. Install Node dependencies ──
       - name: Install dependencies
@@ -79,7 +76,7 @@ workflows:
 
     publishing:
       app_store_connect:
-        auth: integration
+        auth: api_key
         submit_to_testflight: true
         submit_to_app_store: false  # Set to true when ready for production
       email:
@@ -111,9 +108,6 @@ workflows:
         - pattern: "release/*"
           include: true
           source: true
-
-    integrations:
-      app_store_connect: ColorAuto Admin
 
     scripts:
       - name: Install dependencies
@@ -154,7 +148,7 @@ workflows:
 
     publishing:
       app_store_connect:
-        auth: integration
+        auth: api_key
         submit_to_testflight: true
       email:
         recipients:
