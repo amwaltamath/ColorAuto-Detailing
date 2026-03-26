@@ -1,0 +1,166 @@
+workflows:
+
+  # ─── iOS App Store Build ─────────────────────────────────────
+  ios-app-store:
+    name: iOS App Store Build
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    environment:
+      node: 20
+      xcode: latest
+      groups:
+        - app_store_credentials  # Add in Codemagic UI: APP_STORE_CONNECT_KEY_IDENTIFIER, APP_STORE_CONNECT_ISSUER_ID, APP_STORE_CONNECT_PRIVATE_KEY
+        - ios_signing             # Add in Codemagic UI: DEVELOPMENT_TEAM, CERTIFICATE_PRIVATE_KEY
+      vars:
+        BUNDLE_ID: "com.colorautodetailing.admin"
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_PROJECT: "ios/App/App.xcodeproj"
+        XCODE_SCHEME: "App"
+
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: "master"
+          include: true
+          source: true
+
+    integrations:
+      app_store_connect: ColorAuto Admin  # Name of App Store Connect API key in Codemagic
+
+    scripts:
+      # ── 1. Install Node dependencies ──
+      - name: Install dependencies
+        script: |
+          npm ci
+
+      # ── 2. Build Astro web app ──
+      - name: Build web app
+        script: |
+          npm run build
+
+      # ── 3. Sync Capacitor ──
+      - name: Sync Capacitor iOS
+        script: |
+          npx cap sync ios
+
+      # ── 4. Set up code signing ──
+      - name: Set up code signing
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create
+          keychain add-certificates
+          xcode-project use-profiles
+
+      # ── 5. Auto-increment build number ──
+      - name: Increment build number
+        script: |
+          LATEST_BUILD=$(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID" || echo 0)
+          cd ios/App
+          agvtool new-version -all $((LATEST_BUILD + 1))
+
+      # ── 6. Build iOS app ──
+      - name: Build iOS app
+        script: |
+          cd ios/App
+          xcode-project build-ipa \
+            --project "App.xcodeproj" \
+            --scheme "App" \
+            --config "Release" \
+            --archive-flags="-destination 'generic/platform=iOS'"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - ios/App/build/*.xcarchive
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        cancel_previous_submissions: true
+        submit_to_app_store: false  # Set to true when ready for production
+      email:
+        recipients:
+          - drew@colorautodetailing.com
+        notify:
+          success: true
+          failure: true
+
+  # ─── iOS TestFlight Only (manual trigger) ────────────────────
+  ios-testflight:
+    name: iOS TestFlight Build
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    environment:
+      node: 20
+      xcode: latest
+      groups:
+        - app_store_credentials
+        - ios_signing
+      vars:
+        BUNDLE_ID: "com.colorautodetailing.admin"
+
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: "release/*"
+          include: true
+          source: true
+
+    integrations:
+      app_store_connect: ColorAuto Admin
+
+    scripts:
+      - name: Install dependencies
+        script: npm ci
+
+      - name: Build web app
+        script: npm run build
+
+      - name: Sync Capacitor iOS
+        script: npx cap sync ios
+
+      - name: Set up code signing
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create
+          keychain add-certificates
+          xcode-project use-profiles
+
+      - name: Increment build number
+        script: |
+          LATEST_BUILD=$(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID" || echo 0)
+          cd ios/App
+          agvtool new-version -all $((LATEST_BUILD + 1))
+
+      - name: Build iOS app
+        script: |
+          cd ios/App
+          xcode-project build-ipa \
+            --project "App.xcodeproj" \
+            --scheme "App" \
+            --config "Release"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        cancel_previous_submissions: true
+      email:
+        recipients:
+          - drew@colorautodetailing.com
+        notify:
+          success: true
+          failure: true
