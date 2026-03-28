@@ -29,7 +29,9 @@ export const SchedulesTable = () => {
 
   const fetchSchedules = async () => {
     try {
-      const response = await fetch('/api/employee/schedules');
+      const response = await fetch('/api/employee/schedules', {
+        headers: { 'x-user-id': localStorage.getItem('user_id') || '' },
+      });
       const data = await response.json();
       setSchedules(data.schedules || []);
     } catch (error) {
@@ -66,7 +68,7 @@ export const SchedulesTable = () => {
       const method = selectedSchedule ? 'PUT' : 'POST';
       const response = await fetch('/api/employee/schedules', {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-user-id': localStorage.getItem('user_id') || '' },
         body: JSON.stringify(formData),
       });
 
@@ -94,7 +96,7 @@ export const SchedulesTable = () => {
     try {
       const response = await fetch('/api/employee/schedules', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-user-id': localStorage.getItem('user_id') || '' },
         body: JSON.stringify({ id: scheduleId, status: newStatus }),
       });
 
@@ -114,6 +116,7 @@ export const SchedulesTable = () => {
     try {
       const response = await fetch(`/api/employee/schedules/${scheduleId}`, {
         method: 'DELETE',
+        headers: { 'x-user-id': localStorage.getItem('user_id') || '' },
       });
 
       if (!response.ok) throw new Error('Failed to delete schedule');

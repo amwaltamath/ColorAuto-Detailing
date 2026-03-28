@@ -21,7 +21,9 @@ export const TeamsTable = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch('/api/employee/teams');
+        const response = await fetch('/api/employee/teams', {
+          headers: { 'x-user-id': localStorage.getItem('user_id') || '' },
+        });
         const data = await response.json();
         setTeams(data.teams || []);
       } catch (error) {

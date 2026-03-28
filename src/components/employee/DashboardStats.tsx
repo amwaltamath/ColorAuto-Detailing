@@ -21,7 +21,9 @@ export const DashboardStats = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('/api/employee/schedules');
+        const response = await fetch('/api/employee/schedules', {
+          headers: { 'x-user-id': localStorage.getItem('user_id') || '' },
+        });
         const data = await response.json();
         const schedules = data.schedules || [];
 
