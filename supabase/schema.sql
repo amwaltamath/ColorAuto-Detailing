@@ -238,3 +238,23 @@ CREATE POLICY "Authenticated users can insert lead notes"
 
 CREATE POLICY "Authenticated users can delete lead notes"
   ON lead_notes FOR DELETE USING (auth.role() = 'authenticated');
+
+-- ============================================================
+-- Push Notification Tokens
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS push_tokens (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  token TEXT NOT NULL UNIQUE,
+  platform TEXT NOT NULL DEFAULT 'ios' CHECK (platform IN ('ios', 'android', 'web')),
+  employee_id TEXT,  -- optional link to employee user_id
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_push_tokens_platform ON push_tokens(platform);
+
+ALTER TABLE push_tokens ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Service role can manage push tokens"
+  ON push_tokens FOR ALL USING (true) WITH CHECK (true);

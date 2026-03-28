@@ -354,5 +354,30 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
       </div>
     </div>
   </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Auto Detailing",
+    serviceType: "AutoDetailing",
+    description: "Comprehensive auto detailing in Grand Junction: hand wash, clay bar, interior deep clean, leather conditioning, wheels and tires.",
+    url: "https://colorautodetailing.com/services/auto-detailing",
+    provider: {
+      "@type": "AutoRepair",
+      name: "ColorAuto Detailing",
+      telephone: "970-628-1505",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "562 S Westgate Drive",
+        addressLocality: "Grand Junction",
+        addressRegion: "CO",
+        postalCode: "81505",
+        addressCountry: "US"
+      }
+    },
+    areaServed: {
+      "@type": "City",
+      name: "Grand Junction"
+    }
+  })} />
 </PublicLayout>
-               

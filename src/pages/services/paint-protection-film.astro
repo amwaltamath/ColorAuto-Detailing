@@ -400,4 +400,30 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
       </div>
     </div>
   </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Paint Protection Film (PPF)",
+    serviceType: "AutoDetailing",
+    description: "XPEL paint protection film installation in Grand Junction. Self-healing PPF shields paint from rock chips, scratches, and UV.",
+    url: "https://colorautodetailing.com/services/paint-protection-film",
+    provider: {
+      "@type": "AutoRepair",
+      name: "ColorAuto Detailing",
+      telephone: "970-628-1505",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "562 S Westgate Drive",
+        addressLocality: "Grand Junction",
+        addressRegion: "CO",
+        postalCode: "81505",
+        addressCountry: "US"
+      }
+    },
+    areaServed: {
+      "@type": "City",
+      name: "Grand Junction"
+    }
+  })} />
 </PublicLayout>

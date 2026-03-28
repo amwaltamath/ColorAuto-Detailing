@@ -28,7 +28,19 @@ export function useNativePush() {
           if (!cleanup) {
             setToken(regToken.value);
             console.log('[Push] Device token:', regToken.value);
-            // TODO: Send token to your backend for server-initiated push
+
+            // Send token to backend for server-initiated push
+            fetch('/api/push/register', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                token: regToken.value,
+                platform: 'ios',
+              }),
+            })
+              .then((res) => res.json())
+              .then((data) => console.log('[Push] Token registered:', data))
+              .catch((err) => console.error('[Push] Token registration failed:', err));
           }
         });
 

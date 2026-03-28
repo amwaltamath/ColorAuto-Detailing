@@ -135,6 +135,24 @@ export async function POST({ request }: APIContext) {
 
     console.log('[POST /api/messages] Message saved successfully:', data.id);
 
+    // Fire push notification to employee devices (non-blocking)
+    const pushTitle = visitorName
+      ? `💬 ${visitorName} sent a message`
+      : '💬 New customer message';
+    const pushBody = message.trim().length > 100
+      ? message.trim().slice(0, 100) + '…'
+      : message.trim();
+
+    fetch(new URL('/api/push/send', request.url).href, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: pushTitle,
+        body: pushBody,
+        data: { sessionId },
+      }),
+    }).catch((err) => console.error('[POST /api/messages] Push send error:', err));
+
     const newMessage: ChatMessage = {
       id: data.id,
       sessionId: data.session_id,

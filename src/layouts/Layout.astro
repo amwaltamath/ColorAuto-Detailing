@@ -59,17 +59,17 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={ogImage} />
     {GTM_ID && (
-      <script define:vars={{ GTM_ID }}>
-        {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      <script set:html={`
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
         j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer',GTM_ID);`}
-      </script>
+        })(window,document,'script','dataLayer','${GTM_ID}');
+      `} />
     )}
     
     <!-- Facebook Pixel Code -->
-    <script>
+    <script is:inline>
       !function(f,b,e,v,n,t,s)
       {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -90,13 +90,13 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
     {/* Google Analytics 4 */}
     {GA_ID && (
       <>
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
-        <script define:vars={{ GA_ID }}>
-          {`window.dataLayer = window.dataLayer || [];
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+        <script set:html={`
+          window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', GA_ID);`}
-        </script>
+          gtag('config', '${GA_ID}');
+        `} />
       </>
     )}
     

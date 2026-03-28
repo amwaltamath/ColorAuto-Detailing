@@ -248,4 +248,30 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
       </div>
     </div>
   </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Home Window Tinting",
+    serviceType: "WindowTinting",
+    description: "Home window tinting in Grand Junction to reduce heat and UV, protect interiors, and add privacy.",
+    url: "https://colorautodetailing.com/services/home-window-tint",
+    provider: {
+      "@type": "AutoRepair",
+      name: "ColorAuto Detailing",
+      telephone: "970-628-1505",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "562 S Westgate Drive",
+        addressLocality: "Grand Junction",
+        addressRegion: "CO",
+        postalCode: "81505",
+        addressCountry: "US"
+      }
+    },
+    areaServed: {
+      "@type": "City",
+      name: "Grand Junction"
+    }
+  })} />
 </PublicLayout>

@@ -309,4 +309,30 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
       </div>
     </div>
   </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Auto Paint Correction",
+    serviceType: "AutoDetailing",
+    description: "Professional auto paint correction in Grand Junction: remove swirl marks, scratches, and oxidation to restore your vehicle's original shine.",
+    url: "https://colorautodetailing.com/services/auto-paint-correction",
+    provider: {
+      "@type": "AutoRepair",
+      name: "ColorAuto Detailing",
+      telephone: "970-628-1505",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "562 S Westgate Drive",
+        addressLocality: "Grand Junction",
+        addressRegion: "CO",
+        postalCode: "81505",
+        addressCountry: "US"
+      }
+    },
+    areaServed: {
+      "@type": "City",
+      name: "Grand Junction"
+    }
+  })} />
 </PublicLayout>

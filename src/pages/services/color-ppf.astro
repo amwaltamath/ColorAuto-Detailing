@@ -466,4 +466,30 @@ import ColorPPFVisualizer from '../../components/features/ColorPPFVisualizer';
       </div>
     </div>
   </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Color PPF",
+    serviceType: "AutoDetailing",
+    description: "Color-match paint protection film in Grand Junction. Factory-like finish with the protection of PPF.",
+    url: "https://colorautodetailing.com/services/color-ppf",
+    provider: {
+      "@type": "AutoRepair",
+      name: "ColorAuto Detailing",
+      telephone: "970-628-1505",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "562 S Westgate Drive",
+        addressLocality: "Grand Junction",
+        addressRegion: "CO",
+        postalCode: "81505",
+        addressCountry: "US"
+      }
+    },
+    areaServed: {
+      "@type": "City",
+      name: "Grand Junction"
+    }
+  })} />
 </PublicLayout>
