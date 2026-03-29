@@ -142,5 +142,5 @@
 @media (min-width: 768px) { .sticky-cta-bar { display: none; } }
 
 /* FAQ accordion */
-.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-.faq-answer.open { max-height: 500px; }
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.2s ease; padding-top: 0 !important; padding-bottom: 0 !important; opacity: 0; visibility: hidden; }
+.faq-answer.open { max-height: 500px; padding-top: 0.25rem !important; padding-bottom: 1rem !important; opacity: 1; visibility: visible; }
