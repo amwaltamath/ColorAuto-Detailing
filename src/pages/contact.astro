@@ -34,6 +34,13 @@ import PublicLayout from '../layouts/PublicLayout.astro';
         <h2 class="text-2xl font-bold mb-6">Send us a Message</h2>
         <form id="contact-form" class="space-y-4" method="POST" action="/api/contact">
           <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <input type="hidden" name="source" id="lead-source" value="website" />
+          <input type="hidden" name="utm_source" id="utm-source" />
+          <input type="hidden" name="utm_medium" id="utm-medium" />
+          <input type="hidden" name="utm_campaign" id="utm-campaign" />
+          <input type="hidden" name="utm_term" id="utm-term" />
+          <input type="hidden" name="utm_content" id="utm-content" />
+          <input type="hidden" name="landing_page" id="landing-page" />
 
           <div>
             <label class="block text-gray-700 font-semibold mb-2" for="name">Name</label>
@@ -222,6 +229,16 @@ import PublicLayout from '../layouts/PublicLayout.astro';
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    // Populate UTM hidden fields from URL params
+    const params = new URLSearchParams(window.location.search);
+    const utmFields = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+    utmFields.forEach(field => {
+      const el = document.getElementById(field.replace('_', '-'));
+      if (el) (el as HTMLInputElement).value = params.get(field) || '';
+    });
+    const landingEl = document.getElementById('landing-page');
+    if (landingEl) (landingEl as HTMLInputElement).value = window.location.pathname;
+
     const form = document.querySelector("#contact-form");
     const statusEl = document.querySelector("#form-status");
 

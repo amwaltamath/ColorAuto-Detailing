@@ -6,9 +6,23 @@ interface QuoteModalProps {
   isOpen: boolean;
   onClose: () => void;
   service?: string;
+  source?: string;
 }
 
-export default function QuoteModal({ isOpen: initialOpen = false, onClose, service = "" }: QuoteModalProps) {
+function getUtmParams() {
+  if (typeof window === 'undefined') return {};
+  const params = new URLSearchParams(window.location.search);
+  return {
+    utm_source: params.get('utm_source') || '',
+    utm_medium: params.get('utm_medium') || '',
+    utm_campaign: params.get('utm_campaign') || '',
+    utm_term: params.get('utm_term') || '',
+    utm_content: params.get('utm_content') || '',
+    landing_page: window.location.pathname,
+  };
+}
+
+export default function QuoteModal({ isOpen: initialOpen = false, onClose, service = "", source = "website" }: QuoteModalProps) {
   const [isOpen, setIsOpen] = React.useState(initialOpen);
   const [status, setStatus] = useState<Status>({ type: "idle" });
 
@@ -28,13 +42,16 @@ export default function QuoteModal({ isOpen: initialOpen = false, onClose, servi
     const form = e.currentTarget;
     const formData = new FormData(form);
 
+    const utm = getUtmParams();
     const payload = {
       name: String(formData.get("name") || ""),
       email: String(formData.get("email") || ""),
       phone: String(formData.get("phone") || ""),
       message: `Quote request for: ${service || 'General Service'}\n\n${String(formData.get("message") || "")}`,
       service: service,
+      source: source,
       website: "", // honeypot always empty in JS submit
+      ...utm,
     };
 
     setStatus({ type: "loading" });

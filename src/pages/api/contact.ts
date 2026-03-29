@@ -9,6 +9,13 @@ interface ContactPayload {
   vehicle?: string;
   service?: string;
   website?: string; // honeypot
+  source?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
+  landing_page?: string;
 }
 
 function isValidEmail(email: string) {
@@ -38,6 +45,13 @@ export async function POST({ request }: APIContext) {
           vehicle: String(form.get("vehicle") || ""),
           service: String(form.get("service") || ""),
           website: String(form.get("website") || ""),
+          source: String(form.get("source") || ""),
+          utm_source: String(form.get("utm_source") || ""),
+          utm_medium: String(form.get("utm_medium") || ""),
+          utm_campaign: String(form.get("utm_campaign") || ""),
+          utm_term: String(form.get("utm_term") || ""),
+          utm_content: String(form.get("utm_content") || ""),
+          landing_page: String(form.get("landing_page") || ""),
         };
       } catch (e) {
         // Fallback: if formData fails, try json
@@ -291,17 +305,25 @@ export async function POST({ request }: APIContext) {
     }
 
     // Auto-create lead in database
+    const VALID_SOURCES = ['google_ads', 'meta_ads', 'website', 'phone', 'walk_in', 'referral', 'other'];
+    const leadSource = (data.source && VALID_SOURCES.includes(data.source)) ? data.source : 'website';
     if (supabaseServer) {
       try {
         await supabaseServer.from('leads').insert({
           name,
           email: email || null,
           phone: phone || null,
-          source: 'website',
+          source: leadSource,
           service_interest: service || null,
           vehicle_info: vehicle || null,
           message: message || null,
           status: 'new',
+          utm_source: (data.utm_source || '').trim() || null,
+          utm_medium: (data.utm_medium || '').trim() || null,
+          utm_campaign: (data.utm_campaign || '').trim() || null,
+          utm_term: (data.utm_term || '').trim() || null,
+          utm_content: (data.utm_content || '').trim() || null,
+          landing_page: (data.landing_page || '').trim() || null,
         });
       } catch (leadErr) {
         console.error('Failed to create lead from contact form:', leadErr);
