@@ -29,6 +29,16 @@ const keywords = ['paint correction', 'swirl mark removal', 'paint restoration',
     </div>
   </section>
 
+  <!-- Trust Strip -->
+  <section class="bg-white border-b border-gray-200 py-4">
+    <div class="max-w-5xl mx-auto px-4 flex flex-wrap items-center justify-center gap-6 md:gap-10 text-sm text-gray-600">
+      <div class="flex items-center gap-2"><span class="text-yellow-500 text-lg">★★★★★</span><span class="font-semibold">4.9/5</span> Google Reviews</div>
+      <div class="flex items-center gap-2"><svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg><span>Certified Installers</span></div>
+      <div class="flex items-center gap-2"><svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg><span>Same-Week Availability</span></div>
+      <div class="flex items-center gap-2"><svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg><span>Warranty Backed</span></div>
+    </div>
+  </section>
+
   <!-- Quick Benefits -->
   <section class="bg-gradient-to-b from-blue-600 to-blue-800 text-white py-16">
     <div class="max-w-5xl mx-auto px-4">
@@ -227,6 +237,51 @@ const keywords = ['paint correction', 'swirl mark removal', 'paint restoration',
     </div>
   </section>
 
+  <!-- FAQ Section -->
+  <section class="bg-white py-16">
+    <div class="max-w-3xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-10">Frequently Asked Questions</h2>
+      <div class="space-y-4" id="faq-list">
+        <div class="border border-gray-200 rounded-lg">
+          <button class="faq-toggle w-full text-left px-6 py-4 font-semibold text-lg flex justify-between items-center cursor-pointer bg-transparent border-0">
+            What is paint correction?
+            <span class="text-blue-600 text-2xl">+</span>
+          </button>
+          <div class="faq-answer px-6 pb-4 text-gray-600">
+            Paint correction is a multi-step process of machine polishing to remove surface defects like swirl marks, scratches, water spots, and oxidation from your vehicle's clear coat.
+          </div>
+        </div>
+        <div class="border border-gray-200 rounded-lg">
+          <button class="faq-toggle w-full text-left px-6 py-4 font-semibold text-lg flex justify-between items-center cursor-pointer bg-transparent border-0">
+            Will paint correction damage my clear coat?
+            <span class="text-blue-600 text-2xl">+</span>
+          </button>
+          <div class="faq-answer px-6 pb-4 text-gray-600">
+            No. We use paint depth gauges and start with the least aggressive methods first. Our trained technicians remove only the minimum amount of clear coat needed to eliminate defects.
+          </div>
+        </div>
+        <div class="border border-gray-200 rounded-lg">
+          <button class="faq-toggle w-full text-left px-6 py-4 font-semibold text-lg flex justify-between items-center cursor-pointer bg-transparent border-0">
+            How long do paint correction results last?
+            <span class="text-blue-600 text-2xl">+</span>
+          </button>
+          <div class="faq-answer px-6 pb-4 text-gray-600">
+            The correction itself is permanent—those defects are removed for good. To maintain the results, we recommend ceramic coating or PPF after correction, plus proper wash techniques.
+          </div>
+        </div>
+        <div class="border border-gray-200 rounded-lg">
+          <button class="faq-toggle w-full text-left px-6 py-4 font-semibold text-lg flex justify-between items-center cursor-pointer bg-transparent border-0">
+            Which stage of correction do I need?
+            <span class="text-blue-600 text-2xl">+</span>
+          </button>
+          <div class="faq-answer px-6 pb-4 text-gray-600">
+            It depends on your paint's condition. Stage 1 handles light swirls, Stage 2 tackles moderate defects, and Stage 3 is for heavily neglected paint. We'll assess and recommend during your consultation.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CTA Section -->
   <section class="bg-white border-t-4 border-blue-600 py-12">
     <div class="max-w-4xl mx-auto px-4 text-center">
@@ -243,13 +298,35 @@ const keywords = ['paint correction', 'swirl mark removal', 'paint restoration',
       <p class="text-sm text-gray-500 mt-6">📍 562 S. Westgate Drive, Grand Junction, CO</p>
     </div>
   </section>
+
+  <!-- Sticky Mobile CTA Bar -->
+  <div class="sticky-cta-bar" id="stickyCta">
+    <a href="tel:970-628-1505" class="bg-white text-blue-700">📞 Call Now</a>
+    <button data-quote-popup class="bg-green-500 text-white">💬 Free Quote</button>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('[data-quote-popup]').forEach((btn) => {
         btn.addEventListener('click', (e) => {
           e.preventDefault();
-          const event = new CustomEvent('openQuoteModal');
-          document.dispatchEvent(event);
+          document.dispatchEvent(new CustomEvent('openQuoteModal'));
+        });
+      });
+      const bar = document.getElementById('stickyCta');
+      if (bar) {
+        window.addEventListener('scroll', () => {
+          bar.classList.toggle('visible', window.scrollY > 600);
+        }, { passive: true });
+      }
+      document.querySelectorAll('.faq-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const answer = btn.nextElementSibling;
+          const icon = btn.querySelector('span:last-child');
+          const isOpen = answer.classList.contains('open');
+          document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+          document.querySelectorAll('.faq-toggle span:last-child').forEach(s => s.textContent = '+');
+          if (!isOpen) { answer.classList.add('open'); icon.textContent = '−'; }
         });
       });
     });
