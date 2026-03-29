@@ -9,12 +9,13 @@ interface Props {
   canonical?: string;
   image?: string;
   noindex?: boolean;
+  hideChat?: boolean;
 }
 
 const GTM_ID = import.meta.env.PUBLIC_GTM_ID || 'GTM-PMBBJ2B6';
 const GA_ID = import.meta.env.PUBLIC_GA_ID;
 const GOOGLE_SITE_VERIFICATION = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
-const { title, description, keywords = [], canonical, image, noindex = false } = Astro.props;
+const { title, description, keywords = [], canonical, image, noindex = false, hideChat = false } = Astro.props;
 
 const siteUrl = 'https://colorautodetailing.com';
 const defaultDescription = "ColorAuto Detailing — Auto detailing, paint protection film, ceramic coating, and window tinting in Grand Junction, CO.";
@@ -167,7 +168,7 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
       </noscript>
     )}
     <slot />
-    <ChatWidget client:load />
+    {!hideChat && <ChatWidget client:load />}
 
     <!-- Image Lightbox -->
     <div class="lightbox-overlay" id="lightbox">
