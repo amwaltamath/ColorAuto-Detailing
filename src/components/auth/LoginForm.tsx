@@ -1,36 +1,33 @@
 import React, { useState } from 'react';
-import { useAuthStore, type User } from '../../stores/authStore';
+import { useAuthStore } from '../../stores/authStore';
+import { loginUser, saveAuthToken } from '../../utils/auth';
 
 export function LoginForm({ role }: { role: 'customer' | 'employee' }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    // TODO: Replace with actual API call
     if (!email || !password) {
       setError('Please fill in all fields');
       return;
     }
 
+    setIsLoading(true);
     try {
-      // Mock login - in production, this would call your backend
-      const mockUser: User = {
-        id: '1',
-        email,
-        name: email.split('@')[0],
-        role: role as 'customer' | 'employee',
-      };
-
-      login(mockUser);
-      // Redirect would happen here in a real app
+      const response = await loginUser(email, password, role);
+      saveAuthToken(response.token);
+      login(response.user);
       window.location.href = role === 'customer' ? '/customer/dashboard' : '/employee/dashboard';
     } catch (err) {
-      setError('Login failed. Please try again.');
+      setError('Invalid email or password. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -71,9 +68,10 @@ export function LoginForm({ role }: { role: 'customer' | 'employee' }) {
 
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition"
+        disabled={isLoading}
+        className="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Sign In
+        {isLoading ? 'Signing in...' : 'Sign In'}
       </button>
 
       <p className="text-center text-gray-600 mt-4 text-sm">

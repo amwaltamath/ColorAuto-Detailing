@@ -15,6 +15,12 @@ const { title, description, keywords, canonical, image, noindex } = Astro.props;
 ---
 
 <Layout title={title} description={description} keywords={keywords} canonical={canonical} image={image} noindex={noindex} hideChat={true}>
+  <!-- Auth guard: redirect to login if no token -->
+  <script is:inline>
+    if (!localStorage.getItem('authToken')) {
+      window.location.replace('/employee/login');
+    }
+  </script>
   <div class="min-h-screen bg-slate-950">
     <!-- Employee Header -->
     <header class="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 shadow-xl border-b border-slate-700/50">

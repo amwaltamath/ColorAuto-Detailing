@@ -3,6 +3,12 @@ import Layout from '../../layouts/Layout.astro';
 ---
 
 <Layout title="Customer Dashboard">
+  <!-- Auth guard: redirect to login if no token -->
+  <script is:inline>
+    if (!localStorage.getItem('authToken')) {
+      window.location.replace('/customer/login');
+    }
+  </script>
   <div class="max-w-7xl mx-auto px-4 py-8">
     <h1 class="text-4xl font-bold mb-8">Customer Dashboard</h1>
     
