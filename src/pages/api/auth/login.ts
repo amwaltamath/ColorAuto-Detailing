@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const { email, password } = await request.json();
+    const { email, password, role: requestedRole } = await request.json();
 
     if (!email || !password) {
       return new Response(JSON.stringify({ error: 'Email and password are required' }), {
@@ -38,6 +38,14 @@ export const POST: APIRoute = async ({ request }) => {
 
     const user = data.user;
     const role = user.user_metadata?.role || 'customer';
+
+    // Block customers from employee login and vice versa
+    if (requestedRole === 'employee' && role === 'customer') {
+      return new Response(JSON.stringify({ error: 'Access denied. This account does not have employee access.' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     return new Response(
       JSON.stringify({
