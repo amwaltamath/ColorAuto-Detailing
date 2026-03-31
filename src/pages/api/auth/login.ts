@@ -12,8 +12,8 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    const supabaseUrl = process.env.PUBLIC_SUPABASE_URL;
-    const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL ?? process.env.PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? process.env.PUBLIC_SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseAnonKey) {
       return new Response(JSON.stringify({ error: 'Auth service not configured' }), {
