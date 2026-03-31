@@ -37,9 +37,21 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const user = data.user;
-    const role = user.user_metadata?.role || 'customer';
+    let role = user.user_metadata?.role || 'customer';
 
-    // Block customers from employee login and vice versa
+    // For employee login, verify role using admin API (fresh metadata, not cached JWT)
+    if (requestedRole === 'employee') {
+      const serviceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
+      if (serviceKey) {
+        const adminSupabase = createClient(supabaseUrl, serviceKey);
+        const { data: adminData } = await adminSupabase.auth.admin.getUserById(user.id);
+        if (adminData?.user) {
+          role = adminData.user.user_metadata?.role || 'customer';
+        }
+      }
+    }
+
+    // Block customers from employee login
     if (requestedRole === 'employee' && role === 'customer') {
       return new Response(JSON.stringify({ error: 'Access denied. This account does not have employee access.' }), {
         status: 403,
