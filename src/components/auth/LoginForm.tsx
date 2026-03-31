@@ -22,6 +22,9 @@ export function LoginForm({ role }: { role: 'customer' | 'employee' }) {
     try {
       const response = await loginUser(email, password, role);
       saveAuthToken(response.token);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('userRole', response.user.role);
+      }
       login(response.user);
       window.location.href = role === 'customer' ? '/customer/dashboard' : '/employee/dashboard';
     } catch (err) {

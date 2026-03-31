@@ -3,10 +3,12 @@ import Layout from '../../layouts/Layout.astro';
 ---
 
 <Layout title="Customer Dashboard">
-  <!-- Auth guard: redirect to login if no token -->
+  <!-- Auth guard: redirect to login if no token, block employees -->
   <script is:inline>
     if (!localStorage.getItem('authToken')) {
       window.location.replace('/customer/login');
+    } else if (localStorage.getItem('userRole') === 'employee' || localStorage.getItem('userRole') === 'admin') {
+      window.location.replace('/employee/dashboard');
     }
   </script>
   <div class="max-w-7xl mx-auto px-4 py-8">

@@ -15,10 +15,12 @@ const { title, description, keywords, canonical, image, noindex } = Astro.props;
 ---
 
 <Layout title={title} description={description} keywords={keywords} canonical={canonical} image={image} noindex={noindex} hideChat={true}>
-  <!-- Auth guard: redirect to login if no token -->
+  <!-- Auth guard: redirect to login if no token, block non-employees -->
   <script is:inline>
     if (!localStorage.getItem('authToken')) {
       window.location.replace('/employee/login');
+    } else if (localStorage.getItem('userRole') === 'customer') {
+      window.location.replace('/customer/dashboard');
     }
   </script>
   <div class="min-h-screen bg-slate-950">
@@ -100,6 +102,7 @@ const { title, description, keywords, canonical, image, noindex } = Astro.props;
     logoutBtn.addEventListener('click', () => {
       try {
         localStorage.removeItem('authToken');
+        localStorage.removeItem('userRole');
       } catch (e) {
         console.error('Failed to clear auth token', e);
       }
