@@ -155,5 +155,11 @@
       "destination": "/contact",
       "permanent": true
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/weekly-report",
+      "schedule": "0 9 * * 1"
+    }
   ]
 }

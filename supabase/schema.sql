@@ -240,6 +240,34 @@ CREATE POLICY "Authenticated users can delete lead notes"
   ON lead_notes FOR DELETE USING (auth.role() = 'authenticated');
 
 -- ============================================================
+-- Weekly Reports (tracks sent email reports)
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS weekly_reports (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  period TEXT NOT NULL DEFAULT 'week' CHECK (period IN ('week', 'month', 'quarter')),
+  date_range_start TIMESTAMPTZ NOT NULL,
+  date_range_end TIMESTAMPTZ NOT NULL,
+  total_leads INT NOT NULL DEFAULT 0,
+  conversion_rate NUMERIC(5,2) DEFAULT 0,
+  revenue NUMERIC(12,2) DEFAULT 0,
+  pipeline_value NUMERIC(12,2) DEFAULT 0,
+  sent_to TEXT NOT NULL,
+  resend_id TEXT,
+  sent_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_weekly_reports_sent_at ON weekly_reports(sent_at DESC);
+
+ALTER TABLE weekly_reports ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Authenticated users can view weekly reports"
+  ON weekly_reports FOR SELECT USING (true);
+
+CREATE POLICY "Service role can insert weekly reports"
+  ON weekly_reports FOR INSERT WITH CHECK (true);
+
+-- ============================================================
 -- Push Notification Tokens
 -- ============================================================
 

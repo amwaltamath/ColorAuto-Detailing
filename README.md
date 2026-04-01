@@ -41,11 +41,24 @@ Use this section to quickly rehydrate context when an AI or new dev picks up the
 - Branding updates described in `COLORAUTO_UPDATE.md`
 - Default design direction matches colorautodetailing.com
 
+### Weekly Reports (Mar 31, 2026)
+
+- **Reports tab** in employee dashboard: lead KPIs, pipeline breakdown, service breakdown, recent leads
+- **API**: `GET /api/employee/reports?period=week|month|quarter` for data, `POST /api/cron/weekly-report` to send email
+- **Cron**: Vercel cron fires every Monday 9am (`0 9 * * 1`), secured by `CRON_SECRET`
+- **DB**: `weekly_reports` table in Supabase tracks sent report history
+- **Manual send**: "Send Report Now" button in Reports tab
+
+### Admin Auth Fix (Mar 31, 2026)
+
+- `loginUser()` now returns real server error messages instead of generic "Authentication failed"
+- Admin seed endpoint: `POST /api/auth/seed-admin` to create/promote users to admin/employee role
+- Employee login requires `user_metadata.role` = `employee` or `admin` in Supabase
+
 ### Known Gaps / Next Steps
 
 - Persist chat data (Supabase tables listed in `CHAT_FEATURE.md`)
 - Add auth checks for employee chat endpoints
-- Wire contact form to Resend (`/api/contact`)
 - Back-end booking and scheduling endpoints
 
 ### Quick Pointers

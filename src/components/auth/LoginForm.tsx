@@ -27,8 +27,8 @@ export function LoginForm({ role }: { role: 'customer' | 'employee' }) {
       }
       login(response.user);
       window.location.href = role === 'customer' ? '/customer/dashboard' : '/employee/dashboard';
-    } catch (err) {
-      setError('Invalid email or password. Please try again.');
+    } catch (err: any) {
+      setError(err?.message || 'Invalid email or password. Please try again.');
     } finally {
       setIsLoading(false);
     }

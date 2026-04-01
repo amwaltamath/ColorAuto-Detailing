@@ -24,11 +24,13 @@ export async function loginUser(
     body: JSON.stringify({ email, password, role }),
   });
 
+  const data = await response.json();
+
   if (!response.ok) {
-    throw new Error('Authentication failed');
+    throw new Error(data.error || 'Authentication failed');
   }
 
-  return response.json();
+  return data;
 }
 
 export function saveAuthToken(token: string): void {

@@ -1,0 +1,220 @@
+---
+import PublicLayout from '../layouts/PublicLayout.astro';
+---
+
+<PublicLayout
+  title="Join Our Team - ColorAuto Detailing"
+  description="Apply to join the ColorAuto Detailing team in Grand Junction, CO. We're looking for passionate automotive professionals — detailers, tint installers, and PPF specialists."
+  keywords={[
+    'auto detailing jobs',
+    'detailing careers Grand Junction',
+    'join ColorAuto team',
+    'window tint installer job',
+    'PPF installer job'
+  ]}
+  image="/images/ourteam.JPG"
+>
+  <!-- Hero -->
+  <section class="relative text-white py-70 overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="/images/ourteam.JPG" alt="Join the ColorAuto Detailing team" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-black/60"></div>
+    </div>
+    <div class="relative max-w-7xl mx-auto px-4 text-center">
+      <p class="text-sm font-semibold text-blue-200 tracking-wide mb-3">Now Hiring</p>
+      <h1 class="text-5xl font-bold mb-4 drop-shadow-lg">Join Our Team</h1>
+      <p class="text-xl text-gray-200 drop-shadow-md max-w-3xl mx-auto">We're always looking for talented, passionate people to grow with us. If you love cars and take pride in your work, we'd love to hear from you.</p>
+    </div>
+  </section>
+
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+
+      <!-- Application Form -->
+      <div class="bg-white p-8 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-6">Apply Now</h2>
+        <form id="apply-form" class="space-y-4" method="POST" action="/api/apply">
+          <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2" for="name">Full Name</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              placeholder="Your full name"
+            />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2" for="email">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              placeholder="your@email.com"
+            />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2" for="phone">Phone</label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              placeholder="(970) 123-4567"
+            />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2" for="position">Position Interested In</label>
+            <select
+              id="position"
+              name="position"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+            >
+              <option value="">Select a position...</option>
+              <option>Auto Detailer</option>
+              <option>Paint Protection Film Installer</option>
+              <option>Ceramic Coating Specialist</option>
+              <option>Window Tint Installer</option>
+              <option>Shop Helper / Apprentice</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2" for="experience">Relevant Experience</label>
+            <textarea
+              id="experience"
+              name="experience"
+              rows="3"
+              class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              placeholder="Briefly describe your relevant experience (if any)..."
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2" for="message">Why Do You Want to Join ColorAuto?</label>
+            <textarea
+              id="message"
+              name="message"
+              rows="4"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              placeholder="Tell us why you'd be a great fit..."
+            ></textarea>
+          </div>
+
+          <div id="form-status" class="text-sm font-semibold hidden"></div>
+
+          <button
+            type="submit"
+            class="w-full bg-blue-600 text-white font-bold py-3 rounded hover:bg-blue-700 transition"
+          >
+            Submit Application
+          </button>
+        </form>
+      </div>
+
+      <!-- Why Work With Us -->
+      <div class="space-y-8">
+        <div class="bg-white p-8 rounded-lg shadow-lg">
+          <h3 class="text-2xl font-bold mb-4 text-blue-600">
+            <svg class="w-6 h-6 inline mr-2 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" /></svg>
+            Why Work With Us
+          </h3>
+          <ul class="space-y-3 text-gray-700">
+            <li class="flex items-start gap-2">
+              <span class="text-blue-600 mt-1">&#10003;</span>
+              <span>Competitive pay based on experience and skill</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-blue-600 mt-1">&#10003;</span>
+              <span>Hands-on training with premium products and tools</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-blue-600 mt-1">&#10003;</span>
+              <span>Growth opportunities as we continue to expand</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-blue-600 mt-1">&#10003;</span>
+              <span>Work with a passionate, tight-knit team</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-blue-600 mt-1">&#10003;</span>
+              <span>Clean, professional shop environment</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-8 rounded-lg shadow-lg">
+          <h3 class="text-2xl font-bold mb-4 text-blue-600">
+            <svg class="w-6 h-6 inline mr-2 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
+            Location
+          </h3>
+          <p class="text-gray-700 text-lg font-semibold">ColorAuto Detailing</p>
+          <p class="text-gray-600 text-lg">562 S Westgate Drive</p>
+          <p class="text-gray-600 text-lg mb-4">Grand Junction, CO 81505</p>
+          <p class="text-gray-600">You can also drop off a resume in person during business hours.</p>
+        </div>
+
+        <div class="bg-white p-8 rounded-lg shadow-lg">
+          <h3 class="text-2xl font-bold mb-4 text-blue-600">
+            <svg class="w-6 h-6 inline mr-2 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+            Contact HR
+          </h3>
+          <a href="mailto:Admin@colorautodetailling.com" class="text-lg text-blue-600 hover:underline">
+            Admin@colorautodetailling.com
+          </a>
+          <p class="text-gray-600 mt-2">Questions about openings? Email us directly.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</PublicLayout>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector("#apply-form") as HTMLFormElement | null;
+    const statusEl = document.querySelector("#form-status") as HTMLElement | null;
+
+    if (!form || !statusEl) return;
+
+    const setStatus = (text: string, color: string) => {
+      statusEl.textContent = text;
+      statusEl.classList.remove("hidden", "text-red-600", "text-green-600", "text-gray-700");
+      statusEl.classList.add(color);
+    };
+
+    form.addEventListener("submit", async (event: Event) => {
+      event.preventDefault();
+      setStatus("Sending...", "text-gray-700");
+
+      try {
+        const res = await fetch("/api/apply", {
+          method: "POST",
+          body: new FormData(form),
+        });
+
+        const json = await res.json().catch(() => ({}));
+
+        if (res.ok && json.ok) {
+          setStatus("Thanks for applying! We'll be in touch soon.", "text-green-600");
+          form.reset();
+        } else {
+          setStatus(json.error || "Unable to send right now. Please email Admin@colorautodetailling.com directly.", "text-red-600");
+        }
+      } catch (error) {
+        setStatus("Unable to send right now. Please email Admin@colorautodetailling.com directly.", "text-red-600");
+      }
+    });
+  });
+</script>

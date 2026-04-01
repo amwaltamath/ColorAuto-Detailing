@@ -3,7 +3,7 @@
 ## Stack & Runtime
 - **Tech**: Astro 5 SSR + React 19 + TypeScript + Tailwind v4 on Vercel Functions.
 - **Commands**: `npm run dev` (localhost:4321) · `npm run build` · `npm run preview`.
-- **Env**: `PUBLIC_API_URL` (browser), `API_URL` (server-only), `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`, `PUBLIC_GTM_ID`.
+- **Env**: `PUBLIC_API_URL` (browser), `API_URL` (server-only), `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`, `PUBLIC_GTM_ID`, `CRON_SECRET`.
 - **Adapter**: Vercel with `output: 'server'` in [astro.config.mjs](astro.config.mjs); API routes run as Vercel Functions.
 
 ## Core Architecture
@@ -22,6 +22,7 @@
 - **Server-side API**: Astro endpoints → `apiFetch<T>()` in [src/utils/api.ts](src/utils/api.ts) → Backend (adds Bearer token from `process.env.API_URL`)
 - **Contact Form**: HTML/React form → [/api/contact](src/pages/api/contact.ts) → Resend email (honeypot: `website` field must be empty)
 - **Employee Ops**: Tab-based UI in [EmployeeLayout.astro](src/layouts/EmployeeLayout.astro) switches between `/api/employee/schedules`, `/api/employee/teams`, `/api/messages/*`
+- **Weekly Reports**: [ReportsDashboard.tsx](src/components/employee/ReportsDashboard.tsx) → `/api/employee/reports` (data) + `/api/cron/weekly-report` (send email via Resend). Vercel cron fires every Monday 9am. Manual send available from Reports tab. History stored in `weekly_reports` table.
 
 ## Layouts & Routing
 - **3-level Layout Hierarchy**: 
@@ -50,6 +51,7 @@
 - **New service page**: Copy [src/pages/services/auto-detailing.astro](src/pages/services/auto-detailing.astro), update content, add nav link in [src/components/common/Navigation.astro](src/components/common/Navigation.astro)
 - **Fix contact form**: Ensure honeypot (`website` field) stays hidden/empty; verify `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL` in env
 - **Add employee tab**: Add button to nav-pills in [EmployeeLayout.astro](src/layouts/EmployeeLayout.astro), create API endpoint in [src/pages/api/employee](src/pages/api/employee), hydrate React component for content
+- **Admin seed**: POST to `/api/auth/seed-admin` with `{ email, password, role }` to create/promote a user to employee or admin (requires `SUPABASE_SERVICE_ROLE_KEY`)
 
 ## Debugging
 - **Hot reload**: `npm run dev` for instant feedback; check browser DevTools Console for hydration errors
@@ -62,3 +64,5 @@
 - Employee UI uses dark theme (slate-900/800) vs. public site (light)
 - Chat widget in [Layout.astro](src/layouts/Layout.astro) always visible; session ID stored in `useChatStore`
 - Vercel redirects/aliases in [vercel.json](vercel.json)
+- Vercel cron schedule in [vercel.json](vercel.json) — weekly report runs `0 9 * * 1`, secured by `CRON_SECRET` env var
+- Admin login fix: `loginUser()` now surfaces real server errors; employee login requires `user_metadata.role` = `employee` or `admin`
