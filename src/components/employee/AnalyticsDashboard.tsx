@@ -94,7 +94,7 @@ export const AnalyticsDashboard = () => {
 
   if (!data) {
     return (
-      <div className="text-center py-12 text-slate-400">
+      <div className="text-center py-12 text-gray-500">
         <p>Unable to load analytics data.</p>
       </div>
     );
@@ -125,12 +125,12 @@ export const AnalyticsDashboard = () => {
   ];
 
   const colorMap: Record<string, string> = {
-    blue: 'bg-blue-500/10 text-blue-400',
-    emerald: 'bg-emerald-500/10 text-emerald-400',
-    violet: 'bg-violet-500/10 text-violet-400',
-    amber: 'bg-amber-500/10 text-amber-400',
-    rose: 'bg-rose-500/10 text-rose-400',
-    cyan: 'bg-cyan-500/10 text-cyan-400',
+    blue: 'bg-blue-50 text-blue-600',
+    emerald: 'bg-emerald-50 text-emerald-600',
+    violet: 'bg-violet-50 text-violet-600',
+    amber: 'bg-amber-50 text-amber-600',
+    rose: 'bg-rose-50 text-rose-600',
+    cyan: 'bg-cyan-50 text-cyan-600',
   };
 
   return (
@@ -147,7 +147,7 @@ export const AnalyticsDashboard = () => {
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-400"></div>
           )}
         </div>
-        <div className="flex gap-1.5 bg-slate-800/50 rounded-lg p-1 border border-slate-700/50">
+        <div className="flex gap-1.5 bg-gray-100 rounded-lg p-1 border border-gray-200">
           {PERIODS.map(p => (
             <button
               key={p.value}
@@ -155,7 +155,7 @@ export const AnalyticsDashboard = () => {
               className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
                 period === p.value
                   ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+                  : 'text-gray-500 hover:text-gray-900 hover:bg-white'
               }`}
             >
               {p.label}
@@ -167,14 +167,14 @@ export const AnalyticsDashboard = () => {
       {/* Overview Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {statCards.map(card => (
-          <div key={card.label} className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-4">
+          <div key={card.label} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${colorMap[card.color]}`}>
                 {card.icon}
               </div>
             </div>
-            <p className="text-xl md:text-2xl font-bold text-white">{card.value}</p>
-            <p className="text-xs text-slate-400 mt-0.5">{card.label}</p>
+            <p className="text-xl md:text-2xl font-bold text-gray-900">{card.value}</p>
+            <p className="text-xs text-gray-500 mt-0.5">{card.label}</p>
           </div>
         ))}
       </div>
@@ -182,8 +182,8 @@ export const AnalyticsDashboard = () => {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Daily Trend */}
-        <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-white mb-4">Daily Users</h3>
+        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4">Daily Users</h3>
           {data.dailyTrend.length > 0 ? (
             <div className="flex items-end gap-[2px] h-40">
               {data.dailyTrend.map((d, i) => {
@@ -203,12 +203,12 @@ export const AnalyticsDashboard = () => {
               })}
             </div>
           ) : (
-            <div className="flex items-center justify-center h-40 text-slate-500 text-sm">
+            <div className="flex items-center justify-center h-40 text-gray-400 text-sm">
               No data yet
             </div>
           )}
           {data.dailyTrend.length > 0 && (
-            <div className="flex justify-between mt-2 text-[10px] text-slate-500">
+            <div className="flex justify-between mt-2 text-[10px] text-gray-400">
               <span>{formatDate(data.dailyTrend[0]?.date)}</span>
               <span>{formatDate(data.dailyTrend[data.dailyTrend.length - 1]?.date)}</span>
             </div>
@@ -216,17 +216,17 @@ export const AnalyticsDashboard = () => {
         </div>
 
         {/* Traffic Sources */}
-        <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-white mb-4">Traffic Sources</h3>
+        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4">Traffic Sources</h3>
           {data.trafficSources.length > 0 ? (
             <div className="space-y-3">
               {data.trafficSources.map((s, i) => (
                 <div key={i}>
                   <div className="flex justify-between text-xs mb-1">
-                    <span className="text-slate-300">{s.channel}</span>
-                    <span className="text-slate-400">{s.sessions} sessions</span>
+                    <span className="text-gray-700">{s.channel}</span>
+                    <span className="text-gray-500">{s.sessions} sessions</span>
                   </div>
-                  <div className="h-2 bg-slate-700/50 rounded-full overflow-hidden">
+                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full"
                       style={{ width: `${(s.sessions / maxSourceSessions) * 100}%` }}
@@ -236,7 +236,7 @@ export const AnalyticsDashboard = () => {
               ))}
             </div>
           ) : (
-            <div className="flex items-center justify-center h-40 text-slate-500 text-sm">
+            <div className="flex items-center justify-center h-40 text-gray-400 text-sm">
               No data yet
             </div>
           )}
@@ -244,33 +244,33 @@ export const AnalyticsDashboard = () => {
       </div>
 
       {/* Top Pages */}
-      <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-5">
-        <h3 className="text-sm font-semibold text-white mb-4">Top Pages</h3>
+      <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+        <h3 className="text-sm font-semibold text-gray-900 mb-4">Top Pages</h3>
         {data.topPages.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700/50">
-                  <th className="text-left text-xs text-slate-400 font-medium pb-2 pr-4">Page</th>
-                  <th className="text-right text-xs text-slate-400 font-medium pb-2 px-4">Views</th>
-                  <th className="text-right text-xs text-slate-400 font-medium pb-2 pl-4">Users</th>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left text-xs text-gray-500 font-medium pb-2 pr-4">Page</th>
+                  <th className="text-right text-xs text-gray-500 font-medium pb-2 px-4">Views</th>
+                  <th className="text-right text-xs text-gray-500 font-medium pb-2 pl-4">Users</th>
                 </tr>
               </thead>
               <tbody>
                 {data.topPages.map((page, i) => (
-                  <tr key={i} className="border-b border-slate-700/30 last:border-0">
+                  <tr key={i} className="border-b border-gray-100 last:border-0">
                     <td className="py-2.5 pr-4">
-                      <span className="text-slate-300 font-mono text-xs">{page.path}</span>
+                      <span className="text-gray-700 font-mono text-xs">{page.path}</span>
                     </td>
-                    <td className="py-2.5 px-4 text-right text-white font-medium">{page.views.toLocaleString()}</td>
-                    <td className="py-2.5 pl-4 text-right text-slate-400">{page.users.toLocaleString()}</td>
+                    <td className="py-2.5 px-4 text-right text-gray-900 font-medium">{page.views.toLocaleString()}</td>
+                    <td className="py-2.5 pl-4 text-right text-gray-500">{page.users.toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         ) : (
-          <div className="flex items-center justify-center py-8 text-slate-500 text-sm">
+          <div className="flex items-center justify-center py-8 text-gray-400 text-sm">
             No data yet
           </div>
         )}

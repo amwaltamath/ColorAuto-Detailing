@@ -83,19 +83,19 @@ export function LeadModal({ isOpen, onClose, onSave, lead }: LeadModalProps) {
     setSubmitting(false);
   };
 
-  const inputClass = 'w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 focus:outline-none';
-  const labelClass = 'block text-sm font-medium text-slate-300 mb-1';
+  const inputClass = 'w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 text-sm focus:border-blue-500 focus:outline-none';
+  const labelClass = 'block text-sm font-medium text-gray-700 mb-1';
 
   return (
     <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div
-        className="bg-slate-800 rounded-xl border border-slate-700 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="bg-white rounded-xl border border-gray-200 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-white">{lead ? 'Edit Lead' : 'New Lead'}</h2>
-            <button onClick={onClose} className="text-slate-400 hover:text-white text-2xl leading-none">&times;</button>
+            <h2 className="text-xl font-bold text-gray-900">{lead ? 'Edit Lead' : 'New Lead'}</h2>
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-700 text-2xl leading-none">&times;</button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -155,7 +155,7 @@ export function LeadModal({ isOpen, onClose, onSave, lead }: LeadModalProps) {
             </div>
 
             <div className="flex gap-3 pt-2">
-              <button type="button" onClick={onClose} className="flex-1 px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition text-sm">
+              <button type="button" onClick={onClose} className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm">
                 Cancel
               </button>
               <button type="submit" disabled={submitting} className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium disabled:opacity-50">

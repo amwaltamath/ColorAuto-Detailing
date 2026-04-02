@@ -68,67 +68,67 @@ export const ProfileSettings = () => {
     <form onSubmit={handleSave} className="space-y-4 md:space-y-6 max-w-2xl">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
         <div>
-          <label className="block text-xs md:text-sm font-medium text-slate-300 mb-2">First Name</label>
+          <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2">First Name</label>
           <input
             type="text"
             name="first_name"
             value={profile.first_name}
             onChange={handleInputChange}
-            className="w-full px-3 md:px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 text-sm"
+            className="w-full px-3 md:px-4 py-2 bg-white border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 text-sm"
             placeholder="John"
           />
         </div>
         <div>
-          <label className="block text-xs md:text-sm font-medium text-slate-300 mb-2">Last Name</label>
+          <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2">Last Name</label>
           <input
             type="text"
             name="last_name"
             value={profile.last_name}
             onChange={handleInputChange}
-            className="w-full px-3 md:px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 text-sm"
+            className="w-full px-3 md:px-4 py-2 bg-white border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 text-sm"
             placeholder="Doe"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-xs md:text-sm font-medium text-slate-300 mb-2">Email</label>
+        <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2">Email</label>
         <input
           type="email"
           name="email"
           value={profile.email}
           onChange={handleInputChange}
-          className="w-full px-3 md:px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 text-sm"
+          className="w-full px-3 md:px-4 py-2 bg-white border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 text-sm"
           placeholder="john@example.com"
         />
       </div>
 
       <div>
-        <label className="block text-xs md:text-sm font-medium text-slate-300 mb-2">Phone</label>
+        <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2">Phone</label>
         <input
           type="tel"
           name="phone"
           value={profile.phone}
           onChange={handleInputChange}
-          className="w-full px-3 md:px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 text-sm"
+          className="w-full px-3 md:px-4 py-2 bg-white border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 text-sm"
           placeholder="+1 (555) 123-4567"
         />
       </div>
 
       <div>
-        <label className="block text-xs md:text-sm font-medium text-slate-300 mb-2">Bio</label>
+        <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2">Bio</label>
         <textarea
           name="bio"
           value={profile.bio}
           onChange={handleInputChange}
           rows={3}
-          className="w-full px-3 md:px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 text-sm"
+          className="w-full px-3 md:px-4 py-2 bg-white border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 text-sm"
           placeholder="Tell us about yourself..."
         />
       </div>
 
       <div>
-        <label className="block text-xs md:text-sm font-medium text-slate-300 mb-3">Specialties</label>
+        <label className="block text-xs md:text-sm font-medium text-gray-700 mb-3">Specialties</label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
           {commonSpecialties.map((specialty) => (
             <button
@@ -138,7 +138,7 @@ export const ProfileSettings = () => {
               className={`px-3 md:px-4 py-2 rounded border text-xs md:text-sm font-medium transition ${
                 profile.specialties.includes(specialty)
                   ? 'bg-blue-600 border-blue-500 text-white'
-                  : 'bg-slate-700 border-slate-600 text-slate-300 hover:border-slate-500'
+                  : 'bg-gray-50 border-gray-300 text-gray-700 hover:border-gray-400'
               }`}
             >
               {specialty}
@@ -148,7 +148,7 @@ export const ProfileSettings = () => {
       </div>
 
       {message && (
-        <div className={`p-3 rounded text-xs md:text-sm ${message.includes('success') ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
+        <div className={`p-3 rounded text-xs md:text-sm ${message.includes('success') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
           {message}
         </div>
       )}

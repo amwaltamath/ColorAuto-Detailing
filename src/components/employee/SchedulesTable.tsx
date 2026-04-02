@@ -50,15 +50,15 @@ export const SchedulesTable = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'scheduled':
-        return 'bg-blue-900/50 border-blue-500 text-blue-300';
+        return 'bg-blue-50 border-blue-200 text-blue-700';
       case 'in_progress':
-        return 'bg-yellow-900/50 border-yellow-500 text-yellow-300';
+        return 'bg-yellow-50 border-yellow-200 text-yellow-700';
       case 'completed':
-        return 'bg-green-900/50 border-green-500 text-green-300';
+        return 'bg-green-50 border-green-200 text-green-700';
       case 'cancelled':
-        return 'bg-red-900/50 border-red-500 text-red-300';
+        return 'bg-red-50 border-red-200 text-red-700';
       default:
-        return 'bg-slate-700 border-slate-600 text-slate-300';
+        return 'bg-gray-100 border-gray-200 text-gray-600';
     }
   };
 
@@ -129,7 +129,7 @@ export const SchedulesTable = () => {
   };
 
   if (loading) {
-    return <div className="text-slate-400 text-sm md:text-base">Loading schedules...</div>;
+    return <div className="text-gray-500 text-sm md:text-base">Loading schedules...</div>;
   }
 
   // Mobile card view
@@ -147,16 +147,16 @@ export const SchedulesTable = () => {
             + Add Schedule
           </button>
           {schedules.length === 0 ? (
-            <div className="text-slate-400 text-center py-4 text-sm">No schedules yet</div>
+            <div className="text-gray-500 text-center py-4 text-sm">No schedules yet</div>
           ) : (
             schedules.map((schedule) => (
-              <div key={schedule.id} className="bg-slate-700/50 p-3 md:p-4 rounded border border-slate-600">
+              <div key={schedule.id} className="bg-white p-3 md:p-4 rounded-lg border border-gray-200 shadow-sm">
                 <div className="flex justify-between items-start mb-3">
-                  <h3 className="text-white font-semibold text-sm">{schedule.service_type}</h3>
+                  <h3 className="text-gray-900 font-semibold text-sm">{schedule.service_type}</h3>
                   <select
                     value={schedule.status}
                     onChange={(e) => handleStatusChange(schedule.id, e.target.value)}
-                    className={`px-2 py-1 rounded border text-xs font-medium bg-slate-600 text-white focus:outline-none cursor-pointer ${getStatusColor(schedule.status)}`}
+                    className={`px-2 py-1 rounded border text-xs font-medium focus:outline-none cursor-pointer ${getStatusColor(schedule.status)}`}
                   >
                     <option value="scheduled">Scheduled</option>
                     <option value="in_progress">In Progress</option>
@@ -164,11 +164,11 @@ export const SchedulesTable = () => {
                     <option value="cancelled">Cancelled</option>
                   </select>
                 </div>
-                <p className="text-slate-300 text-sm mb-1">👤 {schedule.customer_name}</p>
+                <p className="text-gray-700 text-sm mb-1">👤 {schedule.customer_name}</p>
                 {schedule.customer_phone && (
-                  <p className="text-slate-400 text-xs mb-1">📞 {schedule.customer_phone}</p>
+                  <p className="text-gray-500 text-xs mb-1">📞 {schedule.customer_phone}</p>
                 )}
-                <p className="text-slate-400 text-xs mb-3">
+                <p className="text-gray-500 text-xs mb-3">
                   🕐 {new Date(schedule.scheduled_date).toLocaleDateString()} {new Date(schedule.scheduled_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </p>
                 <div className="flex gap-2">
@@ -177,7 +177,7 @@ export const SchedulesTable = () => {
                       setSelectedSchedule(schedule);
                       setModalOpen(true);
                     }}
-                    className="flex-1 px-2 py-1 bg-slate-700 text-slate-300 rounded text-xs hover:bg-slate-600 transition"
+                    className="flex-1 px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs hover:bg-gray-200 transition"
                   >
                     Edit
                   </button>
@@ -223,39 +223,39 @@ export const SchedulesTable = () => {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-slate-700">
-              <th className="text-left py-3 px-4 text-slate-300 font-semibold">Service</th>
-              <th className="text-left py-3 px-4 text-slate-300 font-semibold">Customer</th>
-              <th className="text-left py-3 px-4 text-slate-300 font-semibold">Date & Time</th>
-              <th className="text-left py-3 px-4 text-slate-300 font-semibold">Status</th>
-              <th className="text-left py-3 px-4 text-slate-300 font-semibold">Actions</th>
+            <tr className="border-b border-gray-200">
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold">Service</th>
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold">Customer</th>
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold">Date & Time</th>
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold">Status</th>
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
             {schedules.length === 0 ? (
               <tr>
-                <td colSpan={5} className="py-4 px-4 text-center text-slate-400">
+                <td colSpan={5} className="py-4 px-4 text-center text-gray-500">
                   No schedules yet
                 </td>
               </tr>
             ) : (
               schedules.map((schedule) => (
-                <tr key={schedule.id} className="border-b border-slate-700 hover:bg-slate-700/50">
-                  <td className="py-3 px-4 text-white">{schedule.service_type}</td>
-                  <td className="py-3 px-4 text-slate-300">
+                <tr key={schedule.id} className="border-b border-gray-100 hover:bg-gray-50">
+                  <td className="py-3 px-4 text-gray-900">{schedule.service_type}</td>
+                  <td className="py-3 px-4 text-gray-700">
                     <div>{schedule.customer_name}</div>
                     {schedule.customer_phone && (
-                      <div className="text-xs text-slate-400">{schedule.customer_phone}</div>
+                      <div className="text-xs text-gray-500">{schedule.customer_phone}</div>
                     )}
                   </td>
-                  <td className="py-3 px-4 text-slate-300">
+                  <td className="py-3 px-4 text-gray-700">
                     {new Date(schedule.scheduled_date).toLocaleDateString()} {new Date(schedule.scheduled_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </td>
                   <td className="py-3 px-4">
                     <select
                       value={schedule.status}
                       onChange={(e) => handleStatusChange(schedule.id, e.target.value)}
-                      className={`px-2 py-1 rounded border text-xs font-medium bg-slate-600 text-white focus:outline-none cursor-pointer ${getStatusColor(schedule.status)}`}
+                      className={`px-2 py-1 rounded border text-xs font-medium focus:outline-none cursor-pointer ${getStatusColor(schedule.status)}`}
                     >
                       <option value="scheduled">Scheduled</option>
                       <option value="in_progress">In Progress</option>
@@ -269,7 +269,7 @@ export const SchedulesTable = () => {
                         setSelectedSchedule(schedule);
                         setModalOpen(true);
                       }}
-                      className="px-3 py-1 bg-slate-700 text-slate-300 rounded text-xs hover:bg-slate-600 transition"
+                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded text-xs hover:bg-gray-200 transition"
                     >
                       Edit
                     </button>

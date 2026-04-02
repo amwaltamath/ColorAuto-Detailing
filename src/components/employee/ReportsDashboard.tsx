@@ -155,7 +155,7 @@ export const ReportsDashboard: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <div className="flex items-center gap-3 text-slate-400">
+        <div className="flex items-center gap-3 text-gray-500">
           <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -168,7 +168,7 @@ export const ReportsDashboard: React.FC = () => {
 
   if (!data || !data.stats) {
     return (
-      <div className="text-center py-16 text-slate-400">
+      <div className="text-center py-16 text-gray-500">
         <p>Unable to load report data. Make sure the database is configured.</p>
       </div>
     );
@@ -189,7 +189,7 @@ export const ReportsDashboard: React.FC = () => {
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 period === p.value
                   ? 'bg-blue-600 text-white'
-                  : 'bg-slate-700/50 text-slate-400 hover:text-slate-200 hover:bg-slate-700'
+                  : 'bg-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-200'
               }`}
             >
               {p.label}
@@ -199,7 +199,7 @@ export const ReportsDashboard: React.FC = () => {
         <button
           onClick={handleSendReport}
           disabled={sending}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-600 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-colors"
         >
           {sending ? (
             <>
@@ -224,8 +224,8 @@ export const ReportsDashboard: React.FC = () => {
       {sendResult && (
         <div className={`flex items-center gap-2 px-4 py-3 rounded-lg text-sm ${
           sendResult.ok
-            ? 'bg-green-900/30 border border-green-500/30 text-green-300'
-            : 'bg-red-900/30 border border-red-500/30 text-red-300'
+            ? 'bg-green-50 border border-green-200 text-green-700'
+            : 'bg-red-50 border border-red-200 text-red-700'
         }`}>
           {sendResult.ok ? (
             <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -251,19 +251,19 @@ export const ReportsDashboard: React.FC = () => {
       {/* Two Columns: Status + Sources */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Status Breakdown */}
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-slate-300 mb-4">Lead Pipeline</h3>
+        <div className="bg-white border border-gray-200 shadow-sm rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-gray-700 mb-4">Lead Pipeline</h3>
           <div className="space-y-3">
             {(['new', 'contacted', 'quoted', 'booked', 'completed', 'lost'] as const).map((status) => {
               const count = (stats as any)[status] || 0;
               const pct = stats.total > 0 ? (count / stats.total) * 100 : 0;
               return (
                 <div key={status} className="flex items-center gap-3">
-                  <span className="text-xs text-slate-400 w-20">{STATUS_LABELS[status]}</span>
-                  <div className="flex-1 h-2 bg-slate-700/50 rounded-full overflow-hidden">
+                  <span className="text-xs text-gray-500 w-20">{STATUS_LABELS[status]}</span>
+                  <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
                     <div className={`h-full ${STATUS_COLORS[status]} rounded-full transition-all duration-500`} style={{ width: `${pct}%` }} />
                   </div>
-                  <span className="text-xs font-medium text-slate-300 w-8 text-right">{count}</span>
+                  <span className="text-xs font-medium text-gray-700 w-8 text-right">{count}</span>
                 </div>
               );
             })}
@@ -271,21 +271,21 @@ export const ReportsDashboard: React.FC = () => {
         </div>
 
         {/* Source Breakdown */}
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-slate-300 mb-4">Lead Sources</h3>
+        <div className="bg-white border border-gray-200 shadow-sm rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-gray-700 mb-4">Lead Sources</h3>
           {Object.keys(stats.bySource).length === 0 ? (
-            <p className="text-sm text-slate-500 text-center py-8">No leads in this period</p>
+            <p className="text-sm text-gray-400 text-center py-8">No leads in this period</p>
           ) : (
             <div className="space-y-3">
               {Object.entries(stats.bySource)
                 .sort(([, a], [, b]) => b - a)
                 .map(([source, count]) => (
                   <div key={source} className="flex items-center gap-3">
-                    <span className="text-xs text-slate-400 w-20 truncate">{SOURCE_LABELS[source] || source}</span>
-                    <div className="flex-1 h-2 bg-slate-700/50 rounded-full overflow-hidden">
+                    <span className="text-xs text-gray-500 w-20 truncate">{SOURCE_LABELS[source] || source}</span>
+                    <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
                       <div className="h-full bg-blue-500 rounded-full transition-all duration-500" style={{ width: `${(count / maxSourceCount) * 100}%` }} />
                     </div>
-                    <span className="text-xs font-medium text-slate-300 w-8 text-right">{count}</span>
+                    <span className="text-xs font-medium text-gray-700 w-8 text-right">{count}</span>
                   </div>
                 ))}
             </div>
@@ -295,15 +295,15 @@ export const ReportsDashboard: React.FC = () => {
 
       {/* Service Breakdown */}
       {Object.keys(stats.byService).length > 0 && (
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-slate-300 mb-4">Services Requested</h3>
+        <div className="bg-white border border-gray-200 shadow-sm rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-gray-700 mb-4">Services Requested</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {Object.entries(stats.byService)
               .sort(([, a], [, b]) => b - a)
               .map(([service, count]) => (
-                <div key={service} className="flex items-center justify-between bg-slate-700/30 rounded-lg px-3 py-2">
-                  <span className="text-xs text-slate-300 truncate mr-2">{service}</span>
-                  <span className="text-xs font-semibold text-blue-400">{count}</span>
+                <div key={service} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
+                  <span className="text-xs text-gray-700 truncate mr-2">{service}</span>
+                  <span className="text-xs font-semibold text-blue-600">{count}</span>
                 </div>
               ))}
           </div>
@@ -312,12 +312,12 @@ export const ReportsDashboard: React.FC = () => {
 
       {/* Recent Leads Table */}
       {stats.topLeads.length > 0 && (
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-slate-300 mb-4">Recent Leads</h3>
+        <div className="bg-white border border-gray-200 shadow-sm rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-gray-700 mb-4">Recent Leads</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-xs text-slate-500 border-b border-slate-700/50">
+                <tr className="text-xs text-gray-500 border-b border-gray-200">
                   <th className="text-left py-2 px-3 font-medium">Name</th>
                   <th className="text-left py-2 px-3 font-medium">Service</th>
                   <th className="text-left py-2 px-3 font-medium">Status</th>
@@ -328,17 +328,17 @@ export const ReportsDashboard: React.FC = () => {
               </thead>
               <tbody>
                 {stats.topLeads.map((lead, i) => (
-                  <tr key={i} className="border-b border-slate-700/30 hover:bg-slate-700/20">
-                    <td className="py-2 px-3 text-slate-200">{lead.name}</td>
-                    <td className="py-2 px-3 text-slate-400">{lead.service_interest || '—'}</td>
+                  <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
+                    <td className="py-2 px-3 text-gray-900">{lead.name}</td>
+                    <td className="py-2 px-3 text-gray-500">{lead.service_interest || '—'}</td>
                     <td className="py-2 px-3">
-                      <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${STATUS_COLORS[lead.status]}/20 text-slate-200`}>
+                      <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${STATUS_COLORS[lead.status]}/20 text-gray-700`}>
                         {STATUS_LABELS[lead.status] || lead.status}
                       </span>
                     </td>
-                    <td className="py-2 px-3 text-slate-400">{SOURCE_LABELS[lead.source] || lead.source}</td>
-                    <td className="py-2 px-3 text-right text-slate-300">{lead.estimated_value ? formatCurrency(lead.estimated_value) : '—'}</td>
-                    <td className="py-2 px-3 text-right text-slate-500">{formatShortDate(lead.created_at)}</td>
+                    <td className="py-2 px-3 text-gray-500">{SOURCE_LABELS[lead.source] || lead.source}</td>
+                    <td className="py-2 px-3 text-right text-gray-700">{lead.estimated_value ? formatCurrency(lead.estimated_value) : '—'}</td>
+                    <td className="py-2 px-3 text-right text-gray-400">{formatShortDate(lead.created_at)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -348,15 +348,15 @@ export const ReportsDashboard: React.FC = () => {
       )}
 
       {/* Report History */}
-      <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-        <h3 className="text-sm font-semibold text-slate-300 mb-4">Sent Report History</h3>
+      <div className="bg-white border border-gray-200 shadow-sm rounded-xl p-5">
+        <h3 className="text-sm font-semibold text-gray-700 mb-4">Sent Report History</h3>
         {data.reportHistory.length === 0 ? (
-          <p className="text-sm text-slate-500 text-center py-8">No reports sent yet. Click "Send Report Now" to email your first report.</p>
+          <p className="text-sm text-gray-400 text-center py-8">No reports sent yet. Click "Send Report Now" to email your first report.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-xs text-slate-500 border-b border-slate-700/50">
+                <tr className="text-xs text-gray-500 border-b border-gray-200">
                   <th className="text-left py-2 px-3 font-medium">Sent</th>
                   <th className="text-left py-2 px-3 font-medium">Period</th>
                   <th className="text-right py-2 px-3 font-medium">Leads</th>
@@ -368,14 +368,14 @@ export const ReportsDashboard: React.FC = () => {
               </thead>
               <tbody>
                 {data.reportHistory.map((r) => (
-                  <tr key={r.id} className="border-b border-slate-700/30">
-                    <td className="py-2 px-3 text-slate-300">{formatDate(r.sent_at)}</td>
-                    <td className="py-2 px-3 text-slate-400 capitalize">{r.period}</td>
-                    <td className="py-2 px-3 text-right text-slate-300">{r.total_leads}</td>
-                    <td className="py-2 px-3 text-right text-slate-300">{r.conversion_rate?.toFixed(1)}%</td>
-                    <td className="py-2 px-3 text-right text-slate-300">{formatCurrency(r.revenue || 0)}</td>
-                    <td className="py-2 px-3 text-right text-slate-300">{formatCurrency(r.pipeline_value || 0)}</td>
-                    <td className="py-2 px-3 text-slate-400 truncate max-w-[200px]">{r.sent_to}</td>
+                  <tr key={r.id} className="border-b border-gray-100">
+                    <td className="py-2 px-3 text-gray-700">{formatDate(r.sent_at)}</td>
+                    <td className="py-2 px-3 text-gray-500 capitalize">{r.period}</td>
+                    <td className="py-2 px-3 text-right text-gray-700">{r.total_leads}</td>
+                    <td className="py-2 px-3 text-right text-gray-700">{r.conversion_rate?.toFixed(1)}%</td>
+                    <td className="py-2 px-3 text-right text-gray-700">{formatCurrency(r.revenue || 0)}</td>
+                    <td className="py-2 px-3 text-right text-gray-700">{formatCurrency(r.pipeline_value || 0)}</td>
+                    <td className="py-2 px-3 text-gray-500 truncate max-w-[200px]">{r.sent_to}</td>
                   </tr>
                 ))}
               </tbody>
@@ -390,18 +390,18 @@ export const ReportsDashboard: React.FC = () => {
 // KPI Card sub-component
 function KPICard({ label, value, sub, color }: { label: string; value: string; sub: string; color: string }) {
   const colorMap: Record<string, { border: string; iconBg: string; valueTxt: string }> = {
-    blue:    { border: 'border-blue-500/30',    iconBg: 'bg-blue-500/10',    valueTxt: 'text-blue-50' },
-    emerald: { border: 'border-emerald-500/30', iconBg: 'bg-emerald-500/10', valueTxt: 'text-emerald-50' },
-    amber:   { border: 'border-amber-500/30',   iconBg: 'bg-amber-500/10',   valueTxt: 'text-amber-50' },
-    purple:  { border: 'border-purple-500/30',  iconBg: 'bg-purple-500/10',  valueTxt: 'text-purple-50' },
+    blue:    { border: 'border-blue-200',    iconBg: 'bg-blue-50',    valueTxt: 'text-gray-900' },
+    emerald: { border: 'border-emerald-200', iconBg: 'bg-emerald-50', valueTxt: 'text-gray-900' },
+    amber:   { border: 'border-amber-200',   iconBg: 'bg-amber-50',   valueTxt: 'text-gray-900' },
+    purple:  { border: 'border-purple-200',  iconBg: 'bg-purple-50',  valueTxt: 'text-gray-900' },
   };
   const c = colorMap[color] || colorMap.blue;
 
   return (
-    <div className={`border ${c.border} bg-slate-800/40 rounded-xl p-4`}>
-      <div className="text-xs text-slate-500 font-medium mb-1">{label}</div>
+    <div className={`border ${c.border} bg-white shadow-sm rounded-xl p-4`}>
+      <div className="text-xs text-gray-500 font-medium mb-1">{label}</div>
       <div className={`text-2xl font-bold ${c.valueTxt}`}>{value}</div>
-      <div className="text-xs text-slate-500 mt-1">{sub}</div>
+      <div className="text-xs text-gray-400 mt-1">{sub}</div>
     </div>
   );
 }

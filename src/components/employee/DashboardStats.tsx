@@ -70,22 +70,22 @@ export const DashboardStats = () => {
   ];
 
   const colorMap: Record<string, { border: string; iconBg: string; iconText: string; valueTxt: string }> = {
-    blue:    { border: 'border-blue-500/30',    iconBg: 'bg-blue-500/10',    iconText: 'text-blue-400',    valueTxt: 'text-blue-50' },
-    emerald: { border: 'border-emerald-500/30', iconBg: 'bg-emerald-500/10', iconText: 'text-emerald-400', valueTxt: 'text-emerald-50' },
-    amber:   { border: 'border-amber-500/30',   iconBg: 'bg-amber-500/10',   iconText: 'text-amber-400',   valueTxt: 'text-amber-50' },
-    purple:  { border: 'border-purple-500/30',  iconBg: 'bg-purple-500/10',  iconText: 'text-purple-400',  valueTxt: 'text-purple-50' },
+    blue:    { border: 'border-blue-200',    iconBg: 'bg-blue-50',    iconText: 'text-blue-600',    valueTxt: 'text-gray-900' },
+    emerald: { border: 'border-emerald-200', iconBg: 'bg-emerald-50', iconText: 'text-emerald-600', valueTxt: 'text-gray-900' },
+    amber:   { border: 'border-amber-200',   iconBg: 'bg-amber-50',   iconText: 'text-amber-600',   valueTxt: 'text-gray-900' },
+    purple:  { border: 'border-purple-200',  iconBg: 'bg-purple-50',  iconText: 'text-purple-600',  valueTxt: 'text-gray-900' },
   };
 
   if (loading) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="bg-slate-800/80 p-4 md:p-5 rounded-xl border border-slate-700/50 animate-pulse">
+          <div key={i} className="bg-white p-4 md:p-5 rounded-xl border border-gray-200 shadow-sm animate-pulse">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-lg bg-slate-700"></div>
-              <div className="h-3 bg-slate-700 rounded w-16"></div>
+              <div className="w-9 h-9 rounded-lg bg-gray-200"></div>
+              <div className="h-3 bg-gray-200 rounded w-16"></div>
             </div>
-            <div className="h-7 bg-slate-700 rounded w-10"></div>
+            <div className="h-7 bg-gray-200 rounded w-10"></div>
           </div>
         ))}
       </div>
@@ -99,13 +99,13 @@ export const DashboardStats = () => {
         return (
           <div
             key={card.label}
-            className={`relative overflow-hidden bg-slate-800/60 backdrop-blur-sm p-4 md:p-5 rounded-xl border ${colors.border} hover:border-opacity-60 transition-all duration-200 group`}
+            className={`relative overflow-hidden bg-white shadow-sm p-4 md:p-5 rounded-xl border ${colors.border} hover:shadow-md transition-all duration-200 group`}
           >
             <div className="flex items-center gap-2.5 mb-3">
               <div className={`w-8 h-8 md:w-9 md:h-9 rounded-lg ${colors.iconBg} ${colors.iconText} flex items-center justify-center flex-shrink-0`}>
                 {card.icon}
               </div>
-              <p className="text-[11px] md:text-xs text-slate-400 font-medium leading-tight">{card.label}</p>
+              <p className="text-[11px] md:text-xs text-gray-500 font-medium leading-tight">{card.label}</p>
             </div>
             <p className={`text-2xl md:text-3xl font-bold ${colors.valueTxt} tracking-tight`}>{card.value}</p>
           </div>
