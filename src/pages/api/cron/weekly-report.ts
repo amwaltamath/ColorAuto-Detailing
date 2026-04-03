@@ -71,7 +71,10 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   const RESEND_API_KEY = (process.env.RESEND_API_KEY || '').trim();
-  const TO_EMAIL = (process.env.CONTACT_TO_EMAIL || 'admin@colorautodetailing.com').trim();
+  const TO_EMAILS = (process.env.CONTACT_TO_EMAIL || 'admin@colorautodetailing.com')
+    .split(',')
+    .map((e: string) => e.trim())
+    .filter(Boolean);
   const FROM_EMAIL = (process.env.CONTACT_FROM_EMAIL || 'no-reply@colorautodetailing.com').trim();
 
   if (!RESEND_API_KEY || !RESEND_API_KEY.startsWith('re_')) {
@@ -376,7 +379,7 @@ export const POST: APIRoute = async ({ request }) => {
       },
       body: JSON.stringify({
         from: FROM_EMAIL,
-        to: TO_EMAIL,
+        to: TO_EMAILS,
         subject: `📊 ${periodLabel} Lead Report — ${totalLeads} leads, ${formatCurrency(closedRevenue)} revenue`,
         html,
         text,
@@ -403,7 +406,7 @@ export const POST: APIRoute = async ({ request }) => {
       conversion_rate: parseFloat(conversionRate),
       revenue: closedRevenue,
       pipeline_value: pipelineValue,
-      sent_to: TO_EMAIL,
+      sent_to: TO_EMAILS.join(', '),
       resend_id: emailResult.id || null,
     });
 
