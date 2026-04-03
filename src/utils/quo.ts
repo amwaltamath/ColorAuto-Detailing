@@ -6,13 +6,13 @@
 const QUO_API_BASE = 'https://api.openphone.com/v1';
 
 function getApiKey(): string {
-  const key = import.meta.env.QUO_API_KEY ?? process.env.QUO_API_KEY;
+  const key = process.env.QUO_API_KEY || import.meta.env.QUO_API_KEY;
   if (!key) throw new Error('QUO_API_KEY is not configured');
   return key;
 }
 
 function getPhoneNumberId(): string {
-  return import.meta.env.QUO_PHONE_NUMBER_ID ?? process.env.QUO_PHONE_NUMBER_ID ?? '';
+  return process.env.QUO_PHONE_NUMBER_ID || import.meta.env.QUO_PHONE_NUMBER_ID || '';
 }
 
 export interface QuoSendResult {

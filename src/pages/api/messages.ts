@@ -137,7 +137,8 @@ export async function POST({ request }: APIContext) {
     console.log('[POST /api/messages] Message saved successfully:', data.id);
 
     // ── Quo SMS bridge: forward visitor messages to the owner's phone ──
-    const quoNotifyNumber = import.meta.env.QUO_SMS_NOTIFY_NUMBER ?? process.env.QUO_SMS_NOTIFY_NUMBER;
+    const quoNotifyNumber = process.env.QUO_SMS_NOTIFY_NUMBER || import.meta.env.QUO_SMS_NOTIFY_NUMBER;
+    console.log('[POST /api/messages] QUO_SMS_NOTIFY_NUMBER:', quoNotifyNumber ? 'SET' : 'NOT SET');
     if (quoNotifyNumber) {
       const smsBody = visitorName
         ? `💬 ${visitorName}: ${message.trim()}`
