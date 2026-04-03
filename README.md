@@ -25,16 +25,20 @@ Use this section to quickly rehydrate context when an AI or new dev picks up the
 
 - `PUBLIC_API_URL` (browser)
 - `API_URL` (server only)
-- `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`
+- `RESEND_API_KEY`, `CONTACT_TO_EMAIL` (comma-separated for multiple recipients), `CONTACT_FROM_EMAIL`
+- `CRON_SECRET`
+- `QUO_API_KEY`, `QUO_PHONE_NUMBER_ID`
 - `PUBLIC_GTM_ID`
 
 ### Chat Feature (Employee + Public)
 
 - Docs: `CHAT_FEATURE.md`
-- Widget: `src/components/features/ChatWidget.tsx` (public)
-- Manager: `src/components/features/ChatManager.tsx` (employee dashboard)
+- Widget: `src/components/features/ChatWidget.tsx` (public, collects visitor phone for SMS bridge)
+- Manager: `src/components/features/ChatManager.tsx` (employee dashboard, light theme)
 - Endpoints: `src/pages/api/messages.ts`, `src/pages/api/messages/respond.ts`, `src/pages/api/admin/chat-sessions.ts`
-- Storage: in-memory (no persistence yet)
+- Quo SMS bridge: `src/utils/quo.ts`, `src/pages/api/quo/webhook.ts`
+- Storage: Supabase tables (`chat_sessions`, `chat_messages`, `chat_sms_bridge`)
+- Realtime: Supabase Realtime subscriptions for live message updates (no polling)
 
 ### Recent Work / Branding
 
@@ -48,6 +52,16 @@ Use this section to quickly rehydrate context when an AI or new dev picks up the
 - **Cron**: Vercel cron fires every Monday 9am (`0 9 * * 1`), secured by `CRON_SECRET`
 - **DB**: `weekly_reports` table in Supabase tracks sent report history
 - **Manual send**: "Send Report Now" button in Reports tab
+- **Recipients**: `CONTACT_TO_EMAIL` supports comma-separated list for multiple recipients
+
+### Quo SMS Integration (Apr 2026)
+
+- **Two-way SMS ↔ Chat bridge**: Visitors provide phone → messages sent via OpenPhone (Quo) API → replies come back through webhook
+- **Endpoints**: `/api/messages` (send), `/api/messages/respond` (employee reply), `/api/quo/webhook` (incoming)
+- **Utility**: `src/utils/quo.ts` wraps OpenPhone API
+- **DB**: `chat_sms_bridge` maps phone numbers to chat sessions; `chat_sessions` stores visitor info (name, phone, email)
+- **Webhooks**: Registered for `message.received` and `message.delivered` events
+- **Auto-reply**: 2-minute timer sends "call the shop" message if no employee responds
 
 ### Admin Auth Fix (Mar 31, 2026)
 
@@ -57,7 +71,6 @@ Use this section to quickly rehydrate context when an AI or new dev picks up the
 
 ### Known Gaps / Next Steps
 
-- Persist chat data (Supabase tables listed in `CHAT_FEATURE.md`)
 - Add auth checks for employee chat endpoints
 - Back-end booking and scheduling endpoints
 

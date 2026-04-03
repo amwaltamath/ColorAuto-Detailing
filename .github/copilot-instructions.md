@@ -3,7 +3,7 @@
 ## Stack & Runtime
 - **Tech**: Astro 5 SSR + React 19 + TypeScript + Tailwind v4 on Vercel Functions.
 - **Commands**: `npm run dev` (localhost:4321) · `npm run build` · `npm run preview`.
-- **Env**: `PUBLIC_API_URL` (browser), `API_URL` (server-only), `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`, `PUBLIC_GTM_ID`, `CRON_SECRET`.
+- **Env**: `PUBLIC_API_URL` (browser), `API_URL` (server-only), `RESEND_API_KEY`, `CONTACT_TO_EMAIL` (comma-separated for multiple recipients), `CONTACT_FROM_EMAIL`, `PUBLIC_GTM_ID`, `CRON_SECRET`, `QUO_API_KEY`, `QUO_PHONE_NUMBER_ID`.
 - **Adapter**: Vercel with `output: 'server'` in [astro.config.mjs](astro.config.mjs); API routes run as Vercel Functions.
 
 ## Core Architecture
@@ -22,7 +22,8 @@
 - **Server-side API**: Astro endpoints → `apiFetch<T>()` in [src/utils/api.ts](src/utils/api.ts) → Backend (adds Bearer token from `process.env.API_URL`)
 - **Contact Form**: HTML/React form → [/api/contact](src/pages/api/contact.ts) → Resend email (honeypot: `website` field must be empty)
 - **Employee Ops**: Tab-based UI in [EmployeeLayout.astro](src/layouts/EmployeeLayout.astro) switches between `/api/employee/schedules`, `/api/employee/teams`, `/api/messages/*`
-- **Weekly Reports**: [ReportsDashboard.tsx](src/components/employee/ReportsDashboard.tsx) → `/api/employee/reports` (data) + `/api/cron/weekly-report` (send email via Resend). Vercel cron fires every Monday 9am. Manual send available from Reports tab. History stored in `weekly_reports` table.
+- **Quo SMS Bridge**: [ChatWidget.tsx](src/components/features/ChatWidget.tsx) collects visitor phone → [/api/messages](src/pages/api/messages.ts) sends SMS via [quo.ts](src/utils/quo.ts) (OpenPhone API) → visitor replies arrive at [/api/quo/webhook](src/pages/api/quo/webhook.ts) → stored in `chat_messages`. Employee replies via [ChatManager.tsx](src/components/features/ChatManager.tsx) → [/api/messages/respond](src/pages/api/messages/respond.ts) → SMS sent to visitor. Bridge mapping in `chat_sms_bridge` table.
+- **Weekly Reports**: [ReportsDashboard.tsx](src/components/employee/ReportsDashboard.tsx) → `/api/employee/reports` (data) + `/api/cron/weekly-report` (send email via Resend). Vercel cron fires every Monday 9am. Manual send available from Reports tab. History stored in `weekly_reports` table. `CONTACT_TO_EMAIL` supports comma-separated list for multiple recipients.
 
 ## Layouts & Routing
 - **3-level Layout Hierarchy**: 
@@ -57,12 +58,15 @@
 - **Hot reload**: `npm run dev` for instant feedback; check browser DevTools Console for hydration errors
 - **Build errors**: Run `npm run build` to catch strict TS type mismatches in API responses
 - **Auth issues**: Check `localStorage` via `getAuthToken()` in console; verify token in API requests (Bearer header)
-- **Chat/Messaging**: Schema in [supabase/schema.sql](supabase/schema.sql); API stubs at [src/pages/api/messages.ts](src/pages/api/messages.ts), [src/pages/api/admin/chat-sessions.ts](src/pages/api/admin/chat-sessions.ts)
+- **Chat/Messaging**: Schema in [supabase/schema.sql](supabase/schema.sql); endpoints at [src/pages/api/messages.ts](src/pages/api/messages.ts), [src/pages/api/messages/respond.ts](src/pages/api/messages/respond.ts), [src/pages/api/admin/chat-sessions.ts](src/pages/api/admin/chat-sessions.ts), [src/pages/api/quo/webhook.ts](src/pages/api/quo/webhook.ts)
+- **Quo SMS**: Utility at [src/utils/quo.ts](src/utils/quo.ts); phone number ID `QUO_PHONE_NUMBER_ID` env var; webhook receives `message.received` and `message.delivered` events
 
 ## Notes
 - Email form accepts JSON, form-encoded, and multipart; [/api/contact](src/pages/api/contact.ts) handles all three
-- Employee UI uses dark theme (slate-900/800) vs. public site (light)
-- Chat widget in [Layout.astro](src/layouts/Layout.astro) always visible; session ID stored in `useChatStore`
+- Employee UI uses dark theme (slate-900/800) vs. public site (light); ChatManager uses light theme (white/gray-50) to match dashboard
+- Chat widget in [Layout.astro](src/layouts/Layout.astro) always visible; session ID stored in `useChatStore`; visitor provides phone number for SMS bridge
+- Quo (OpenPhone) webhooks registered for `message.received` and `message.delivered` on business number
+- Chat uses Supabase Realtime subscriptions for live message updates (no polling)
 - Vercel redirects/aliases in [vercel.json](vercel.json)
 - Vercel cron schedule in [vercel.json](vercel.json) — weekly report runs `0 9 * * 1`, secured by `CRON_SECRET` env var
 - Admin login fix: `loginUser()` now surfaces real server errors; employee login requires `user_metadata.role` = `employee` or `admin`
