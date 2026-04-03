@@ -1,5 +1,6 @@
 import type { APIContext } from 'astro';
 import { supabaseServer } from '../../../utils/supabaseServer';
+import { quoSendSMS } from '../../../utils/quo';
 
 interface ChatMessage {
   id: string;
@@ -10,8 +11,6 @@ interface ChatMessage {
   timestamp: string;
   isRead: boolean;
 }
-
-// Supabase-backed storage
 
 export async function POST({ request }: APIContext) {
   if (request.headers.get('content-type') !== 'application/json') {
@@ -30,7 +29,6 @@ export async function POST({ request }: APIContext) {
 
   const { sessionId, message, employeeName, employeeRole } = body;
 
-  // TODO: Add auth check - verify employee/admin status from token
   if (!sessionId || !message || !employeeName) {
     return new Response(JSON.stringify({ ok: false, error: 'Missing required fields' }), {
       status: 400,
@@ -63,6 +61,27 @@ export async function POST({ request }: APIContext) {
       status: 500,
       headers: { 'content-type': 'application/json' },
     });
+  }
+
+  // ── Send SMS to visitor's phone so they get the reply even if they left the site ──
+  const { data: bridge } = await supabaseServer
+    .from('chat_sms_bridge')
+    .select('phone_number')
+    .eq('session_id', sessionId)
+    .limit(1)
+    .single();
+
+  if (bridge?.phone_number) {
+    const smsBody = `${employeeName}: ${message.trim()}`;
+    quoSendSMS(bridge.phone_number, smsBody)
+      .then((res) => {
+        if (res.ok) {
+          console.log('[respond] SMS sent to', bridge.phone_number, '→', res.messageId);
+        } else {
+          console.error('[respond] SMS failed:', res.error);
+        }
+      })
+      .catch((err) => console.error('[respond] SMS error:', err));
   }
 
   const responseMessage: ChatMessage = {

@@ -7,6 +7,7 @@ interface ChatSession {
   visitorPhone?: string;
   visitorName?: string;
   messageCount: number;
+  unreadCount: number;
   lastMessage?: string;
   lastMessageTime?: string;
 }
@@ -35,14 +36,27 @@ export async function GET({ request }: APIContext) {
       });
     }
 
-    // Fetch sessions with aggregates
+    // Fetch sessions with visitor info from chat_sessions table
+    const { data: sessionRows } = await supabaseServer
+      .from('chat_sessions')
+      .select('id, visitor_name, visitor_email, visitor_phone');
+
+    const sessionInfoMap = new Map<string, { visitorName?: string; visitorEmail?: string; visitorPhone?: string }>();
+    (sessionRows || []).forEach((s: any) => {
+      sessionInfoMap.set(s.id, {
+        visitorName: s.visitor_name || undefined,
+        visitorEmail: s.visitor_email || undefined,
+        visitorPhone: s.visitor_phone || undefined,
+      });
+    });
+
+    // Fetch messages and aggregate per session
     const { data: msgs, error } = await supabaseServer
       .from('chat_messages')
-      .select('id, session_id, sender_type, sender_name, message, timestamp')
+      .select('id, session_id, sender_type, sender_name, message, timestamp, is_read')
       .order('timestamp', { ascending: false });
 
     if (error) {
-      // Return empty sessions instead of failing
       return new Response(JSON.stringify({ ok: true, sessions: [] }), {
         status: 200,
         headers: { 'content-type': 'application/json' },
@@ -52,16 +66,24 @@ export async function GET({ request }: APIContext) {
     const sessionMap = new Map<string, ChatSession>();
     (msgs || []).forEach((m: any) => {
       if (!sessionMap.has(m.session_id)) {
+        const info = sessionInfoMap.get(m.session_id);
         sessionMap.set(m.session_id, {
           id: m.session_id,
-          visitorName: m.sender_type === 'visitor' ? m.sender_name : undefined,
+          visitorName: info?.visitorName || (m.sender_type === 'visitor' ? m.sender_name : undefined),
+          visitorEmail: info?.visitorEmail,
+          visitorPhone: info?.visitorPhone,
           messageCount: 0,
+          unreadCount: 0,
           lastMessage: m.message,
           lastMessageTime: m.timestamp,
         });
       }
       const s = sessionMap.get(m.session_id)!;
       s.messageCount += 1;
+      // Count unread visitor messages
+      if (m.sender_type === 'visitor' && !m.is_read) {
+        s.unreadCount = (s.unreadCount || 0) + 1;
+      }
     });
 
     const sessions = Array.from(sessionMap.values());

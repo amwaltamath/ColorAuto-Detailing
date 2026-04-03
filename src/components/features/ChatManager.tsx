@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { supabaseBrowser } from '../../utils/supabaseClient';
 
 interface ChatMessage {
   id: string;
@@ -16,6 +17,7 @@ interface ChatSession {
   visitorPhone?: string;
   visitorName?: string;
   messageCount: number;
+  unreadCount: number;
   lastMessage?: string;
   lastMessageTime?: string;
 }
@@ -26,14 +28,34 @@ export function ChatManager() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [responseText, setResponseText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [employeeName, setEmployeeName] = useState('Support Agent');
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [employeeName, setEmployeeName] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('chatEmployeeName') || 'Support Agent';
+    }
+    return 'Support Agent';
+  });
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [previousMessageCount, setPreviousMessageCount] = useState(0);
-  const [showTeamChat] = useState(false); // Team chat hidden; handled via Teams section
-  const [teamMessages] = useState<ChatMessage[]>([]);
-  const [teamText] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef(messages);
+  const selectedSessionRef = useRef(selectedSession);
+
+  // Keep refs in sync
+  useEffect(() => { messagesRef.current = messages; }, [messages]);
+  useEffect(() => { selectedSessionRef.current = selectedSession; }, [selectedSession]);
+
+  // Persist employee name to localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('chatEmployeeName', employeeName);
+    }
+  }, [employeeName]);
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   // Request notification permission on mount
   useEffect(() => {
@@ -46,19 +68,75 @@ export function ChatManager() {
     }
   }, []);
 
-  // Load all sessions on mount
+  // Load sessions initially + poll every 5s for new/updated sessions
   useEffect(() => {
     loadSessions();
-    const interval = setInterval(loadSessions, 3000); // Refresh every 3 seconds
+    const interval = setInterval(loadSessions, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  // Load messages for selected session
+  // Supabase Realtime: subscribe to all chat_messages inserts
+  useEffect(() => {
+    const realtimeEnabled = Boolean(
+      typeof window !== 'undefined' &&
+      import.meta.env.PUBLIC_SUPABASE_URL &&
+      import.meta.env.PUBLIC_SUPABASE_ANON_KEY &&
+      supabaseBrowser
+    );
+    if (!realtimeEnabled || !supabaseBrowser) return;
+
+    const channel = supabaseBrowser
+      .channel('employee-chat-all')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'chat_messages',
+      }, (payload) => {
+        const m: any = payload.new;
+        const msg: ChatMessage = {
+          id: m.id,
+          sessionId: m.session_id,
+          senderType: m.sender_type,
+          senderName: m.sender_name || undefined,
+          message: m.message,
+          timestamp: m.timestamp,
+          isRead: m.is_read,
+        };
+
+        // If this message is for the currently selected session, add it live
+        if (m.session_id === selectedSessionRef.current) {
+          setMessages((prev) => {
+            if (prev.some((x) => x.id === msg.id)) return prev;
+            return [...prev, msg];
+          });
+        }
+
+        // Refresh sessions list to update counts
+        loadSessions();
+
+        // Notification for visitor messages
+        if (m.sender_type === 'visitor') {
+          playNotificationSound();
+          if (notificationsEnabled) {
+            new Notification('New Customer Message', {
+              body: `${m.sender_name || 'Visitor'}: ${m.message.slice(0, 100)}`,
+              icon: '/favicon.svg',
+              tag: `chat-${m.session_id}`,
+            });
+          }
+        }
+      })
+      .subscribe();
+
+    return () => {
+      if (supabaseBrowser) supabaseBrowser.removeChannel(channel);
+    };
+  }, [notificationsEnabled]);
+
+  // Load messages when selected session changes
   useEffect(() => {
     if (selectedSession) {
       loadMessages(selectedSession);
-      const interval = setInterval(() => loadMessages(selectedSession), 2000);
-      return () => clearInterval(interval);
     }
   }, [selectedSession]);
 
@@ -67,36 +145,17 @@ export function ChatManager() {
       const response = await fetch('/api/admin/chat-sessions');
       if (response.ok) {
         const data = await response.json();
-        const newSessions = data.sessions || [];
+        const newSessions: ChatSession[] = data.sessions || [];
         
-        // Calculate total messages across all sessions
+        // Check for new messages (total count increase)
         const totalMessages = newSessions.reduce((sum: number, s: ChatSession) => sum + s.messageCount, 0);
-        
-        // Check if there are new messages
+
         if (previousMessageCount > 0 && totalMessages > previousMessageCount) {
-          // Play sound alert
-          playNotificationSound();
-          
-          // Show browser notification
-          if (notificationsEnabled) {
-            const newMessageCount = totalMessages - previousMessageCount;
-            new Notification('New Customer Message', {
-              body: `You have ${newMessageCount} new message${newMessageCount > 1 ? 's' : ''} from customers`,
-              icon: '/favicon.svg',
-              tag: 'chat-notification',
-            });
-          }
-          
-          // Send email notification
           sendEmailNotification(newSessions);
         }
         
         setPreviousMessageCount(totalMessages);
         setSessions(newSessions);
-        
-        // Calculate unread count (messages from visitors)
-        const unread = newSessions.reduce((sum: number, s: ChatSession) => sum + s.messageCount, 0);
-        setUnreadCount(unread);
       }
     } catch (error) {
       console.error('Error loading sessions:', error);
@@ -131,10 +190,6 @@ export function ChatManager() {
     }
   };
 
-  const handleDeleteTeamMessage = (messageId: string) => {
-    if (!confirm('Delete this message?')) return;
-    setTeamMessages(teamMessages.filter((m) => m.id !== messageId));
-  };
 
   const handleDeleteSession = async (sessionId: string) => {
     if (!confirm('Delete this entire conversation? This cannot be undone.')) return;
@@ -247,9 +302,9 @@ export function ChatManager() {
         <div className="p-4 border-b border-slate-800 bg-slate-850">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold text-sm uppercase tracking-wide text-slate-200">Chat Sessions</h2>
-            {unreadCount > 0 && (
+            {sessions.reduce((sum, s) => sum + (s.unreadCount || 0), 0) > 0 && (
               <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full">
-                {unreadCount}
+                {sessions.reduce((sum, s) => sum + (s.unreadCount || 0), 0)}
               </span>
             )}
           </div>
@@ -283,13 +338,26 @@ export function ChatManager() {
                 }`}
               >
                 <button
-                  onClick={() => setSelectedSession(session.id)}
+                  onClick={() => { setSelectedSession(session.id); setSidebarOpen(false); }}
                   className="flex-1 text-left p-4"
                 >
-                  <p className="font-semibold text-sm truncate text-slate-100">
-                    {session.visitorName || session.visitorEmail || 'Visitor'}
-                  </p>
-                  <p className="text-xs text-slate-400 truncate">{session.visitorEmail}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="font-semibold text-sm truncate text-slate-100">
+                      {session.visitorName || session.visitorEmail || 'Visitor'}
+                    </p>
+                    {(session.unreadCount || 0) > 0 && (
+                      <span className="bg-blue-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-2 shrink-0">
+                        {session.unreadCount}
+                      </span>
+                    )}
+                  </div>
+                  {session.visitorPhone && (
+                    <p className="text-xs text-blue-300 truncate">{session.visitorPhone}</p>
+                  )}
+                  {session.visitorEmail && (
+                    <p className="text-xs text-slate-400 truncate">{session.visitorEmail}</p>
+                  )}
+                  <p className="text-xs text-slate-500 truncate mt-1">{session.lastMessage}</p>
                   <div className="flex justify-between items-center mt-1">
                     <p className="text-[11px] text-slate-500">{session.messageCount} messages</p>
                     {session.lastMessageTime && (
@@ -323,7 +391,7 @@ export function ChatManager() {
 
       {/* Chat View */}
       <div className="flex-1 flex flex-col bg-slate-900/80 min-h-0">
-        {!selectedSession && !showTeamChat && (
+        {!selectedSession && (
           <div className="flex-1 flex items-center justify-center text-slate-400">
             <p className="text-center text-sm">
               {sessions.length === 0 ? 'No active chats' : 'Select a chat to start'}
@@ -334,9 +402,33 @@ export function ChatManager() {
           <>
             {/* Header */}
             <div className="bg-slate-850 border-b border-slate-800 px-3 md:px-6 py-3 md:py-4 flex items-center justify-between">
-              <div className="flex-1">
-                <h3 className="font-semibold text-slate-50 text-sm md:text-base">Session {selectedSession.slice(0, 6)}…</h3>
-                <p className="text-xs text-slate-400">Live customer support</p>
+              <div className="flex-1 min-w-0">
+                {(() => {
+                  const session = sessions.find((s) => s.id === selectedSession);
+                  return (
+                    <>
+                      <h3 className="font-semibold text-slate-50 text-sm md:text-base truncate">
+                        {session?.visitorName || 'Visitor'}
+                      </h3>
+                      <div className="flex items-center gap-3 text-xs text-slate-400 mt-0.5">
+                        {session?.visitorPhone && (
+                          <a href={`tel:${session.visitorPhone}`} className="hover:text-blue-300 transition flex items-center gap-1">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                            {session.visitorPhone}
+                          </a>
+                        )}
+                        {session?.visitorEmail && (
+                          <a href={`mailto:${session.visitorEmail}`} className="hover:text-blue-300 transition truncate">
+                            {session.visitorEmail}
+                          </a>
+                        )}
+                        {!session?.visitorPhone && !session?.visitorEmail && (
+                          <span>Session {selectedSession!.slice(0, 8)}…</span>
+                        )}
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-[11px] text-slate-500">{messages.length} messages</span>
@@ -364,15 +456,6 @@ export function ChatManager() {
                     key={msg.id}
                     className={`flex group ${msg.senderType === 'visitor' ? 'justify-start' : 'justify-end'}`}
                   >
-                    {msg.senderType !== 'visitor' && (
-                      <button
-                        onClick={() => handleDeleteMessage(msg.id)}
-                        className="absolute -right-8 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 transition-opacity text-sm font-bold"
-                        title="Delete message"
-                      >
-                        ✕
-                      </button>
-                    )}
                     <div
                       className={`max-w-md px-4 py-3 rounded-xl shadow relative ${
                         msg.senderType === 'visitor'
@@ -384,17 +467,27 @@ export function ChatManager() {
                         <p className="text-[11px] font-semibold mb-1 opacity-90">{msg.senderName}</p>
                       )}
                       <p className="text-sm leading-relaxed">{msg.message}</p>
-                      <p className="text-[11px] mt-2 opacity-70">
-                        {new Date(msg.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' })}{' '}
-                        {new Date(msg.timestamp).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </p>
+                      <div className="flex items-center justify-between mt-2 gap-3">
+                        <p className="text-[11px] opacity-70">
+                          {new Date(msg.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' })}{' '}
+                          {new Date(msg.timestamp).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </p>
+                        <button
+                          onClick={() => handleDeleteMessage(msg.id)}
+                          className="opacity-0 group-hover:opacity-100 transition text-xs"
+                          title="Delete message"
+                        >
+                          <span className={msg.senderType === 'visitor' ? 'text-red-400 hover:text-red-300' : 'text-blue-200 hover:text-white'}>✕</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))
               )}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Response Input */}
@@ -427,11 +520,7 @@ export function ChatManager() {
               </div>
             </form>
           </>
-        ) : (
-          <div className="flex items-center justify-center h-full text-slate-500">
-            <p>Select a chat session to view messages</p>
-          </div>
-        )}
+        ) : null}
       </div>
     </div>
   );
