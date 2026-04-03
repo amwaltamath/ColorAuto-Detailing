@@ -76,11 +76,12 @@ export async function POST({ request }: APIContext) {
     message: string;
     visitorEmail?: string;
     visitorName?: string;
+    visitorPhone?: string;
   };
 
-  const { sessionId, message, visitorEmail, visitorName } = body;
+  const { sessionId, message, visitorEmail, visitorName, visitorPhone } = body;
 
-  console.log('[POST /api/messages] Received:', { sessionId, message, visitorEmail, visitorName });
+  console.log('[POST /api/messages] Received:', { sessionId, message, visitorEmail, visitorName, visitorPhone });
   console.log('[POST /api/messages] Supabase server configured:', !!supabaseServer);
 
   if (!sessionId || !message) {
@@ -109,6 +110,7 @@ export async function POST({ request }: APIContext) {
         id: sessionId,
         visitor_email: visitorEmail || null,
         visitor_name: visitorName || null,
+        visitor_phone: visitorPhone || null,
         updated_at: new Date().toISOString(),
       }, { onConflict: 'id' });
 
@@ -136,18 +138,29 @@ export async function POST({ request }: APIContext) {
 
     console.log('[POST /api/messages] Message saved successfully:', data.id);
 
-    // ── Quo SMS bridge: forward visitor messages to the owner's phone ──
-    const quoNotifyNumber = process.env.QUO_SMS_NOTIFY_NUMBER || import.meta.env.QUO_SMS_NOTIFY_NUMBER;
-    console.log('[POST /api/messages] QUO_SMS_NOTIFY_NUMBER:', quoNotifyNumber ? 'SET' : 'NOT SET');
-    if (quoNotifyNumber) {
+    // ── Quo SMS bridge: send notification to visitor's phone or fallback number ──
+    // Normalize phone to E.164
+    const normalizePhone = (phone: string): string | null => {
+      const digits = phone.replace(/\D/g, '');
+      if (digits.length === 10) return `+1${digits}`;
+      if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
+      if (phone.startsWith('+') && digits.length >= 10) return `+${digits}`;
+      return null;
+    };
+
+    const visitorE164 = visitorPhone ? normalizePhone(visitorPhone) : null;
+    const fallbackNumber = process.env.QUO_SMS_NOTIFY_NUMBER || import.meta.env.QUO_SMS_NOTIFY_NUMBER;
+    const smsTarget = visitorE164 || fallbackNumber;
+
+    if (smsTarget) {
       const smsBody = visitorName
         ? `💬 ${visitorName}: ${message.trim()}`
         : `💬 Website chat: ${message.trim()}`;
 
-      quoSendSMS(quoNotifyNumber, smsBody)
+      quoSendSMS(smsTarget, smsBody)
         .then((res) => {
           if (res.ok) {
-            console.log('[POST /api/messages] SMS forwarded via Quo:', res.messageId);
+            console.log('[POST /api/messages] SMS sent to', smsTarget, '→', res.messageId);
           } else {
             console.error('[POST /api/messages] Quo SMS failed:', res.error);
           }
@@ -155,12 +168,12 @@ export async function POST({ request }: APIContext) {
         .catch((err) => console.error('[POST /api/messages] Quo SMS error:', err));
 
       // Track bridge mapping so inbound SMS replies route to this session
-      if (supabaseServer) {
+      if (supabaseServer && smsTarget) {
         supabaseServer
           .from('chat_sms_bridge')
           .upsert(
             {
-              phone_number: quoNotifyNumber,
+              phone_number: smsTarget,
               session_id: sessionId,
               updated_at: new Date().toISOString(),
             },
@@ -171,6 +184,7 @@ export async function POST({ request }: APIContext) {
           });
       }
     }
+    console.log('[POST /api/messages] QUO_SMS_NOTIFY_NUMBER:', fallbackNumber ? 'SET' : 'NOT SET');
 
     // Fire push notification to employee devices (non-blocking)
     const pushTitle = visitorName

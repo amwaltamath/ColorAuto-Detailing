@@ -20,6 +20,7 @@ function ChatWidgetInner() {
   const [input, setInput] = useState('');
   const [visitorEmail, setVisitorEmail] = useState('');
   const [visitorName, setVisitorName] = useState('');
+  const [visitorPhone, setVisitorPhone] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef(messages);
   const [isPolling, setIsPolling] = useState(false);
@@ -150,6 +151,7 @@ function ChatWidgetInner() {
           message: input,
           visitorEmail: visitorEmail || undefined,
           visitorName: visitorName || undefined,
+          visitorPhone: visitorPhone || undefined,
         }),
       });
 
@@ -159,10 +161,11 @@ function ChatWidgetInner() {
           addMessage(data.message);
         }
         setInput('');
-        // Clear email/name after first message
-        if (visitorEmail || visitorName) {
+        // Clear email/name/phone after first message
+        if (visitorEmail || visitorName || visitorPhone) {
           setVisitorEmail('');
           setVisitorName('');
+          setVisitorPhone('');
         }
 
         // Start 2-minute auto-reply timer (if not already sent this session)
@@ -298,7 +301,7 @@ function ChatWidgetInner() {
 
           {/* Input Form */}
           <form onSubmit={handleSendMessage} className="border-t border-gray-200 p-3 md:p-4 bg-white md:rounded-b-lg rounded-none space-y-2 md:space-y-3">
-            {/* Show email/name inputs only on first message */}
+            {/* Show contact inputs only on first message */}
             {messages.filter((m) => m.senderType === 'visitor').length === 0 && (
               <>
                 <input
@@ -306,6 +309,13 @@ function ChatWidgetInner() {
                   placeholder="Your name (optional)"
                   value={visitorName}
                   onChange={(e) => setVisitorName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
+                />
+                <input
+                  type="tel"
+                  placeholder="Your phone number (for text updates)"
+                  value={visitorPhone}
+                  onChange={(e) => setVisitorPhone(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
                 />
                 <input
