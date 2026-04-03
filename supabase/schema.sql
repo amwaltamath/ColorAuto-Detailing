@@ -168,6 +168,24 @@ CREATE POLICY "Users can update chat sessions"
   WITH CHECK (true);
 
 -- ============================================================
+-- Quo SMS Bridge (maps phone numbers → chat sessions for two-way SMS)
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS chat_sms_bridge (
+  phone_number TEXT PRIMARY KEY,       -- E.164 number of the SMS recipient
+  session_id TEXT NOT NULL REFERENCES chat_sessions(id) ON DELETE CASCADE,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE chat_sms_bridge ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Service role can manage sms bridge"
+  ON chat_sms_bridge
+  FOR ALL
+  USING (true)
+  WITH CHECK (true);
+
+-- ============================================================
 -- Leads Management
 -- ============================================================
 

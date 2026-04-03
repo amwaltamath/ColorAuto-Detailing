@@ -1,5 +1,6 @@
 import type { APIContext } from 'astro';
 import { supabaseServer } from '../../utils/supabaseServer';
+import { quoSendSMS } from '../../utils/quo';
 
 interface ChatMessage {
   id: string;
@@ -134,6 +135,41 @@ export async function POST({ request }: APIContext) {
     }
 
     console.log('[POST /api/messages] Message saved successfully:', data.id);
+
+    // ── Quo SMS bridge: forward visitor messages to the owner's phone ──
+    const quoNotifyNumber = import.meta.env.QUO_SMS_NOTIFY_NUMBER ?? process.env.QUO_SMS_NOTIFY_NUMBER;
+    if (quoNotifyNumber) {
+      const smsBody = visitorName
+        ? `💬 ${visitorName}: ${message.trim()}`
+        : `💬 Website chat: ${message.trim()}`;
+
+      quoSendSMS(quoNotifyNumber, smsBody)
+        .then((res) => {
+          if (res.ok) {
+            console.log('[POST /api/messages] SMS forwarded via Quo:', res.messageId);
+          } else {
+            console.error('[POST /api/messages] Quo SMS failed:', res.error);
+          }
+        })
+        .catch((err) => console.error('[POST /api/messages] Quo SMS error:', err));
+
+      // Track bridge mapping so inbound SMS replies route to this session
+      if (supabaseServer) {
+        supabaseServer
+          .from('chat_sms_bridge')
+          .upsert(
+            {
+              phone_number: quoNotifyNumber,
+              session_id: sessionId,
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: 'phone_number' }
+          )
+          .then(({ error: bridgeErr }) => {
+            if (bridgeErr) console.error('[POST /api/messages] Bridge upsert error:', bridgeErr);
+          });
+      }
+    }
 
     // Fire push notification to employee devices (non-blocking)
     const pushTitle = visitorName

@@ -23,6 +23,8 @@ function ChatWidgetInner() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef(messages);
   const [isPolling, setIsPolling] = useState(false);
+  const autoReplyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [autoReplySent, setAutoReplySent] = useState(false);
 
   // Initialize session on mount
   useEffect(() => {
@@ -30,12 +32,24 @@ function ChatWidgetInner() {
       const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substring(7)}`;
       initializeSession(newSessionId);
     }
+    return () => {
+      if (autoReplyTimerRef.current) clearTimeout(autoReplyTimerRef.current);
+    };
   }, [sessionId, initializeSession]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
     messagesRef.current = messages;
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+
+    // If an employee/admin reply arrives, cancel the auto-reply timer
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg && lastMsg.senderType !== 'visitor') {
+      if (autoReplyTimerRef.current) {
+        clearTimeout(autoReplyTimerRef.current);
+        autoReplyTimerRef.current = null;
+      }
+    }
   }, [messages]);
 
   // Fetch once on open and subscribe to realtime updates
@@ -149,6 +163,28 @@ function ChatWidgetInner() {
         if (visitorEmail || visitorName) {
           setVisitorEmail('');
           setVisitorName('');
+        }
+
+        // Start 2-minute auto-reply timer (if not already sent this session)
+        if (!autoReplySent) {
+          if (autoReplyTimerRef.current) clearTimeout(autoReplyTimerRef.current);
+          autoReplyTimerRef.current = setTimeout(() => {
+            // Only fire if the last message is still from the visitor (no employee reply yet)
+            const current = messagesRef.current;
+            const last = current[current.length - 1];
+            if (last && last.senderType === 'visitor') {
+              addMessage({
+                id: `auto_${Date.now()}`,
+                sessionId: sessionId!,
+                senderType: 'employee',
+                senderName: 'ColorAuto',
+                message: "Thanks for reaching out! Our team is currently busy. For immediate help, please call us at (970) 628-1505 — we'd love to hear from you!",
+                timestamp: new Date().toISOString(),
+                isRead: false,
+              });
+              setAutoReplySent(true);
+            }
+          }, 2 * 60 * 1000); // 2 minutes
         }
       } else {
         console.error('Failed to send message');
