@@ -280,13 +280,13 @@ export function ChatManager() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-[70vh] rounded-xl overflow-hidden border border-slate-800 bg-slate-900 text-slate-100 shadow-xl">
+    <div className="flex flex-col lg:flex-row min-h-[85vh] rounded-xl overflow-hidden border border-gray-200 bg-white text-gray-900 shadow-sm">
       {/* Mobile Header with Sidebar Toggle */}
-      <div className="lg:hidden bg-slate-850 border-b border-slate-800 p-3 flex items-center justify-between">
-        <h2 className="font-semibold text-sm uppercase tracking-wide text-slate-200">Chat</h2>
+      <div className="lg:hidden bg-gray-50 border-b border-gray-200 p-3 flex items-center justify-between">
+        <h2 className="font-semibold text-sm uppercase tracking-wide text-gray-700">Chat</h2>
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="text-slate-400 hover:text-slate-200 transition p-1.5"
+          className="text-gray-500 hover:text-gray-700 transition p-1.5"
           aria-label="Toggle sidebar"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -298,17 +298,17 @@ export function ChatManager() {
       {/* Sessions List - Sidebar */}
       <div className={`${
         sidebarOpen ? 'block' : 'hidden'
-      } lg:block w-full lg:w-72 bg-slate-850/80 border-b lg:border-b-0 lg:border-r border-slate-800 max-h-[60vh] lg:max-h-none overflow-y-auto`}>
-        <div className="p-4 border-b border-slate-800 bg-slate-850">
+      } lg:block w-full lg:w-80 bg-gray-50 border-b lg:border-b-0 lg:border-r border-gray-200 max-h-[60vh] lg:max-h-none overflow-y-auto`}>
+        <div className="p-4 border-b border-gray-200 bg-white">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-semibold text-sm uppercase tracking-wide text-slate-200">Chat Sessions</h2>
+            <h2 className="font-semibold text-sm uppercase tracking-wide text-gray-700">Chat Sessions</h2>
             {sessions.reduce((sum, s) => sum + (s.unreadCount || 0), 0) > 0 && (
               <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full">
                 {sessions.reduce((sum, s) => sum + (s.unreadCount || 0), 0)}
               </span>
             )}
           </div>
-          <p className="text-xs text-slate-400">{sessions.length} active</p>
+          <p className="text-xs text-gray-500">{sessions.length} active</p>
           {!notificationsEnabled && (
             <button
               onClick={() => {
@@ -316,15 +316,15 @@ export function ChatManager() {
                   setNotificationsEnabled(permission === 'granted');
                 });
               }}
-              className="mt-2 text-[11px] text-blue-300 hover:text-blue-200 underline"
+              className="mt-2 text-[11px] text-blue-600 hover:text-blue-500 underline"
             >
               Enable notifications
             </button>
           )}
         </div>
-        <div className="divide-y divide-slate-800 overflow-y-auto max-h-[70vh]">
+        <div className="divide-y divide-gray-200 overflow-y-auto max-h-[70vh]">
           {sessions.length === 0 ? (
-            <div className="p-4 text-center text-slate-500">
+            <div className="p-4 text-center text-gray-400">
               <p className="text-sm">No chat sessions yet</p>
             </div>
           ) : (
@@ -333,8 +333,8 @@ export function ChatManager() {
                 key={session.id}
                 className={`flex items-center transition group ${
                   selectedSession === session.id
-                    ? 'bg-slate-800/80 border-l-4 border-l-blue-500'
-                    : 'hover:bg-slate-850'
+                    ? 'bg-blue-50 border-l-4 border-l-blue-500'
+                    : 'bg-white hover:bg-gray-50'
                 }`}
               >
                 <button
@@ -342,7 +342,7 @@ export function ChatManager() {
                   className="flex-1 text-left p-4"
                 >
                   <div className="flex items-center justify-between">
-                    <p className="font-semibold text-sm truncate text-slate-100">
+                    <p className="font-semibold text-sm truncate text-gray-900">
                       {session.visitorName || session.visitorEmail || 'Visitor'}
                     </p>
                     {(session.unreadCount || 0) > 0 && (
@@ -352,16 +352,16 @@ export function ChatManager() {
                     )}
                   </div>
                   {session.visitorPhone && (
-                    <p className="text-xs text-blue-300 truncate">{session.visitorPhone}</p>
+                    <p className="text-xs text-blue-600 truncate">{session.visitorPhone}</p>
                   )}
                   {session.visitorEmail && (
-                    <p className="text-xs text-slate-400 truncate">{session.visitorEmail}</p>
+                    <p className="text-xs text-gray-500 truncate">{session.visitorEmail}</p>
                   )}
-                  <p className="text-xs text-slate-500 truncate mt-1">{session.lastMessage}</p>
+                  <p className="text-xs text-gray-400 truncate mt-1">{session.lastMessage}</p>
                   <div className="flex justify-between items-center mt-1">
-                    <p className="text-[11px] text-slate-500">{session.messageCount} messages</p>
+                    <p className="text-[11px] text-gray-400">{session.messageCount} messages</p>
                     {session.lastMessageTime && (
-                      <p className="text-[11px] text-slate-500">
+                      <p className="text-[11px] text-gray-400">
                         {new Date(session.lastMessageTime).toLocaleDateString([], { month: 'short', day: 'numeric' })}{' '}
                         {new Date(session.lastMessageTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </p>
@@ -370,7 +370,7 @@ export function ChatManager() {
                 </button>
                 <button
                   onClick={() => handleDeleteSession(session.id)}
-                  className="pr-4 opacity-0 group-hover:opacity-100 transition text-red-400 hover:text-red-300"
+                  className="pr-4 opacity-0 group-hover:opacity-100 transition text-red-400 hover:text-red-600"
                   title="Delete conversation"
                   aria-label="Delete conversation"
                 >
@@ -390,9 +390,9 @@ export function ChatManager() {
 
 
       {/* Chat View */}
-      <div className="flex-1 flex flex-col bg-slate-900/80 min-h-0">
+      <div className="flex-1 flex flex-col bg-white min-h-0">
         {!selectedSession && (
-          <div className="flex-1 flex items-center justify-center text-slate-400">
+          <div className="flex-1 flex items-center justify-center text-gray-400">
             <p className="text-center text-sm">
               {sessions.length === 0 ? 'No active chats' : 'Select a chat to start'}
             </p>
@@ -401,24 +401,24 @@ export function ChatManager() {
         {selectedSession ? (
           <>
             {/* Header */}
-            <div className="bg-slate-850 border-b border-slate-800 px-3 md:px-6 py-3 md:py-4 flex items-center justify-between">
+            <div className="bg-white border-b border-gray-200 px-3 md:px-6 py-3 md:py-4 flex items-center justify-between">
               <div className="flex-1 min-w-0">
                 {(() => {
                   const session = sessions.find((s) => s.id === selectedSession);
                   return (
                     <>
-                      <h3 className="font-semibold text-slate-50 text-sm md:text-base truncate">
+                      <h3 className="font-semibold text-gray-900 text-sm md:text-base truncate">
                         {session?.visitorName || 'Visitor'}
                       </h3>
-                      <div className="flex items-center gap-3 text-xs text-slate-400 mt-0.5">
+                      <div className="flex items-center gap-3 text-xs text-gray-500 mt-0.5">
                         {session?.visitorPhone && (
-                          <a href={`tel:${session.visitorPhone}`} className="hover:text-blue-300 transition flex items-center gap-1">
+                          <a href={`tel:${session.visitorPhone}`} className="hover:text-blue-600 transition flex items-center gap-1">
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
                             {session.visitorPhone}
                           </a>
                         )}
                         {session?.visitorEmail && (
-                          <a href={`mailto:${session.visitorEmail}`} className="hover:text-blue-300 transition truncate">
+                          <a href={`mailto:${session.visitorEmail}`} className="hover:text-blue-600 transition truncate">
                             {session.visitorEmail}
                           </a>
                         )}
@@ -431,10 +431,10 @@ export function ChatManager() {
                 })()}
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[11px] text-slate-500">{messages.length} messages</span>
+                <span className="text-[11px] text-gray-400">{messages.length} messages</span>
                 <button
                   onClick={() => setSidebarOpen(!sidebarOpen)}
-                  className="lg:hidden text-slate-400 hover:text-slate-200 transition p-1"
+                  className="lg:hidden text-gray-500 hover:text-gray-700 transition p-1"
                   aria-label="Toggle sidebar"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -445,9 +445,9 @@ export function ChatManager() {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 md:space-y-4 bg-gradient-to-b from-slate-900/50 to-slate-950">
+            <div className="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 md:space-y-4 bg-gray-50">
               {messages.length === 0 ? (
-                <div className="flex items-center justify-center h-full text-slate-500">
+                <div className="flex items-center justify-center h-full text-gray-400">
                   <p className="text-sm md:text-base">No messages in this session</p>
                 </div>
               ) : (
@@ -457,9 +457,9 @@ export function ChatManager() {
                     className={`flex group ${msg.senderType === 'visitor' ? 'justify-start' : 'justify-end'}`}
                   >
                     <div
-                      className={`max-w-md px-4 py-3 rounded-xl shadow relative ${
+                      className={`max-w-md px-4 py-3 rounded-xl shadow-sm relative ${
                         msg.senderType === 'visitor'
-                          ? 'bg-slate-800 text-slate-100 rounded-bl-sm'
+                          ? 'bg-white text-gray-900 border border-gray-200 rounded-bl-sm'
                           : 'bg-blue-600 text-white rounded-br-sm'
                       }`}
                     >
@@ -468,7 +468,7 @@ export function ChatManager() {
                       )}
                       <p className="text-sm leading-relaxed">{msg.message}</p>
                       <div className="flex items-center justify-between mt-2 gap-3">
-                        <p className="text-[11px] opacity-70">
+                        <p className={`text-[11px] ${msg.senderType === 'visitor' ? 'text-gray-400' : 'opacity-70'}`}>
                           {new Date(msg.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' })}{' '}
                           {new Date(msg.timestamp).toLocaleTimeString([], {
                             hour: '2-digit',
@@ -480,7 +480,7 @@ export function ChatManager() {
                           className="opacity-0 group-hover:opacity-100 transition text-xs"
                           title="Delete message"
                         >
-                          <span className={msg.senderType === 'visitor' ? 'text-red-400 hover:text-red-300' : 'text-blue-200 hover:text-white'}>✕</span>
+                          <span className={msg.senderType === 'visitor' ? 'text-red-400 hover:text-red-600' : 'text-blue-200 hover:text-white'}>✕</span>
                         </button>
                       </div>
                     </div>
@@ -491,14 +491,14 @@ export function ChatManager() {
             </div>
 
             {/* Response Input */}
-            <form onSubmit={handleSendResponse} className="bg-slate-850 border-t border-slate-800 p-3 md:p-4 space-y-2 md:space-y-3">
+            <form onSubmit={handleSendResponse} className="bg-white border-t border-gray-200 p-3 md:p-4 space-y-2 md:space-y-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Your name</label>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Your name</label>
                 <input
                   type="text"
                   value={employeeName}
                   onChange={(e) => setEmployeeName(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-700 rounded text-sm bg-slate-900 text-slate-100 focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
               </div>
               <div className="flex flex-col md:flex-row gap-2">
@@ -508,12 +508,12 @@ export function ChatManager() {
                   value={responseText}
                   onChange={(e) => setResponseText(e.target.value)}
                   disabled={isLoading}
-                  className="flex-1 px-3 py-2 border border-slate-700 rounded text-sm bg-slate-900 text-slate-100 focus:outline-none focus:border-blue-500 disabled:bg-slate-800"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100"
                 />
                 <button
                   type="submit"
                   disabled={isLoading || !responseText.trim()}
-                  className="bg-blue-600 text-white px-4 md:px-6 py-2 rounded hover:bg-blue-700 disabled:bg-slate-700 transition text-sm font-medium touch-manipulation w-full md:w-auto"
+                  className="bg-blue-600 text-white px-4 md:px-6 py-2 rounded-lg hover:bg-blue-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition text-sm font-medium touch-manipulation w-full md:w-auto"
                 >
                   {isLoading ? 'Sending...' : 'Send'}
                 </button>
