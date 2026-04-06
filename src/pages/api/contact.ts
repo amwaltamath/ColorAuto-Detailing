@@ -110,12 +110,15 @@ export async function POST({ request }: APIContext) {
     }
 
     const RESEND_API_KEY = (process.env.RESEND_API_KEY || "").trim();
-    const TO_EMAIL = (process.env.CONTACT_TO_EMAIL || "admin@colorautodetailing.com").trim();
+    const TO_EMAILS = (process.env.CONTACT_TO_EMAIL || "admin@colorautodetailing.com")
+      .split(",")
+      .map((e) => e.trim())
+      .filter(Boolean);
     const FROM_EMAIL = (process.env.CONTACT_FROM_EMAIL || "no-reply@colorautodetailing.com").trim();
 
     // Validate email addresses
-    if (!TO_EMAIL || !isValidEmail(TO_EMAIL)) {
-      console.error("Configuration error: Invalid TO_EMAIL.", { TO_EMAIL });
+    if (!TO_EMAILS.length || TO_EMAILS.some((e) => !isValidEmail(e))) {
+      console.error("Configuration error: Invalid TO_EMAIL.", { TO_EMAILS });
       return new Response(JSON.stringify({ ok: false, error: "Email service misconfigured (invalid recipient)" }), {
         status: 500,
         headers: { "content-type": "application/json" },
@@ -259,7 +262,7 @@ export async function POST({ request }: APIContext) {
 
     // Send via Resend REST API to avoid SDK dependency
     console.log("Attempting to send email via Resend API...");
-    console.log("From:", FROM_EMAIL, "To:", TO_EMAIL, "Reply-to:", email);
+    console.log("From:", FROM_EMAIL, "To:", TO_EMAILS, "Reply-to:", email);
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -269,7 +272,7 @@ export async function POST({ request }: APIContext) {
       },
       body: JSON.stringify({
         from: `ColorAuto <${FROM_EMAIL}>`,
-        to: [TO_EMAIL],
+        to: TO_EMAILS,
         reply_to: email,
         subject,
         text,
@@ -282,7 +285,7 @@ export async function POST({ request }: APIContext) {
     if (!res.ok) {
       const errText = await res.text();
       console.error("Resend API error response:", errText);
-      console.error("Request details - FROM:", FROM_EMAIL, "TO:", TO_EMAIL, "Subject:", subject);
+      console.error("Request details - FROM:", FROM_EMAIL, "TO:", TO_EMAILS, "Subject:", subject);
 
       // Parse Resend error for user-friendly message
       let resendMsg = "";
