@@ -284,6 +284,13 @@ export async function POST({ request }: APIContext) {
       console.error("Resend API error response:", errText);
       console.error("Request details - FROM:", FROM_EMAIL, "TO:", TO_EMAIL, "Subject:", subject);
 
+      // Parse Resend error for user-friendly message
+      let resendMsg = "";
+      try {
+        const errJson = JSON.parse(errText);
+        resendMsg = errJson.message || "";
+      } catch {}
+
       // Check for common Resend errors
       if (res.status === 401) {
         return new Response(JSON.stringify({ ok: false, error: "Email service authentication failed. Please check API key." }), {
@@ -297,8 +304,14 @@ export async function POST({ request }: APIContext) {
           headers: { "content-type": "application/json" },
         });
       }
+      if (res.status === 422) {
+        return new Response(JSON.stringify({ ok: false, error: `Email validation failed: ${resendMsg || "check sender domain is verified in Resend"}` }), {
+          status: 500,
+          headers: { "content-type": "application/json" },
+        });
+      }
 
-      return new Response(JSON.stringify({ ok: false, error: `Email service error: ${res.status}` }), {
+      return new Response(JSON.stringify({ ok: false, error: `Email service error: ${res.status}${resendMsg ? " — " + resendMsg : ""}` }), {
         status: 500,
         headers: { "content-type": "application/json" },
       });
