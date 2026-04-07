@@ -13,7 +13,6 @@ interface Props {
 }
 
 const GTM_ID = import.meta.env.PUBLIC_GTM_ID || 'GTM-PMBBJ2B6';
-const GA_ID = import.meta.env.PUBLIC_GA_ID || 'G-0W840BY4ZJ';
 const GOOGLE_SITE_VERIFICATION = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
 const { title, description, keywords = [], canonical, image, noindex = false, hideChat = false } = Astro.props;
 
@@ -88,18 +87,15 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
     </noscript>
     <!-- End Facebook Pixel Code -->
     
-    {/* Google Analytics 4 */}
-    {GA_ID && (
-      <>
-        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
-        <script set:html={`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '${GA_ID}');
-        `} />
-      </>
-    )}
+    {/* Google Analytics 4 — loads both GA4 properties */}
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-0W840BY4ZJ"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-0W840BY4ZJ');
+      gtag('config', 'G-FK6KVDB8BP');
+    </script>
     
     <title>{title}</title>
     <script type="application/ld+json" set:html={JSON.stringify({
