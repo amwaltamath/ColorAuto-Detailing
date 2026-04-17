@@ -22,6 +22,18 @@ function getUtmParams() {
   };
 }
 
+function detectSource(fallback: string): string {
+  if (typeof window === 'undefined') return fallback;
+  const utmSource = new URLSearchParams(window.location.search).get('utm_source')?.toLowerCase() || '';
+  if (utmSource.includes('facebook') || utmSource.includes('fb') || utmSource.includes('instagram') || utmSource.includes('meta')) {
+    return 'meta_ads';
+  }
+  if (utmSource.includes('google')) {
+    return 'google_ads';
+  }
+  return fallback;
+}
+
 export default function QuoteModal({ isOpen: initialOpen = false, onClose, service = "", source = "website" }: QuoteModalProps) {
   const [isOpen, setIsOpen] = React.useState(initialOpen);
   const [status, setStatus] = useState<Status>({ type: "idle" });
@@ -43,14 +55,27 @@ export default function QuoteModal({ isOpen: initialOpen = false, onClose, servi
     const formData = new FormData(form);
 
     const utm = getUtmParams();
+    const siteKey = (window as any).__RECAPTCHA_SITE_KEY || '';
+    
+    // Execute reCAPTCHA v3
+    let recaptchaToken = '';
+    if (typeof window !== 'undefined' && (window as any).grecaptcha && siteKey) {
+      try {
+        recaptchaToken = await (window as any).grecaptcha.execute(siteKey, { action: 'quote' });
+      } catch (err) {
+        console.error('reCAPTCHA execution failed:', err);
+      }
+    }
+
     const payload = {
       name: String(formData.get("name") || ""),
       email: String(formData.get("email") || ""),
       phone: String(formData.get("phone") || ""),
       message: `Quote request for: ${service || 'General Service'}\n\n${String(formData.get("message") || "")}`,
       service: service,
-      source: source,
+      source: detectSource(source),
       website: "", // honeypot always empty in JS submit
+      recaptchaToken: recaptchaToken,
       ...utm,
     };
 

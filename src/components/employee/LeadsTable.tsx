@@ -183,7 +183,30 @@ export function LeadsTable() {
   };
 
   if (loading) {
-    return <div className="text-gray-500 text-sm">Loading leads...</div>;
+    return (
+      <div className="space-y-4 animate-pulse">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="p-3 rounded-lg border border-gray-200 text-center">
+              <div className="h-7 w-10 bg-gray-200 rounded mx-auto mb-1" />
+              <div className="h-3 w-12 bg-gray-200 rounded mx-auto" />
+            </div>
+          ))}
+        </div>
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="bg-white p-4 rounded-lg border border-gray-200">
+            <div className="flex justify-between items-center mb-3">
+              <div className="h-4 w-40 bg-gray-200 rounded" />
+              <div className="h-6 w-16 bg-gray-200 rounded-full" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-3 w-52 bg-gray-200 rounded" />
+              <div className="h-3 w-32 bg-gray-200 rounded" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
 
   return (

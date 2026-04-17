@@ -37,7 +37,17 @@ export const TeamsTable = () => {
   }, []);
 
   if (loading) {
-    return <div className="text-gray-500 text-sm md:text-base">Loading teams...</div>;
+    return (
+      <div className="space-y-3 animate-pulse">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="bg-white p-4 rounded-lg border border-gray-200">
+            <div className="h-4 w-36 bg-gray-200 rounded mb-2" />
+            <div className="h-3 w-56 bg-gray-200 rounded mb-3" />
+            <div className="h-3 w-20 bg-gray-200 rounded" />
+          </div>
+        ))}
+      </div>
+    );
   }
 
   // Mobile card view

@@ -129,7 +129,23 @@ export const SchedulesTable = () => {
   };
 
   if (loading) {
-    return <div className="text-gray-500 text-sm md:text-base">Loading schedules...</div>;
+    return (
+      <div className="space-y-3 animate-pulse">
+        <div className="h-9 w-36 bg-gray-200 rounded" />
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="bg-white p-4 rounded-lg border border-gray-200">
+            <div className="flex justify-between items-center mb-3">
+              <div className="h-4 w-32 bg-gray-200 rounded" />
+              <div className="h-6 w-20 bg-gray-200 rounded-full" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-3 w-48 bg-gray-200 rounded" />
+              <div className="h-3 w-36 bg-gray-200 rounded" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
 
   // Mobile card view

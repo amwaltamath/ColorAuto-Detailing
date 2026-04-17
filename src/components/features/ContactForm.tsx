@@ -16,9 +16,21 @@ export default function ContactForm() {
       phone: String(formData.get("phone") || ""),
       message: String(formData.get("message") || ""),
       website: "", // honeypot always empty in JS submit
+      recaptchaToken: "",
     };
 
     setStatus({ type: "loading" });
+    
+    // Execute reCAPTCHA v3 before sending
+    const siteKey = (window as any).__RECAPTCHA_SITE_KEY || '';
+    if (typeof window !== 'undefined' && (window as any).grecaptcha && siteKey) {
+      try {
+        payload.recaptchaToken = await (window as any).grecaptcha.execute(siteKey, { action: 'contact' });
+      } catch (err) {
+        console.error('reCAPTCHA execution failed:', err);
+      }
+    }
+
     try {
       const res = await fetch("/api/contact", {
         method: "POST",

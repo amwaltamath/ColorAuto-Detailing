@@ -1,5 +1,7 @@
 ---
 import PublicLayout from '../layouts/PublicLayout.astro';
+
+const RECAPTCHA_SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || '';
 ---
 
 <PublicLayout
@@ -227,7 +229,7 @@ import PublicLayout from '../layouts/PublicLayout.astro';
   </div>
 </PublicLayout>
 
-<script>
+<script define:vars={{ RECAPTCHA_SITE_KEY }}>
   document.addEventListener("DOMContentLoaded", () => {
     // Populate UTM hidden fields from URL params
     const params = new URLSearchParams(window.location.search);
@@ -238,6 +240,16 @@ import PublicLayout from '../layouts/PublicLayout.astro';
     });
     const landingEl = document.getElementById('landing-page');
     if (landingEl) (landingEl as HTMLInputElement).value = window.location.pathname;
+
+    // Auto-detect source from utm_source
+    const utmSource = (params.get('utm_source') || '').toLowerCase();
+    if (utmSource.includes('facebook') || utmSource.includes('fb') || utmSource.includes('instagram') || utmSource.includes('meta')) {
+      const srcEl = document.getElementById('lead-source');
+      if (srcEl) (srcEl as HTMLInputElement).value = 'meta_ads';
+    } else if (utmSource.includes('google')) {
+      const srcEl = document.getElementById('lead-source');
+      if (srcEl) (srcEl as HTMLInputElement).value = 'google_ads';
+    }
 
     const form = document.querySelector("#contact-form");
     const statusEl = document.querySelector("#form-status");
@@ -255,9 +267,20 @@ import PublicLayout from '../layouts/PublicLayout.astro';
       setStatus("Sending...", "text-gray-700");
 
       try {
+        // Execute reCAPTCHA v3
+        let recaptchaToken = '';
+        if (typeof window !== 'undefined' && (window as any).grecaptcha && RECAPTCHA_SITE_KEY) {
+          recaptchaToken = await (window as any).grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'contact' });
+        }
+
+        const formData = new FormData(form);
+        if (recaptchaToken) {
+          formData.append('recaptchaToken', recaptchaToken);
+        }
+
         const res = await fetch("/api/contact", {
           method: "POST",
-          body: new FormData(form),
+          body: formData,
         });
 
         const json = await res.json().catch(() => ({}));

@@ -13,7 +13,9 @@ interface Props {
 }
 
 const GTM_ID = import.meta.env.PUBLIC_GTM_ID || 'GTM-PMBBJ2B6';
+const META_PIXEL_ID = import.meta.env.PUBLIC_META_PIXEL_ID || '4259458307666913';
 const GOOGLE_SITE_VERIFICATION = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
+const RECAPTCHA_SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 const { title, description, keywords = [], canonical, image, noindex = false, hideChat = false } = Astro.props;
 
 const siteUrl = 'https://colorautodetailing.com';
@@ -40,9 +42,12 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
     <link rel="canonical" href={canonicalUrl} />
 
     <!-- Preconnect to external origins for faster loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://www.googletagmanager.com" />
     <link rel="preconnect" href="https://connect.facebook.net" />
     <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+    {RECAPTCHA_SITE_KEY && <link rel="preconnect" href="https://www.google.com/recaptcha/" />}
 
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
@@ -69,7 +74,7 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
     )}
     
     <!-- Facebook Pixel Code -->
-    <script is:inline>
+    <script define:vars={{ META_PIXEL_ID }}>
       !function(f,b,e,v,n,t,s)
       {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -78,12 +83,12 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
       t.src=v;s=b.getElementsByTagName(e)[0];
       s.parentNode.insertBefore(t,s)}(window, document,'script',
       'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '667170362973392');
+      fbq('init', META_PIXEL_ID);
       fbq('track', 'PageView');
     </script>
     <noscript>
       <img height="1" width="1" style="display:none" 
-           src="https://www.facebook.com/tr?id=667170362973392&ev=PageView&noscript=1"/>
+           src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}/>
     </noscript>
     <!-- End Facebook Pixel Code -->
     
@@ -96,6 +101,12 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
       gtag('config', 'G-0W840BY4ZJ');
       gtag('config', 'G-FK6KVDB8BP');
     </script>
+    
+    {/* reCAPTCHA v3 */}
+    {RECAPTCHA_SITE_KEY && <script src="https://www.google.com/recaptcha/api.js?render={RECAPTCHA_SITE_KEY}"></script>}
+    {RECAPTCHA_SITE_KEY && <script define:vars={{ RECAPTCHA_SITE_KEY }} is:inline>
+      window.__RECAPTCHA_SITE_KEY = RECAPTCHA_SITE_KEY;
+    </script>}
     
     <title>{title}</title>
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -138,6 +149,13 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
         "@type": "City",
         name: "Grand Junction",
         "@id": "https://www.wikidata.org/wiki/Q162660"
+      },
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: "5.0",
+        reviewCount: "72",
+        bestRating: "5",
+        worstRating: "1"
       },
       hasOfferCatalog: {
         "@type": "OfferCatalog",
