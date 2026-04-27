@@ -1,6 +1,16 @@
 import type { APIContext } from 'astro';
 import { supabaseServer } from '../../utils/supabaseServer';
 import { quoSendSMS } from '../../utils/quo';
+import {
+  detectHandoffRequest,
+  generateAIEmployeeReply,
+  getAIEmployeeName,
+  getAIReplyRateLimitMs,
+  isAIChatEnabled,
+  isAIQualificationEnabled,
+  qualifyLeadMessage,
+  shouldQualifyForAIReply,
+} from '../../utils/openai';
 
 interface ChatMessage {
   id: string;
@@ -10,6 +20,22 @@ interface ChatMessage {
   message: string;
   timestamp: string;
   isRead: boolean;
+}
+
+// ── In-memory rate limiting per session (resets on server restart) ──
+const aiReplyLastTimestamp = new Map<string, number>();
+
+function canReplyWithAI(sessionId: string): boolean {
+  const rateLimitMs = getAIReplyRateLimitMs();
+  const lastReply = aiReplyLastTimestamp.get(sessionId);
+  const now = Date.now();
+
+  if (!lastReply || now - lastReply >= rateLimitMs) {
+    aiReplyLastTimestamp.set(sessionId, now);
+    return true;
+  }
+
+  return false;
 }
 
 // Supabase-backed storage
@@ -80,6 +106,10 @@ export async function POST({ request }: APIContext) {
   };
 
   const { sessionId, message, visitorEmail, visitorName, visitorPhone } = body;
+  const isTestSession = /^session_(ai_fulltest|dev|test)/i.test(sessionId || '');
+  const skipSmsForTests = (process.env.SKIP_SMS_FOR_TEST_SESSIONS || import.meta.env.SKIP_SMS_FOR_TEST_SESSIONS || (import.meta.env.DEV ? 'true' : 'false')).toLowerCase() === 'true';
+  const smsBridgeEnabled = (process.env.CHAT_SMS_BRIDGE_ENABLED || import.meta.env.CHAT_SMS_BRIDGE_ENABLED || (import.meta.env.DEV ? 'false' : 'true')).toLowerCase() === 'true';
+  const shouldSkipSms = isTestSession && skipSmsForTests;
 
   console.log('[POST /api/messages] Received:', { sessionId, message, visitorEmail, visitorName, visitorPhone });
   console.log('[POST /api/messages] Supabase server configured:', !!supabaseServer);
@@ -138,6 +168,38 @@ export async function POST({ request }: APIContext) {
 
     console.log('[POST /api/messages] Message saved successfully:', data.id);
 
+    // Non-blocking AI qualification for employee triage.
+    if (isAIQualificationEnabled()) {
+      (async () => {
+        try {
+          const qualification = await qualifyLeadMessage({
+            message: message.trim(),
+            visitorName,
+          });
+
+          const { error: aiError } = await supabaseServer
+            .from('ai_qualifications')
+            .insert({
+              session_id: sessionId,
+              message_id: data.id,
+              intent: qualification.intent,
+              urgency: qualification.urgency,
+              fit: qualification.fit,
+              confidence: qualification.confidence,
+              provider: qualification.provider,
+              next_action: qualification.nextAction,
+              summary: qualification.summary,
+            });
+
+          if (aiError) {
+            console.error('[POST /api/messages] AI qualification insert error:', aiError);
+          }
+        } catch (aiErr) {
+          console.error('[POST /api/messages] AI qualification error:', aiErr);
+        }
+      })();
+    }
+
     // ── Quo SMS bridge: send notification to visitor's phone or fallback number ──
     // Normalize phone to E.164
     const normalizePhone = (phone: string): string | null => {
@@ -152,7 +214,7 @@ export async function POST({ request }: APIContext) {
     const fallbackNumber = process.env.QUO_SMS_NOTIFY_NUMBER || import.meta.env.QUO_SMS_NOTIFY_NUMBER;
     const smsTarget = visitorE164 || fallbackNumber;
 
-    if (smsTarget) {
+    if (smsTarget && !shouldSkipSms && smsBridgeEnabled) {
       const smsBody = visitorName
         ? `💬 ${visitorName}: ${message.trim()}`
         : `💬 Website chat: ${message.trim()}`;
@@ -184,6 +246,12 @@ export async function POST({ request }: APIContext) {
           });
       }
     }
+    if (smsTarget && shouldSkipSms) {
+      console.log('[POST /api/messages] SMS skipped for test session:', sessionId);
+    }
+    if (smsTarget && !smsBridgeEnabled) {
+      console.log('[POST /api/messages] SMS bridge disabled via CHAT_SMS_BRIDGE_ENABLED');
+    }
     console.log('[POST /api/messages] QUO_SMS_NOTIFY_NUMBER:', fallbackNumber ? 'SET' : 'NOT SET');
 
     // Fire push notification to employee devices (non-blocking)
@@ -204,6 +272,59 @@ export async function POST({ request }: APIContext) {
       }),
     }).catch((err) => console.error('[POST /api/messages] Push send error:', err));
 
+    let aiResponseMessage: ChatMessage | null = null;
+
+    // Optional AI employee response for booking and customer assistance.
+    // Gated by: enable flag, handoff detection, qualification threshold, and rate limiting.
+    if (isAIChatEnabled() && !detectHandoffRequest(message) && canReplyWithAI(sessionId)) {
+      try {
+        // First, qualify the message to check intent and confidence.
+        const qualification = await qualifyLeadMessage({
+          message: message.trim(),
+          visitorName,
+        });
+
+        // Only generate reply if it meets qualification criteria.
+        if (shouldQualifyForAIReply(qualification)) {
+          const aiReply = await generateAIEmployeeReply({
+            message: message.trim(),
+            visitorName,
+          });
+
+          if (aiReply) {
+            const aiName = getAIEmployeeName();
+            const { data: aiData, error: aiInsertError } = await supabaseServer
+              .from('chat_messages')
+              .insert({
+                session_id: sessionId,
+                sender_type: 'employee',
+                sender_name: aiName,
+                message: aiReply,
+                is_read: false,
+              })
+              .select()
+              .single();
+
+            if (aiInsertError) {
+              console.error('[POST /api/messages] AI response insert error:', aiInsertError);
+            } else if (aiData) {
+              aiResponseMessage = {
+                id: aiData.id,
+                sessionId: aiData.session_id,
+                senderType: aiData.sender_type,
+                senderName: aiData.sender_name || undefined,
+                message: aiData.message,
+                timestamp: aiData.timestamp,
+                isRead: aiData.is_read,
+              };
+            }
+          }
+        }
+      } catch (aiReplyErr) {
+        console.error('[POST /api/messages] AI response error:', aiReplyErr);
+      }
+    }
+
     const newMessage: ChatMessage = {
       id: data.id,
       sessionId: data.session_id,
@@ -214,7 +335,7 @@ export async function POST({ request }: APIContext) {
       isRead: data.is_read,
     };
 
-    return new Response(JSON.stringify({ ok: true, message: newMessage }), {
+    return new Response(JSON.stringify({ ok: true, message: newMessage, aiMessage: aiResponseMessage }), {
       status: 201,
       headers: { 'content-type': 'application/json' },
     });

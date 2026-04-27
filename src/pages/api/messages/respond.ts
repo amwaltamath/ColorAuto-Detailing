@@ -28,6 +28,7 @@ export async function POST({ request }: APIContext) {
   };
 
   const { sessionId, message, employeeName, employeeRole } = body;
+  const smsBridgeEnabled = (process.env.CHAT_SMS_BRIDGE_ENABLED || import.meta.env.CHAT_SMS_BRIDGE_ENABLED || (import.meta.env.DEV ? 'false' : 'true')).toLowerCase() === 'true';
 
   if (!sessionId || !message || !employeeName) {
     return new Response(JSON.stringify({ ok: false, error: 'Missing required fields' }), {
@@ -71,7 +72,7 @@ export async function POST({ request }: APIContext) {
     .limit(1)
     .single();
 
-  if (bridge?.phone_number) {
+  if (bridge?.phone_number && smsBridgeEnabled) {
     const smsBody = `${employeeName}: ${message.trim()}`;
     quoSendSMS(bridge.phone_number, smsBody)
       .then((res) => {
@@ -82,6 +83,9 @@ export async function POST({ request }: APIContext) {
         }
       })
       .catch((err) => console.error('[respond] SMS error:', err));
+  }
+  if (bridge?.phone_number && !smsBridgeEnabled) {
+    console.log('[respond] SMS bridge disabled via CHAT_SMS_BRIDGE_ENABLED');
   }
 
   const responseMessage: ChatMessage = {

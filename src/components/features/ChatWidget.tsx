@@ -23,9 +23,9 @@ function ChatWidgetInner() {
   const [visitorPhone, setVisitorPhone] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef(messages);
-  const [isPolling, setIsPolling] = useState(false);
   const autoReplyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [autoReplySent, setAutoReplySent] = useState(false);
+  const aiChatEnabled = (import.meta.env.PUBLIC_AI_CHAT_ENABLED || 'false').toLowerCase() === 'true';
 
   // Initialize session on mount
   useEffect(() => {
@@ -160,6 +160,9 @@ function ChatWidgetInner() {
         if (data.message) {
           addMessage(data.message);
         }
+        if (data.aiMessage) {
+          addMessage(data.aiMessage);
+        }
         setInput('');
         // Clear email/name/phone after first message
         if (visitorEmail || visitorName || visitorPhone) {
@@ -169,7 +172,7 @@ function ChatWidgetInner() {
         }
 
         // Start 2-minute auto-reply timer (if not already sent this session)
-        if (!autoReplySent) {
+        if (!aiChatEnabled && !autoReplySent) {
           if (autoReplyTimerRef.current) clearTimeout(autoReplyTimerRef.current);
           autoReplyTimerRef.current = setTimeout(() => {
             // Only fire if the last message is still from the visitor (no employee reply yet)
@@ -223,11 +226,11 @@ function ChatWidgetInner() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed inset-0 md:bottom-24 md:right-6 md:w-96 md:h-96 md:rounded-lg bg-white rounded-none md:rounded-lg shadow-2xl flex flex-col z-50 border border-gray-200">
+        <div className="fixed inset-0 md:inset-auto md:bottom-24 md:right-6 md:w-96 md:h-[30rem] md:rounded-lg bg-white rounded-none md:rounded-lg shadow-2xl flex flex-col z-50 border border-gray-200">
           {/* Header */}
           <div className="bg-blue-600 text-white p-4 md:rounded-t-lg">
             <div className="flex justify-between items-center">
-              <h3 className="font-semibold text-base md:text-lg">ColorAuto Support</h3>
+              <h3 className="font-semibold text-base md:text-lg">{aiChatEnabled ? 'ColorAuto AI Assistant' : 'ColorAuto Support'}</h3>
               <button
                 onClick={toggleChat}
                 className="text-white hover:text-gray-200 transition p-1.5 md:p-1"
@@ -238,7 +241,9 @@ function ChatWidgetInner() {
                 </svg>
               </button>
             </div>
-            <p className="text-sm text-blue-100 mt-1">We typically reply in minutes</p>
+            <p className="text-sm text-blue-100 mt-1">
+              {aiChatEnabled ? 'Instant help for booking, pricing, and service questions' : 'We typically reply in minutes'}
+            </p>
           </div>
 
           {/* Messages Container */}
@@ -300,46 +305,35 @@ function ChatWidgetInner() {
           </div>
 
           {/* Input Form */}
-          <form onSubmit={handleSendMessage} className="border-t border-gray-200 p-3 md:p-4 bg-white md:rounded-b-lg rounded-none space-y-2 md:space-y-3">
-            {/* Show contact inputs only on first message */}
+          <form onSubmit={handleSendMessage} className="border-t border-gray-200 p-3 md:p-4 bg-white md:rounded-b-lg rounded-none space-y-2">
             {messages.filter((m) => m.senderType === 'visitor').length === 0 && (
-              <>
-                <input
-                  type="text"
-                  placeholder="Your name (optional)"
-                  value={visitorName}
-                  onChange={(e) => setVisitorName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
-                />
-                <input
-                  type="tel"
-                  placeholder="Your phone number (for text updates)"
-                  value={visitorPhone}
-                  onChange={(e) => setVisitorPhone(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
-                />
-                <input
-                  type="email"
-                  placeholder="Your email (optional)"
-                  value={visitorEmail}
-                  onChange={(e) => setVisitorEmail(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
-                />
-              </>
-            )}
-            <div className="flex gap-2">
               <input
                 type="text"
+                placeholder="Your name (optional)"
+                value={visitorName}
+                onChange={(e) => setVisitorName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+              />
+            )}
+            <div className="flex flex-col gap-2">
+              <textarea
                 placeholder="Type a message..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (input.trim() && !isLoading) handleSendMessage(e as any);
+                  }
+                }}
                 disabled={isLoading}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500 disabled:bg-gray-100"
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 disabled:bg-gray-100 resize-none"
               />
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className="bg-blue-600 text-white px-4 md:px-5 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400 transition text-sm font-medium touch-manipulation min-w-16 md:min-w-12"
+                className="self-end bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition text-sm font-medium touch-manipulation"
               >
                 {isLoading ? '...' : 'Send'}
               </button>

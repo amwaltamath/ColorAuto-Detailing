@@ -46,6 +46,11 @@
       "permanent": true
     },
     {
+      "source": "/office-window-film/",
+      "destination": "/services/office-window-tint",
+      "permanent": true
+    },
+    {
       "source": "/commercial-tinting-service/",
       "destination": "/services/office-window-tint",
       "permanent": true

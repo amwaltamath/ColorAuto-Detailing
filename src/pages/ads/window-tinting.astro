@@ -2,12 +2,60 @@
 import Layout from '../../layouts/Layout.astro';
 import QuoteModal from '../../components/features/QuoteModal';
 
-const title = "Window Tinting | UV Protection | Heat Reduction | ColorAuto Detailing";
-const description = "Professional automotive window tinting in Grand Junction. UV protection, heat reduction, privacy tint. Premium films with lifetime warranty.";
-const keywords = ['window tinting', 'car window tint', 'UV protection', 'Grand Junction'];
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is window tinting legal in Colorado?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Colorado allows 27% VLT on front side windows, and any darkness on rear and back windows. ColorAuto Detailing ensures every install meets Colorado state regulations."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much does window tinting cost in Grand Junction, CO?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Window tinting at ColorAuto Detailing starts from $250 for carbon film (Prime CS), $350 for ceramic film (Prime XR), and $500 for premium ceramic (Prime XR Plus). All packages include lifetime warranty."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long does window tinting take?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most vehicles take 1.5–3 hours depending on the number of windows and film type. You can drop off in the morning and pick up the same day."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will window tint interfere with my electronics?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Our ceramic and carbon films are non-metallic, so they won't interfere with GPS, cell signals, radio, or toll transponders."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does window tint come with a warranty?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. All premium films installed by ColorAuto Detailing come with a manufacturer's lifetime warranty covering bubbling, peeling, cracking, and color fading."
+      }
+    }
+  ]
+};
+
+const title = "Window Tinting Grand Junction CO | Ceramic & Carbon Tint | ColorAuto Detailing";
+const description = "Professional window tinting in Grand Junction, CO. Ceramic & carbon film starting from $250. Lifetime warranty, same-week scheduling. Call 970-628-1505.";
+const keywords = ['window tinting Grand Junction', 'car window tint', 'ceramic window tint', 'auto window tinting', 'window tint near me', 'UV protection tint', 'heat rejection film', 'Grand Junction CO tint'];
 ---
 
 <Layout {title} {description} {keywords} noindex={true} hideChat={true}>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <QuoteModal client:load isOpen={false} service="Window Tinting" source="google_ads" />
   <!-- Hero Section -->
   <section class="relative text-white py-70 overflow-hidden">
@@ -16,8 +64,9 @@ const keywords = ['window tinting', 'car window tint', 'UV protection', 'Grand J
       <div class="absolute inset-0 bg-black/60"></div>
     </div>
     <div class="relative max-w-4xl mx-auto px-4 text-center">
-      <h1 class="text-5xl font-bold mb-4 drop-shadow-lg">Window Tinting</h1>
-      <p class="text-2xl text-gray-200 drop-shadow-md mb-8">UV Protection, Privacy & Comfort</p>
+      <h1 class="text-5xl font-bold mb-4 drop-shadow-lg">Window Tinting in Grand Junction, CO</h1>
+      <p class="text-2xl text-gray-200 drop-shadow-md mb-2">Ceramic & Carbon Film · Lifetime Warranty · Same-Week Scheduling</p>
+      <p class="text-lg text-blue-200 drop-shadow mb-8">Starting from <span class="font-bold text-white">$250</span> · Serving Grand Junction & Western Colorado</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a href="tel:970-628-1505" class="bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition shadow-lg inline-block">
           Call Now: 970-628-1505
@@ -100,7 +149,8 @@ const keywords = ['window tinting', 'car window tint', 'UV protection', 'Grand J
         <div class="bg-white rounded-lg shadow-lg overflow-hidden border-2 border-gray-200 hover:border-blue-500 transition">
           <img src="/images/primecs.jpg" alt="Carbon Tint" class="w-full h-48 object-cover" />
           <div class="p-6">
-            <h3 class="text-2xl font-bold mb-4">Prime CS</h3>
+            <h3 class="text-2xl font-bold mb-2">Prime CS</h3>
+            <div class="text-2xl font-extrabold text-blue-600 mb-2">From $250</div>
             <p class="text-gray-600 mb-6">Carbon-based film with superior heat rejection</p>
             <ul class="space-y-2 text-sm mb-6">
               <li class="flex items-start">
@@ -127,7 +177,8 @@ const keywords = ['window tinting', 'car window tint', 'UV protection', 'Grand J
           <div class="bg-blue-600 text-white text-sm font-bold py-1 px-3 text-center">POPULAR</div>
           <img src="/images/primexr.jpg" alt="Ceramic Tint" class="w-full h-48 object-cover" />
           <div class="p-6">
-            <h3 class="text-2xl font-bold mb-4">Prime XR</h3>
+            <h3 class="text-2xl font-bold mb-2">Prime XR</h3>
+            <div class="text-2xl font-extrabold text-blue-600 mb-2">From $350</div>
             <p class="text-gray-600 mb-6">Ceramic film with maximum heat rejection</p>
             <ul class="space-y-2 text-sm mb-6">
               <li class="flex items-start">
@@ -153,7 +204,8 @@ const keywords = ['window tinting', 'car window tint', 'UV protection', 'Grand J
         <div class="bg-white rounded-lg shadow-lg overflow-hidden border-2 border-gray-200 hover:border-blue-500 transition">
           <img src="/images/primexrplus.jpg" alt="Premium Ceramic Tint" class="w-full h-48 object-cover" />
           <div class="p-6">
-            <h3 class="text-2xl font-bold mb-4">Prime XR Plus</h3>
+            <h3 class="text-2xl font-bold mb-2">Prime XR Plus</h3>
+            <div class="text-2xl font-extrabold text-blue-600 mb-2">From $500</div>
             <p class="text-gray-600 mb-6">Ultimate ceramic protection and clarity</p>
             <ul class="space-y-2 text-sm mb-6">
               <li class="flex items-start">
@@ -262,6 +314,15 @@ const keywords = ['window tinting', 'car window tint', 'UV protection', 'Grand J
     <div class="max-w-3xl mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-10">Frequently Asked Questions</h2>
       <div class="space-y-4" id="faq-list">
+        <div class="border border-gray-200 rounded-lg">
+          <button class="faq-toggle w-full text-left px-6 py-4 font-semibold text-lg flex justify-between items-center cursor-pointer bg-transparent border-0">
+            How much does window tinting cost in Grand Junction?
+            <span class="text-blue-600 text-2xl">+</span>
+          </button>
+          <div class="faq-answer px-6 text-gray-600">
+            Window tinting starts from $250 for carbon film (Prime CS), $350 for ceramic film (Prime XR), and $500 for premium ceramic (Prime XR Plus). All packages include a lifetime warranty.
+          </div>
+        </div>
         <div class="border border-gray-200 rounded-lg">
           <button class="faq-toggle w-full text-left px-6 py-4 font-semibold text-lg flex justify-between items-center cursor-pointer bg-transparent border-0">
             Is window tinting legal in Colorado?

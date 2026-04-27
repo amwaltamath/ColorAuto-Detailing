@@ -259,6 +259,36 @@ CREATE POLICY "Authenticated users can delete lead notes"
   ON lead_notes FOR DELETE USING (auth.role() = 'authenticated');
 
 -- ============================================================
+-- AI Lead Qualification
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS ai_qualifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id TEXT REFERENCES chat_sessions(id) ON DELETE CASCADE,
+  message_id UUID REFERENCES chat_messages(id) ON DELETE CASCADE,
+  intent TEXT NOT NULL,
+  urgency TEXT NOT NULL,
+  fit TEXT NOT NULL,
+  confidence NUMERIC(3,2) NOT NULL DEFAULT 0,
+  provider TEXT NOT NULL DEFAULT 'fallback' CHECK (provider IN ('openai', 'fallback')),
+  next_action TEXT,
+  summary TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_ai_qualifications_session_id ON ai_qualifications(session_id);
+CREATE INDEX IF NOT EXISTS idx_ai_qualifications_message_id ON ai_qualifications(message_id);
+CREATE INDEX IF NOT EXISTS idx_ai_qualifications_created_at ON ai_qualifications(created_at DESC);
+
+ALTER TABLE ai_qualifications ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Authenticated users can view ai qualifications"
+  ON ai_qualifications FOR SELECT USING (true);
+
+CREATE POLICY "Service role can insert ai qualifications"
+  ON ai_qualifications FOR INSERT WITH CHECK (true);
+
+-- ============================================================
 -- Weekly Reports (tracks sent email reports)
 -- ============================================================
 
