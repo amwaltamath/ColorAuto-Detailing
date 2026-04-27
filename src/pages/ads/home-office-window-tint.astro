@@ -1,0 +1,333 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import QuoteModal from '../../components/features/QuoteModal';
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do you do both home and office window tinting?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. ColorAuto Detailing provides professional window film installation for residential homes and commercial office buildings in Grand Junction, CO and the surrounding area."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much does home or office window film cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Home window film starts from $8/sq ft for heat rejection film. Office solar control film starts from $7/sq ft. Free consultations and measurements are available."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will window film reduce my energy bills?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Residential window film can reduce cooling costs by up to 30%. Commercial window film can cut HVAC expenses by 30–50% through solar heat rejection."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long does installation take?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Home installations typically take 1–2 days. Office installations are scheduled to minimize disruption — we can work after hours or on weekends for commercial projects."
+      }
+    }
+  ]
+};
+
+const title = "Home & Office Window Tinting Grand Junction CO | ColorAuto Detailing";
+const description = "Professional window film for homes and offices in Grand Junction, CO. Reduce heat, block UV, add privacy. Starting from $7/sq ft. Free consultation — call 970-628-1505.";
+const keywords = ['home window tinting Grand Junction', 'office window film', 'residential window tint', 'commercial window tinting', 'window film Grand Junction CO', 'UV protection window film', 'heat rejection film'];
+---
+
+<Layout {title} {description} {keywords} noindex={true} hideChat={true}>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <QuoteModal client:load isOpen={false} service="Window Film" source="qr_code" />
+
+  <!-- Hero -->
+  <section class="relative text-white py-24 overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="/images/homewindowtint.jpg" alt="Home and office window tinting Grand Junction CO" class="w-full h-full object-cover" loading="eager" />
+      <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/40"></div>
+    </div>
+    <div class="relative max-w-4xl mx-auto px-4 text-center">
+      <p class="text-blue-300 font-semibold uppercase tracking-widest text-sm mb-3">Grand Junction, CO · Western Colorado</p>
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-4 drop-shadow-lg leading-tight">
+        Home & Office<br />Window Tinting
+      </h1>
+      <p class="text-xl text-gray-200 mb-2 drop-shadow">Block heat, reduce UV, and add privacy — for your home or business.</p>
+      <p class="text-lg text-blue-200 mb-8">Starting from <span class="font-bold text-white">$7/sq ft</span> · Free Consultation</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="tel:970-628-1505" class="bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition shadow-lg inline-block">
+          Call Now: 970-628-1505
+        </a>
+        <button data-quote-popup class="bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-lg inline-block cursor-pointer border-0">
+          Get Free Quote
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Strip -->
+  <section class="bg-white border-b border-gray-200 py-4">
+    <div class="max-w-5xl mx-auto px-4 flex flex-wrap items-center justify-center gap-6 md:gap-10 text-sm text-gray-600">
+      <div class="flex items-center gap-2"><span class="text-yellow-500 text-lg">★★★★★</span><span class="font-semibold">4.9/5</span> Google Reviews</div>
+      <div class="flex items-center gap-2"><svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg><span>Certified Installers</span></div>
+      <div class="flex items-center gap-2"><svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg><span>Up to 15-Year Warranty</span></div>
+      <div class="flex items-center gap-2"><svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg><span>After-Hours Available</span></div>
+    </div>
+  </section>
+
+  <!-- Choose Your Solution -->
+  <section class="bg-gray-50 py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-4">Choose Your Solution</h2>
+      <p class="text-xl text-gray-600 text-center mb-12">We serve both homeowners and businesses throughout Grand Junction and Western Colorado.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <!-- Home Card -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-green-200 hover:border-green-500 transition">
+          <div class="bg-green-600 text-white px-6 py-4 flex items-center gap-3">
+            <span class="text-3xl">🏠</span>
+            <div>
+              <h3 class="text-2xl font-extrabold">Home Window Film</h3>
+              <p class="text-green-100 text-sm">For homeowners & residences</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <ul class="space-y-3 mb-6">
+              <li class="flex items-start gap-3">
+                <span class="text-green-600 font-bold text-lg mt-0.5">✓</span>
+                <div><strong>Up to 30% energy savings</strong> — block solar heat year-round</div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-600 font-bold text-lg mt-0.5">✓</span>
+                <div><strong>99% UV protection</strong> — prevent furniture, carpet &amp; artwork fading</div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-600 font-bold text-lg mt-0.5">✓</span>
+                <div><strong>Glare reduction</strong> — no more squinting at TVs or screens</div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-600 font-bold text-lg mt-0.5">✓</span>
+                <div><strong>Daytime privacy</strong> — see out, neighbors can't see in</div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-green-600 font-bold text-lg mt-0.5">✓</span>
+                <div><strong>Shatter protection</strong> — glass held together for safety</div>
+              </li>
+            </ul>
+            <div class="bg-green-50 rounded-lg p-4 mb-6 text-sm">
+              <div class="flex justify-between mb-1"><span class="font-semibold">Heat Rejection Film</span><span>From $8/sq ft</span></div>
+              <div class="flex justify-between mb-1"><span class="font-semibold">Privacy Film</span><span>From $10/sq ft</span></div>
+              <div class="flex justify-between mb-1"><span class="font-semibold">Decorative Frosted</span><span>From $12/sq ft</span></div>
+              <div class="flex justify-between"><span class="font-semibold">Security Film</span><span>From $15/sq ft</span></div>
+            </div>
+            <div class="flex flex-col gap-3">
+              <button data-quote-popup class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition border-0 cursor-pointer text-base">
+                Get Home Window Film Quote
+              </button>
+              <a href="/services/home-window-tint" class="w-full border-2 border-green-600 text-green-600 py-3 rounded-lg font-bold hover:bg-green-50 transition text-center text-base">
+                Learn More →
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Office Card -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-blue-200 hover:border-blue-500 transition">
+          <div class="bg-blue-700 text-white px-6 py-4 flex items-center gap-3">
+            <span class="text-3xl">🏢</span>
+            <div>
+              <h3 class="text-2xl font-extrabold">Office Window Film</h3>
+              <p class="text-blue-200 text-sm">For businesses &amp; commercial buildings</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <ul class="space-y-3 mb-6">
+              <li class="flex items-start gap-3">
+                <span class="text-blue-600 font-bold text-lg mt-0.5">✓</span>
+                <div><strong>30–50% HVAC cost reduction</strong> — solar heat rejection at scale</div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-blue-600 font-bold text-lg mt-0.5">✓</span>
+                <div><strong>Improve employee productivity</strong> — eliminate screen glare &amp; hot spots</div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-blue-600 font-bold text-lg mt-0.5">✓</span>
+                <div><strong>Protect merchandise &amp; equipment</strong> — block UV damage</div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-blue-600 font-bold text-lg mt-0.5">✓</span>
+                <div><strong>Conference room privacy</strong> — frosted &amp; one-way mirror options</div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-blue-600 font-bold text-lg mt-0.5">✓</span>
+                <div><strong>Custom branding films</strong> — logos &amp; graphics on glass</div>
+              </li>
+            </ul>
+            <div class="bg-blue-50 rounded-lg p-4 mb-6 text-sm">
+              <div class="flex justify-between mb-1"><span class="font-semibold">Solar Control Film</span><span>From $7/sq ft</span></div>
+              <div class="flex justify-between mb-1"><span class="font-semibold">Anti-Glare Film</span><span>From $9/sq ft</span></div>
+              <div class="flex justify-between mb-1"><span class="font-semibold">Privacy/Frosted Film</span><span>From $11/sq ft</span></div>
+              <div class="flex justify-between"><span class="font-semibold">Custom Branding Film</span><span>Custom Quote</span></div>
+            </div>
+            <div class="flex flex-col gap-3">
+              <button data-quote-popup class="w-full bg-blue-700 text-white py-3 rounded-lg font-bold hover:bg-blue-800 transition border-0 cursor-pointer text-base">
+                Get Office Window Film Quote
+              </button>
+              <a href="/services/office-window-tint" class="w-full border-2 border-blue-700 text-blue-700 py-3 rounded-lg font-bold hover:bg-blue-50 transition text-center text-base">
+                Learn More →
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Shared Benefits -->
+  <section class="bg-white py-16">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-12">Why Window Film?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="text-5xl mb-4">☀️</div>
+          <h3 class="text-xl font-bold mb-2">Block 99% UV</h3>
+          <p class="text-gray-600">Protect skin, furniture, flooring, and merchandise from fading and UV damage.</p>
+        </div>
+        <div class="text-center">
+          <div class="text-5xl mb-4">❄️</div>
+          <h3 class="text-xl font-bold mb-2">Reduce Heat Up to 80%</h3>
+          <p class="text-gray-600">Lower your energy bills by rejecting solar heat before it enters through the glass.</p>
+        </div>
+        <div class="text-center">
+          <div class="text-5xl mb-4">🔒</div>
+          <h3 class="text-xl font-bold mb-2">Privacy & Security</h3>
+          <p class="text-gray-600">One-way mirror, frosted, and security films for homes and offices of all sizes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="bg-gray-50 py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-10">What Customers Say</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white rounded-lg p-8 shadow">
+          <div class="text-yellow-500 text-xl mb-3">★★★★★</div>
+          <p class="text-gray-700 mb-4 italic">"Our office is so much cooler now. The employees love it — no more arguing over the thermostat. ColorAuto was professional and finished overnight so we had no downtime."</p>
+          <p class="font-bold">— Mark D., Grand Junction Business Owner</p>
+        </div>
+        <div class="bg-white rounded-lg p-8 shadow">
+          <div class="text-yellow-500 text-xl mb-3">★★★★★</div>
+          <p class="text-gray-700 mb-4 italic">"Our west-facing living room used to be unbearable in the afternoon. The heat rejection film made a huge difference and you can barely tell it's there."</p>
+          <p class="font-bold">— Sarah M., Grand Junction Homeowner</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="bg-white py-16">
+    <div class="max-w-3xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-10">Frequently Asked Questions</h2>
+      <div class="space-y-4" id="faq-list">
+        <div class="border border-gray-200 rounded-lg">
+          <button class="faq-toggle w-full text-left px-6 py-4 font-semibold text-lg flex justify-between items-center cursor-pointer bg-transparent border-0">
+            Do you do both home and office window tinting?
+            <span class="text-blue-600 text-2xl">+</span>
+          </button>
+          <div class="faq-answer px-6 pb-4 text-gray-600 hidden">
+            Yes. ColorAuto Detailing installs professional window film for residential homes and commercial offices throughout Grand Junction, CO and Western Colorado.
+          </div>
+        </div>
+        <div class="border border-gray-200 rounded-lg">
+          <button class="faq-toggle w-full text-left px-6 py-4 font-semibold text-lg flex justify-between items-center cursor-pointer bg-transparent border-0">
+            How much does window film cost?
+            <span class="text-blue-600 text-2xl">+</span>
+          </button>
+          <div class="faq-answer px-6 pb-4 text-gray-600 hidden">
+            Home window film starts from $8/sq ft. Office solar control film starts from $7/sq ft. We offer free consultations and measurements — contact us for a custom quote.
+          </div>
+        </div>
+        <div class="border border-gray-200 rounded-lg">
+          <button class="faq-toggle w-full text-left px-6 py-4 font-semibold text-lg flex justify-between items-center cursor-pointer bg-transparent border-0">
+            Will window film reduce my energy bills?
+            <span class="text-blue-600 text-2xl">+</span>
+          </button>
+          <div class="faq-answer px-6 pb-4 text-gray-600 hidden">
+            Yes. Home window film can reduce cooling costs by up to 30%. Commercial window film can cut HVAC expenses by 30–50% through solar heat rejection.
+          </div>
+        </div>
+        <div class="border border-gray-200 rounded-lg">
+          <button class="faq-toggle w-full text-left px-6 py-4 font-semibold text-lg flex justify-between items-center cursor-pointer bg-transparent border-0">
+            How long does installation take?
+            <span class="text-blue-600 text-2xl">+</span>
+          </button>
+          <div class="faq-answer px-6 pb-4 text-gray-600 hidden">
+            Home installations typically take 1–2 days. For offices, we schedule around your business hours and can work after hours or on weekends to minimize disruption.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="bg-gradient-to-r from-blue-700 to-blue-900 text-white py-14">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-4">Ready to Get Started?</h2>
+      <p class="text-xl text-blue-200 mb-8">Free consultation · No-pressure quote · Serving Grand Junction & Western Colorado</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="tel:970-628-1505" class="bg-white text-blue-700 px-8 py-4 rounded-lg font-bold text-lg hover:bg-blue-50 transition shadow-lg inline-block">
+          ☎ Call: 970-628-1505
+        </a>
+        <button data-quote-popup class="bg-green-500 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-600 transition shadow-lg inline-block cursor-pointer border-0">
+          Get Free Quote
+        </button>
+      </div>
+      <p class="text-sm text-blue-300 mt-6">📍 562 S. Westgate Drive, Grand Junction, CO</p>
+    </div>
+  </section>
+
+  <!-- Sticky Mobile CTA Bar -->
+  <div class="sticky-cta-bar" id="stickyCta">
+    <a href="tel:970-628-1505" class="bg-white text-blue-700">📞 Call Now</a>
+    <button data-quote-popup class="bg-green-500 text-white">💬 Free Quote</button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('[data-quote-popup]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          document.dispatchEvent(new CustomEvent('openQuoteModal'));
+        });
+      });
+      const bar = document.getElementById('stickyCta');
+      if (bar) {
+        window.addEventListener('scroll', () => {
+          bar.classList.toggle('visible', window.scrollY > 600);
+        }, { passive: true });
+      }
+      document.querySelectorAll('.faq-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const answer = btn.nextElementSibling as HTMLElement;
+          const icon = btn.querySelector('span:last-child') as HTMLElement;
+          const isOpen = !answer.classList.contains('hidden');
+          document.querySelectorAll('.faq-answer').forEach(a => a.classList.add('hidden'));
+          document.querySelectorAll('.faq-toggle span:last-child').forEach(s => s.textContent = '+');
+          if (!isOpen) { answer.classList.remove('hidden'); icon.textContent = '−'; }
+        });
+      });
+    });
+  </script>
+</Layout>
