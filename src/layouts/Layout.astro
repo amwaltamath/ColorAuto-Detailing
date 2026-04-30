@@ -10,13 +10,14 @@ interface Props {
   image?: string;
   noindex?: boolean;
   hideChat?: boolean;
+  pixelContentName?: string;
 }
 
 const GTM_ID = import.meta.env.PUBLIC_GTM_ID || 'GTM-PMBBJ2B6';
 const META_PIXEL_ID = import.meta.env.PUBLIC_META_PIXEL_ID || '4259458307666913';
 const GOOGLE_SITE_VERIFICATION = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
 const RECAPTCHA_SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
-const { title, description, keywords = [], canonical, image, noindex = false, hideChat = false } = Astro.props;
+const { title, description, keywords = [], canonical, image, noindex = false, hideChat = false, pixelContentName } = Astro.props;
 
 const siteUrl = 'https://colorautodetailing.com';
 const defaultDescription = "ColorAuto Detailing — Auto detailing, paint protection film, ceramic coating, and window tinting in Grand Junction, CO.";
@@ -37,6 +38,7 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/png" href="/images/ColorAuto.png" />
     <link rel="apple-touch-icon" href="/images/ColorAuto.png" />
+    <meta name="facebook-domain-verification" content="e5oueh4i4fyhcztfgg1v433derp42w" />
     <meta name="generator" content={Astro.generator} />
     {GOOGLE_SITE_VERIFICATION && (<meta name="google-site-verification" content={GOOGLE_SITE_VERIFICATION} />)}
     <link rel="canonical" href={canonicalUrl} />
@@ -74,7 +76,7 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
     )}
     
     <!-- Facebook Pixel Code -->
-    <script define:vars={{ META_PIXEL_ID }}>
+    <script define:vars={{ META_PIXEL_ID, pixelContentName }}>
       !function(f,b,e,v,n,t,s)
       {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -85,6 +87,9 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
       'https://connect.facebook.net/en_US/fbevents.js');
       fbq('init', META_PIXEL_ID);
       fbq('track', 'PageView');
+      if (pixelContentName) {
+        fbq('track', 'ViewContent', { content_name: pixelContentName });
+      }
     </script>
     <noscript>
       <img height="1" width="1" style="display:none" 
@@ -221,6 +226,15 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
             window.scrollTo({ top: 0, behavior: 'smooth' });
           });
         }
+
+        // Phone link click → Meta Pixel Contact event
+        document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+          link.addEventListener('click', () => {
+            if (typeof (window as any).fbq === 'function') {
+              (window as any).fbq('track', 'Contact');
+            }
+          });
+        });
 
         // Image lightbox
         const overlay = document.getElementById('lightbox');

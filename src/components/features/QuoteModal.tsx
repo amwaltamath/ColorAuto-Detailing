@@ -188,6 +188,14 @@ export default function QuoteModal({ isOpen: initialOpen = false, onClose, servi
               {status.type === "loading" ? "Sending Quote Request..." : "Get My Free Quote"}
             </button>
 
+            <p className="text-xs text-gray-400 text-center">
+              By submitting, you agree to our{" "}
+              <a href="/privacy-policy" target="_blank" rel="noopener" className="underline hover:text-gray-600">
+                Privacy Policy
+              </a>
+              .
+            </p>
+
             <div role="status" aria-live="polite" className="min-h-[1.25rem]">
               {status.type === "success" && (
                 <p className="text-green-700 text-sm text-center">{status.message}</p>
