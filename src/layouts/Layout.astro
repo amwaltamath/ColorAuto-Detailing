@@ -108,7 +108,7 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
     </script>
     
     {/* reCAPTCHA v3 */}
-    {RECAPTCHA_SITE_KEY && <script src="https://www.google.com/recaptcha/api.js?render={RECAPTCHA_SITE_KEY}"></script>}
+    {RECAPTCHA_SITE_KEY && <script src={`https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`} async defer></script>}
     {RECAPTCHA_SITE_KEY && <script define:vars={{ RECAPTCHA_SITE_KEY }} is:inline>
       window.__RECAPTCHA_SITE_KEY = RECAPTCHA_SITE_KEY;
     </script>}
