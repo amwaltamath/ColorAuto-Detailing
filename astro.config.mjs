@@ -14,6 +14,10 @@ export default defineConfig({
   // Enable server output so API routes deploy as Vercel functions
   output: 'server',
 
+  security: {
+    checkOrigin: false,
+  },
+
   adapter: vercel(),
 
   integrations: [
