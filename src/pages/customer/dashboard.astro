@@ -1,9 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { CustomerDashboard } from '../../components/customer/CustomerDashboard';
+
+const enableCRM = import.meta.env.PUBLIC_ENABLE_CRM === 'true';
 ---
 
-<Layout title="Customer Dashboard">
-  <!-- Auth guard: redirect to login if no token, block employees -->
+<Layout title="My Account – Color Auto Detailing" noindex={true}>
+  <!-- Auth guard -->
   <script is:inline>
     if (!localStorage.getItem('authToken')) {
       window.location.replace('/customer/login');
@@ -11,45 +14,35 @@ import Layout from '../../layouts/Layout.astro';
       window.location.replace('/employee/dashboard');
     }
   </script>
-  <div class="max-w-7xl mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold mb-8">Customer Dashboard</h1>
-    
-    <div class="grid grid-cols-3 gap-8 mb-8">
-      <div class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-2">5</h2>
-        <p class="text-gray-600">Total Bookings</p>
-      </div>
-      <div class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-2">2</h2>
-        <p class="text-gray-600">Upcoming Appointments</p>
-      </div>
-      <div class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-2">$450</h2>
-        <p class="text-gray-600">Total Spent</p>
-      </div>
-    </div>
 
-    <div class="bg-white p-8 rounded-lg shadow">
-      <h2 class="text-2xl font-bold mb-6">Upcoming Appointments</h2>
-      <div class="space-y-4">
-        <div class="border-l-4 border-blue-600 p-4 bg-blue-50">
-          <h3 class="font-bold">Exterior Detail Service</h3>
-          <p class="text-gray-600">December 27, 2025 at 10:00 AM</p>
+  {enableCRM ? (
+    <CustomerDashboard client:load />
+  ) : (
+    <!-- Preview mode: customer portal is coming soon -->
+    <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div class="max-w-md w-full text-center">
+        <div class="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-6">
+          <svg class="w-10 h-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+          </svg>
         </div>
-        <div class="border-l-4 border-green-600 p-4 bg-green-50">
-          <h3 class="font-bold">Interior Cleaning</h3>
-          <p class="text-gray-600">January 5, 2026 at 2:00 PM</p>
+        <h1 class="text-2xl font-bold text-gray-900 mb-3">Your Portal Is Coming Soon</h1>
+        <p class="text-gray-500 mb-6">
+          We're building an account portal where you'll be able to track your vehicle's service status,
+          view invoices, and see before &amp; after photos. Check back soon!
+        </p>
+        <div class="space-y-3">
+          <a href="/contact" class="block w-full bg-blue-600 text-white py-3 px-6 rounded-xl font-semibold hover:bg-blue-700 transition-colors">
+            Contact Us
+          </a>
+          <button
+            onclick="localStorage.removeItem('authToken'); localStorage.removeItem('userId'); localStorage.removeItem('userRole'); window.location.replace('/customer/login');"
+            class="block w-full text-sm text-gray-500 hover:text-gray-700 py-2"
+          >
+            Sign Out
+          </button>
         </div>
       </div>
     </div>
-
-    <div class="mt-8">
-      <a
-        href="#"
-        class="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700 transition"
-      >
-        Book New Service
-      </a>
-    </div>
-  </div>
+  )}
 </Layout>
