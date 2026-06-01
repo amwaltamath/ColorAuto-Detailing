@@ -192,7 +192,7 @@ import { SeoGuideTool } from '../../components/employee/SeoGuideTool';
     background: #ffffff;
     border: 1px solid rgb(229 231 235);
     border-radius: 0.75rem;
-    padding: 1.25rem;
+    padding: 1rem;
     box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   }
   @media (min-width: 768px) {
@@ -203,11 +203,19 @@ import { SeoGuideTool } from '../../components/employee/SeoGuideTool';
 
   .dashboard-card-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.75rem;
-    margin-bottom: 1.25rem;
-    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.875rem;
     border-bottom: 1px solid rgb(229 231 235);
+  }
+
+  @media (min-width: 640px) {
+    .dashboard-card-header {
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+    }
   }
 
   .dashboard-card-icon {

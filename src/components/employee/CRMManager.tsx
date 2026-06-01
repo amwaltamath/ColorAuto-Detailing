@@ -662,8 +662,11 @@ export function CRMManager() {
   ];
 
   return (
-    <div>
+    <div className="crm-shell">
       <style>{`
+        .crm-shell { width: 100%; }
+        .crm-scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .crm-scrollbar-hide::-webkit-scrollbar { display: none; }
         .crm-label { display: block; font-size: .75rem; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .25rem; }
         .crm-input { width: 100%; border: 1px solid #e5e7eb; border-radius: .5rem; padding: .5rem .75rem; font-size: .875rem; color: #111827; background: #fff; outline: none; transition: border-color .15s; }
         .crm-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,.15); }
@@ -680,13 +683,13 @@ export function CRMManager() {
 
       {/* CRM sub-nav */}
       {view !== 'customer_detail' && (
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+        <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div className="crm-scrollbar-hide flex w-full gap-1 overflow-x-auto bg-gray-100 rounded-lg p-1 md:w-auto">
             {topNavItems.map(item => (
               <button
                 key={item.key}
                 onClick={() => { setView(item.key); }}
-                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
+                className={`flex-shrink-0 px-3 py-1.5 text-xs sm:px-4 sm:text-sm font-medium rounded-md transition-all ${
                   view === item.key ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
@@ -695,12 +698,12 @@ export function CRMManager() {
             ))}
           </div>
           {view === 'customers' && (
-            <button onClick={() => setView('new_customer')} className="crm-btn-primary">
+            <button onClick={() => setView('new_customer')} className="crm-btn-primary w-full justify-center md:w-auto">
               + New Customer
             </button>
           )}
           {view === 'jobs' && (
-            <button onClick={() => setView('new_job')} className="crm-btn-primary">
+            <button onClick={() => setView('new_job')} className="crm-btn-primary w-full justify-center md:w-auto">
               + New Job
             </button>
           )}
@@ -731,18 +734,18 @@ export function CRMManager() {
                   onClick={() => { setSelectedCustomerId(c.id); setView('customer_detail'); }}
                   className="w-full text-left border border-gray-200 rounded-xl p-4 bg-white hover:border-blue-200 hover:bg-blue-50/30 transition-all"
                 >
-                  <div className="flex justify-between items-start">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-start">
                     <div>
                       <p className="font-semibold text-gray-900">{c.first_name} {c.last_name}</p>
                       <p className="text-sm text-gray-500">{c.email || '—'} {c.phone ? `· ${c.phone}` : ''}</p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-left sm:text-right">
                       {c.city && <p className="text-xs text-gray-400">{c.city}</p>}
                       <p className="text-xs text-gray-400 mt-0.5">{fmtDate(c.created_at)}</p>
                     </div>
                   </div>
                   {(c.crm_jobs?.length || c.crm_vehicles?.length) ? (
-                    <div className="flex gap-3 mt-2">
+                    <div className="mt-2 flex flex-wrap gap-2 sm:gap-3">
                       {c.crm_jobs && c.crm_jobs.length > 0 && (
                         <span className="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
                           {c.crm_jobs.length} job{c.crm_jobs.length !== 1 ? 's' : ''}
@@ -811,7 +814,7 @@ export function CRMManager() {
                 const c = (job as any).crm_customers as { first_name: string; last_name: string } | undefined;
                 return (
                   <div key={job.id} className="border border-gray-200 rounded-xl p-4 bg-white">
-                    <div className="flex justify-between items-start">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-start">
                       <div>
                         <p className="font-semibold text-gray-900">{job.service_type}</p>
                         {c && (
@@ -827,12 +830,12 @@ export function CRMManager() {
                         )}
                         {job.scheduled_date && <p className="text-xs text-gray-400 mt-0.5">{fmtDate(job.scheduled_date)}</p>}
                       </div>
-                      <div className="flex flex-col items-end gap-2">
+                      <div className="flex flex-row items-center gap-2 sm:flex-col sm:items-end">
                         <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${s.color}`}>{s.label}</span>
                         <select
                           value={job.status}
                           onChange={e => handleJobStatusChange(job.id, e.target.value)}
-                          className="text-xs border border-gray-200 rounded-lg px-2 py-1 bg-white"
+                          className="min-w-[120px] text-xs border border-gray-200 rounded-lg px-2 py-1 bg-white"
                         >
                           {JOB_STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                         </select>
@@ -881,8 +884,9 @@ export function CRMManager() {
           ) : invoices.length === 0 ? (
             <div className="text-center py-16 text-gray-400">No invoices found.</div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+            <>
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left text-xs text-gray-500 uppercase tracking-wide border-b border-gray-100">
                     <th className="pb-3 pr-4">Invoice #</th>
@@ -920,8 +924,40 @@ export function CRMManager() {
                     );
                   })}
                 </tbody>
-              </table>
-            </div>
+                </table>
+              </div>
+
+              <div className="space-y-3 md:hidden">
+                {invoices.map(inv => {
+                  const s = getInvoiceStatus(inv.status);
+                  return (
+                    <div key={inv.id} className="border border-gray-200 rounded-xl p-4 bg-white">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="font-mono text-xs text-gray-600">{inv.invoice_number}</p>
+                          <p className="text-sm font-semibold text-gray-900 mt-1">{inv.crm_customers ? `${inv.crm_customers.first_name} ${inv.crm_customers.last_name}` : '—'}</p>
+                          <p className="text-xs text-gray-500 mt-0.5">{inv.crm_jobs?.service_type || '—'}</p>
+                        </div>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${s.color}`}>{s.label}</span>
+                      </div>
+                      <div className="mt-3 flex items-center justify-between gap-2">
+                        <div>
+                          <p className="text-xs text-gray-400">Due {fmtDate(inv.due_date)}</p>
+                          <p className="text-sm font-semibold text-gray-900 mt-0.5">{fmtCurrency(inv.total)}</p>
+                        </div>
+                        <select
+                          value={inv.status}
+                          onChange={e => handleInvoiceStatusChange(inv.id, e.target.value)}
+                          className="min-w-[124px] text-xs border border-gray-200 rounded-lg px-2 py-1 bg-white"
+                        >
+                          {INVOICE_STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
           )}
         </div>
       )}
