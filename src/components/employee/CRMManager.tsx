@@ -554,7 +554,13 @@ function CustomerDetail({ customerId, onBack, allCustomers }: { customerId: stri
 type CRMView = 'customers' | 'customer_detail' | 'jobs' | 'invoices' | 'new_customer' | 'new_job';
 
 export function CRMManager() {
-  const [view, setView] = useState<CRMView>('customers');
+  const [view, setView] = useState<CRMView>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('activeCrmView');
+      if (stored && ['customers', 'jobs', 'invoices'].includes(stored)) return stored as CRMView;
+    }
+    return 'customers';
+  });
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -612,6 +618,23 @@ export function CRMManager() {
     const t = setTimeout(() => { if (view === 'customers') loadCustomers(search); }, 350);
     return () => clearTimeout(t);
   }, [search, view, loadCustomers]);
+
+  // Persist top-level CRM view to localStorage so sidebar stays in sync
+  useEffect(() => {
+    if (typeof window !== 'undefined' && ['customers', 'jobs', 'invoices'].includes(view)) {
+      localStorage.setItem('activeCrmView', view);
+    }
+  }, [view]);
+
+  // Listen for sidebar navigation events (crm:navigate dispatched by EmployeeLayout)
+  useEffect(() => {
+    const handleNavigate = (e: Event) => {
+      const v = (e as CustomEvent<{ view: string }>).detail.view as CRMView;
+      if (['customers', 'jobs', 'invoices'].includes(v)) setView(v);
+    };
+    window.addEventListener('crm:navigate', handleNavigate);
+    return () => window.removeEventListener('crm:navigate', handleNavigate);
+  }, []);
 
   const handleJobStatusChange = async (jobId: string, status: string) => {
     await fetch(`/api/crm/jobs/${jobId}`, {

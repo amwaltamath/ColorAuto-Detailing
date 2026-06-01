@@ -176,15 +176,7 @@ import { SeoGuideTool } from '../../components/employee/SeoGuideTool';
       selectedTab.classList.add('active');
     }
 
-    // Sync nav pills in header
-    document.querySelectorAll('.nav-pill').forEach(pill => {
-      pill.classList.remove('nav-pill--active');
-      if (pill.getAttribute('data-tab') === tabName) {
-        pill.classList.add('nav-pill--active');
-      }
-    });
-
-    // Store preference
+    // Store preference (nav active state is synced by EmployeeLayout)
     localStorage.setItem('activeTab', tabName);
   };
 
