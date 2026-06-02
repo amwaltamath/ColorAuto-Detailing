@@ -270,7 +270,7 @@ export function CustomerDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50">
       <style>{`
         .cd-label { display:block; font-size:.75rem; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:.05em; margin-bottom:.25rem; }
         .cd-input { width:100%; border:1px solid #e5e7eb; border-radius:.5rem; padding:.5rem .75rem; font-size:.875rem; color:#111827; background:#fff; outline:none; }
@@ -282,35 +282,15 @@ export function CustomerDashboard() {
         @keyframes cd-spin { to { transform:rotate(360deg); } }
       `}</style>
 
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">My Account</h1>
-              <p className="text-sm text-gray-500">Color Auto Detailing</p>
-            </div>
-            <button
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  localStorage.removeItem('authToken');
-                  localStorage.removeItem('userId');
-                  localStorage.removeItem('userRole');
-                  window.location.replace('/customer/login');
-                }
-              }}
-              className="text-sm text-gray-500 hover:text-red-600 transition-colors"
-            >
-              Sign Out
-            </button>
-          </div>
-          {/* Tab bar */}
-          <nav className="flex gap-1 overflow-x-auto -mb-px">
+      {/* Tab bar */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-4xl mx-auto px-4">
+          <nav className="flex gap-1 overflow-x-auto">
             {tabs.map(t => (
               <button
                 key={t.key}
                 onClick={() => setTab(t.key)}
-                className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
+                className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
                   tab === t.key ? 'border-blue-600 text-blue-700' : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >

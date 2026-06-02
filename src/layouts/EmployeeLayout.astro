@@ -37,14 +37,9 @@ const { title, description, keywords, canonical, image, noindex } = Astro.props;
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
               </svg>
             </button>
-            <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center shadow-md">
-              <svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-              </svg>
-            </div>
-            <div>
+            <img src="/images/ColorAuto.png" alt="Color Auto Detailing" class="h-9 md:h-10 w-auto object-contain" />
+            <div class="hidden sm:block">
               <h1 class="text-lg md:text-xl font-bold text-gray-900 tracking-tight">{title}</h1>
-              <p class="text-[10px] md:text-xs text-gray-500 font-medium tracking-wide uppercase">Color Auto Detailing</p>
             </div>
           </div>
           <div class="flex items-center gap-2 md:gap-3">
@@ -64,7 +59,7 @@ const { title, description, keywords, canonical, image, noindex } = Astro.props;
     <div id="mobile-nav-overlay" class="mobile-nav-overlay md:hidden" hidden></div>
     <aside id="mobile-nav-drawer" class="mobile-nav-drawer md:hidden" aria-hidden="true">
       <div class="flex items-center justify-between p-4 border-b border-gray-100">
-        <p class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Menu</p>
+        <img src="/images/ColorAuto.png" alt="Color Auto Detailing" class="h-8 w-auto object-contain" />
         <button id="mobile-menu-close" class="inline-flex items-center justify-center w-8 h-8 rounded-md text-gray-500 hover:bg-gray-100" aria-label="Close navigation">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />

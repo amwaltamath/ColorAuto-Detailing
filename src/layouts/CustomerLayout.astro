@@ -1,0 +1,76 @@
+---
+import '../styles/global.css';
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+  activeTab?: string;
+}
+
+const { title, description, noindex, activeTab } = Astro.props;
+---
+
+<Layout title={title} description={description} noindex={noindex ?? true} hideChat={false}>
+  <!-- Auth guard -->
+  <script is:inline>
+    if (!localStorage.getItem('authToken')) {
+      window.location.replace('/customer/login');
+    } else if (localStorage.getItem('userRole') === 'employee' || localStorage.getItem('userRole') === 'admin') {
+      window.location.replace('/employee/dashboard');
+    }
+  </script>
+
+  <div class="min-h-screen bg-gray-50 flex flex-col">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-10">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6">
+        <div class="flex items-center justify-between py-3">
+          <a href="/customer/dashboard" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
+            <img src="/images/ColorAuto.png" alt="Color Auto Detailing" class="h-10 w-auto object-contain" />
+          </a>
+          <div class="flex items-center gap-3">
+            <a href="/" class="text-sm text-gray-500 hover:text-gray-700 transition-colors hidden sm:inline">Back to site</a>
+            <button
+              id="customer-signout"
+              class="text-sm font-medium text-gray-600 hover:text-red-600 transition-colors bg-gray-100 hover:bg-red-50 border border-gray-200 hover:border-red-200 px-3 py-1.5 rounded-lg"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 bg-white mt-12">
+      <div class="max-w-4xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-400">
+        <p>© {new Date().getFullYear()} Color Auto Detailing. All rights reserved.</p>
+        <div class="flex gap-4">
+          <a href="/contact" class="hover:text-gray-600 transition-colors">Contact</a>
+          <a href="/privacy-policy" class="hover:text-gray-600 transition-colors">Privacy</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</Layout>
+
+<script is:inline>
+  var signoutBtn = document.getElementById('customer-signout');
+  if (signoutBtn) {
+    signoutBtn.addEventListener('click', function() {
+      try {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userRole');
+      } catch (e) {}
+      window.location.replace('/customer/login');
+    });
+  }
+</script>

@@ -37,34 +37,34 @@ export function LoginForm({ role }: { role: 'customer' | 'employee' }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white p-8 rounded-lg shadow-lg w-96"
+      className="space-y-5"
     >
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">
-        {role === 'customer' ? 'Customer' : 'Employee'} Login
-      </h1>
+      <h2 className="text-2xl font-bold text-gray-900">
+        {role === 'customer' ? 'Sign in' : 'Employee Login'}
+      </h2>
 
       {error && (
-        <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">{error}</div>
       )}
 
-      <div className="mb-4">
-        <label className="block text-gray-700 font-bold mb-2">Email</label>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
           placeholder="you@example.com"
         />
       </div>
 
-      <div className="mb-6">
-        <label className="block text-gray-700 font-bold mb-2">Password</label>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
           placeholder="••••••••"
         />
       </div>
@@ -72,17 +72,17 @@ export function LoginForm({ role }: { role: 'customer' | 'employee' }) {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-xl hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
       >
-        {isLoading ? 'Signing in...' : 'Sign In'}
+        {isLoading ? 'Signing in…' : 'Sign In'}
       </button>
 
-      <p className="text-center text-gray-600 mt-4 text-sm">
+      <p className="text-center text-gray-500 text-sm">
         {role === 'customer' ? (
           <>
-            Don't have an account?{' '}
-            <a href="/customer/register" className="text-blue-600 hover:underline">
-              Register here
+            Don&apos;t have an account?{' '}
+            <a href="/customer/register" className="text-blue-600 font-medium hover:underline">
+              Register
             </a>
           </>
         ) : (
