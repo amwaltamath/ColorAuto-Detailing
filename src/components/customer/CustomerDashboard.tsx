@@ -242,6 +242,7 @@ export function CustomerDashboard() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [profile, setProfile] = useState<Partial<Profile> | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedPhoto, setSelectedPhoto] = useState<JobPhoto | null>(null);
   const [vehicleForm, setVehicleForm] = useState<VehicleFormState>({
@@ -261,14 +262,16 @@ export function CustomerDashboard() {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [jobsRes, vehiclesRes, invoicesRes] = await Promise.all([
+      const [profileRes, jobsRes, vehiclesRes, invoicesRes] = await Promise.all([
+        fetch('/api/customer/profile', { headers: getAuthHeaders() }),
         fetch('/api/customer/jobs', { headers: getAuthHeaders() }),
         fetch('/api/customer/vehicles', { headers: getAuthHeaders() }),
         fetch('/api/customer/invoices', { headers: getAuthHeaders() }),
       ]);
-      const [jobsJson, vehiclesJson, invoicesJson] = await Promise.all([
-        jobsRes.json(), vehiclesRes.json(), invoicesRes.json(),
+      const [profileJson, jobsJson, vehiclesJson, invoicesJson] = await Promise.all([
+        profileRes.json(), jobsRes.json(), vehiclesRes.json(), invoicesRes.json(),
       ]);
+      setProfile(profileJson.profile || null);
       setJobs(jobsJson.jobs || []);
       setVehicles(vehiclesJson.vehicles || []);
       setInvoices(invoicesJson.invoices || []);
@@ -327,6 +330,30 @@ export function CustomerDashboard() {
   const activeJobs = jobs.filter(j => j.status === 'scheduled' || j.status === 'in_progress');
   const completedJobs = jobs.filter(j => j.status === 'completed');
   const unpaidInvoices = invoices.filter(i => i.status === 'sent' || i.status === 'overdue');
+  const profileComplete = Boolean(profile?.first_name || profile?.last_name || profile?.email || profile?.phone);
+  const onboardingSteps = [
+    {
+      title: 'Complete your profile',
+      description: 'Add your contact details so we can reach you quickly.',
+      done: profileComplete,
+      action: 'Go to Profile',
+      onAction: () => setTab('profile'),
+    },
+    {
+      title: 'Add a vehicle',
+      description: 'Link your car to keep service history in one place.',
+      done: vehicles.length > 0,
+      action: vehicles.length > 0 ? 'Manage Vehicles' : 'Add Vehicle',
+      onAction: () => setTab('vehicles'),
+    },
+    {
+      title: 'Book your first service',
+      description: 'Schedule detailing, tint, or PPF when you’re ready.',
+      done: jobs.length > 0,
+      action: 'Book Now',
+      onAction: () => window.location.assign('/contact'),
+    },
+  ];
 
   const tabs: { key: Tab; label: string; badge?: number }[] = [
     { key: 'overview', label: 'Overview' },
@@ -396,6 +423,48 @@ export function CustomerDashboard() {
                   <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
                     <p className="text-2xl font-bold text-gray-900">{vehicles.length}</p>
                     <p className="text-sm text-gray-500 mt-0.5">Vehicles</p>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 mb-1">Getting started</p>
+                      <h2 className="text-lg font-bold text-gray-900">Your account setup checklist</h2>
+                    </div>
+                    <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">{onboardingSteps.filter(step => step.done).length}/3 complete</span>
+                  </div>
+
+                  <div className="grid gap-3 md:grid-cols-3">
+                    {onboardingSteps.map(step => (
+                      <div
+                        key={step.title}
+                        className={`rounded-xl border p-4 flex flex-col gap-3 ${step.done ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${step.done ? 'bg-green-600 text-white' : 'bg-blue-600 text-white'}`}>
+                            {step.done ? (
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            ) : (
+                              <span className="text-sm font-semibold">!</span>
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-gray-900">{step.title}</p>
+                            <p className="text-sm text-gray-500 mt-1">{step.description}</p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={step.onAction}
+                          className={`inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${step.done ? 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+                        >
+                          {step.action}
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
