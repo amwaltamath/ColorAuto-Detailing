@@ -51,6 +51,17 @@ interface Invoice {
   crm_jobs?: { id: string; service_type: string; scheduled_date?: string };
 }
 
+interface VehicleFormState {
+  year: string;
+  make: string;
+  model: string;
+  trim: string;
+  color: string;
+  vin: string;
+  license_plate: string;
+  notes: string;
+}
+
 interface Profile {
   id: string;
   first_name: string;
@@ -233,6 +244,19 @@ export function CustomerDashboard() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPhoto, setSelectedPhoto] = useState<JobPhoto | null>(null);
+  const [vehicleForm, setVehicleForm] = useState<VehicleFormState>({
+    year: '',
+    make: '',
+    model: '',
+    trim: '',
+    color: '',
+    vin: '',
+    license_plate: '',
+    notes: '',
+  });
+  const [vehicleSaving, setVehicleSaving] = useState(false);
+  const [vehicleError, setVehicleError] = useState('');
+  const [vehicleSuccess, setVehicleSuccess] = useState('');
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -252,6 +276,51 @@ export function CustomerDashboard() {
       setLoading(false);
     }
   }, []);
+
+  const handleVehicleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setVehicleSaving(true);
+    setVehicleError('');
+    setVehicleSuccess('');
+
+    if (!vehicleForm.make.trim() || !vehicleForm.model.trim()) {
+      setVehicleError('Make and model are required.');
+      setVehicleSaving(false);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/customer/vehicles', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(vehicleForm),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setVehicleError(json.error || 'Unable to save vehicle');
+        return;
+      }
+
+      setVehicles(prev => [json.vehicle, ...prev]);
+      setVehicleForm({
+        year: '',
+        make: '',
+        model: '',
+        trim: '',
+        color: '',
+        vin: '',
+        license_plate: '',
+        notes: '',
+      });
+      setVehicleSuccess('Vehicle saved successfully.');
+      setTab('vehicles');
+      setTimeout(() => setVehicleSuccess(''), 3000);
+    } catch {
+      setVehicleError('Network error while saving vehicle');
+    } finally {
+      setVehicleSaving(false);
+    }
+  };
 
   useEffect(() => { loadData(); }, [loadData]);
 
@@ -380,9 +449,48 @@ export function CustomerDashboard() {
                     </div>
                     <p className="text-gray-600 font-medium mb-1">No active services</p>
                     <p className="text-sm text-gray-400">Book a service to get started.</p>
-                    <a href="/contact" className="inline-block mt-4 bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">Book Now</a>
+                    <div className="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
+                      <a
+                        href="/contact"
+                        className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm"
+                      >
+                        Book Now
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => setTab('vehicles')}
+                        className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm"
+                      >
+                        Add Vehicle
+                      </button>
+                    </div>
                   </div>
                 )}
+
+                <div className="bg-gradient-to-br from-slate-900 to-blue-950 rounded-2xl p-5 text-white shadow-lg">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                      <p className="text-blue-200 text-xs font-semibold uppercase tracking-[0.18em] mb-1">Quick Actions</p>
+                      <h2 className="text-xl font-bold">Need to schedule or update a vehicle?</h2>
+                      <p className="text-sm text-blue-100/80 mt-1">Keep your account current so we can match service history to the right car.</p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <a
+                        href="/contact"
+                        className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-900 bg-white hover:bg-blue-50 transition-colors"
+                      >
+                        Book Now
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => setTab('vehicles')}
+                        className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-white/10 ring-1 ring-white/20 hover:bg-white/15 transition-colors"
+                      >
+                        Manage Vehicles
+                      </button>
+                    </div>
+                  </div>
+                </div>
 
                 {/* Unpaid invoices notice */}
                 {unpaidInvoices.length > 0 && (
@@ -439,37 +547,104 @@ export function CustomerDashboard() {
             {/* ── Vehicles ── */}
             {tab === 'vehicles' && (
               <div>
-                <h2 className="text-base font-semibold text-gray-800 mb-4">My Vehicles</h2>
-                {vehicles.length === 0 ? (
-                  <div className="text-center py-16 text-gray-400">
-                    <p className="text-base font-medium text-gray-500 mb-1">No vehicles on file</p>
-                    <p className="text-sm">Your vehicles will appear here after your first service.</p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {vehicles.map(v => (
-                      <div key={v.id} className="bg-white rounded-xl border border-gray-200 p-5">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                            <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-                            </svg>
-                          </div>
-                          <div>
-                            <p className="font-semibold text-gray-900">{v.year} {v.make} {v.model}</p>
-                            {v.color && <p className="text-sm text-gray-500">{v.color}</p>}
-                          </div>
-                        </div>
-                        {(v.vin || v.license_plate) && (
-                          <div className="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-400 space-y-0.5">
-                            {v.vin && <p className="font-mono">VIN: {v.vin}</p>}
-                            {v.license_plate && <p>Plate: {v.license_plate}</p>}
-                          </div>
-                        )}
+                <div className="flex items-center justify-between gap-4 mb-4">
+                  <h2 className="text-base font-semibold text-gray-800">My Vehicles</h2>
+                  <button type="button" onClick={() => setTab('profile')} className="text-sm font-medium text-blue-600 hover:text-blue-700">
+                    Update profile
+                  </button>
+                </div>
+
+                <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+                  <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+                    {vehicles.length === 0 ? (
+                      <div className="text-center py-10 text-gray-400">
+                        <p className="text-base font-medium text-gray-500 mb-1">No vehicles on file</p>
+                        <p className="text-sm">Add your first vehicle below so we can attach service history to it.</p>
                       </div>
-                    ))}
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {vehicles.map(v => (
+                          <div key={v.id} className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                                <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                                </svg>
+                              </div>
+                              <div>
+                                <p className="font-semibold text-gray-900">{v.year} {v.make} {v.model}</p>
+                                {v.color && <p className="text-sm text-gray-500">{v.color}</p>}
+                              </div>
+                            </div>
+                            {(v.vin || v.license_plate) && (
+                              <div className="mt-3 pt-3 border-t border-gray-200 text-xs text-gray-500 space-y-0.5">
+                                {v.vin && <p className="font-mono">VIN: {v.vin}</p>}
+                                {v.license_plate && <p>Plate: {v.license_plate}</p>}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
+
+                  <form onSubmit={handleVehicleSubmit} className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm space-y-4">
+                    <div>
+                      <h3 className="text-base font-semibold text-gray-900">Add a vehicle</h3>
+                      <p className="text-sm text-gray-500 mt-1">This links the car to your customer account so we can track its service history.</p>
+                    </div>
+
+                    {vehicleError && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">{vehicleError}</div>}
+                    {vehicleSuccess && <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm">{vehicleSuccess}</div>}
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="cd-label">Year</label>
+                        <input className="cd-input" value={vehicleForm.year} onChange={e => setVehicleForm(v => ({ ...v, year: e.target.value }))} placeholder="2024" />
+                      </div>
+                      <div>
+                        <label className="cd-label">Make *</label>
+                        <input className="cd-input" value={vehicleForm.make} onChange={e => setVehicleForm(v => ({ ...v, make: e.target.value }))} placeholder="Toyota" required />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="cd-label">Model *</label>
+                        <input className="cd-input" value={vehicleForm.model} onChange={e => setVehicleForm(v => ({ ...v, model: e.target.value }))} placeholder="Tacoma" required />
+                      </div>
+                      <div>
+                        <label className="cd-label">Trim</label>
+                        <input className="cd-input" value={vehicleForm.trim} onChange={e => setVehicleForm(v => ({ ...v, trim: e.target.value }))} placeholder="TRD Pro" />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="cd-label">Color</label>
+                        <input className="cd-input" value={vehicleForm.color} onChange={e => setVehicleForm(v => ({ ...v, color: e.target.value }))} placeholder="Black" />
+                      </div>
+                      <div>
+                        <label className="cd-label">License Plate</label>
+                        <input className="cd-input" value={vehicleForm.license_plate} onChange={e => setVehicleForm(v => ({ ...v, license_plate: e.target.value }))} placeholder="ABC123" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="cd-label">VIN</label>
+                      <input className="cd-input" value={vehicleForm.vin} onChange={e => setVehicleForm(v => ({ ...v, vin: e.target.value }))} placeholder="1HGBH41JXMN109186" />
+                    </div>
+
+                    <div>
+                      <label className="cd-label">Notes</label>
+                      <textarea className="cd-input min-h-[96px]" value={vehicleForm.notes} onChange={e => setVehicleForm(v => ({ ...v, notes: e.target.value }))} placeholder="Anything special we should know?" />
+                    </div>
+
+                    <button type="submit" disabled={vehicleSaving} className="cd-btn-primary w-full">
+                      {vehicleSaving ? 'Saving…' : 'Save Vehicle'}
+                    </button>
+                  </form>
+                </div>
               </div>
             )}
 
