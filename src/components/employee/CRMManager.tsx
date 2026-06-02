@@ -105,6 +105,14 @@ function fmtCurrency(n: number) {
   return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
+function toDateTimeLocalValue(iso?: string) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const pad = (v: number) => String(v).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 // ── Subcomponents ─────────────────────────────────────────────────────────────
 
 function NewCustomerForm({ onSave, onCancel }: { onSave: (c: Customer) => void; onCancel: () => void }) {
@@ -569,6 +577,7 @@ export function CRMManager() {
   const [loading, setLoading] = useState(false);
   const [jobFilter, setJobFilter] = useState('');
   const [invoiceFilter, setInvoiceFilter] = useState('');
+  const [jobScheduleDrafts, setJobScheduleDrafts] = useState<Record<string, string>>({});
 
   const loadCustomers = useCallback(async (q = '') => {
     setLoading(true);
@@ -586,7 +595,9 @@ export function CRMManager() {
     try {
       const res = await fetch(`/api/crm/jobs${status ? `?status=${status}` : ''}`);
       const json = await res.json();
-      setJobs(json.jobs || []);
+      const jobList = json.jobs || [];
+      setJobs(jobList);
+      setJobScheduleDrafts(Object.fromEntries(jobList.map((j: Job) => [j.id, toDateTimeLocalValue(j.scheduled_date)])));
     } finally {
       setLoading(false);
     }
@@ -641,6 +652,16 @@ export function CRMManager() {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status }),
+    });
+    loadJobs(jobFilter);
+  };
+
+  const handleJobScheduleSave = async (jobId: string) => {
+    const scheduled = jobScheduleDrafts[jobId] || '';
+    await fetch(`/api/crm/jobs/${jobId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ scheduled_date: scheduled ? new Date(scheduled).toISOString() : null, status: 'scheduled' }),
     });
     loadJobs(jobFilter);
   };
@@ -829,6 +850,21 @@ export function CRMManager() {
                           <p className="text-xs text-gray-500">{job.crm_vehicles.year} {job.crm_vehicles.make} {job.crm_vehicles.model}</p>
                         )}
                         {job.scheduled_date && <p className="text-xs text-gray-400 mt-0.5">{fmtDate(job.scheduled_date)}</p>}
+                        <div className="mt-2 flex flex-col sm:flex-row gap-2 sm:items-center">
+                          <input
+                            type="datetime-local"
+                            value={jobScheduleDrafts[job.id] || ''}
+                            onChange={e => setJobScheduleDrafts(prev => ({ ...prev, [job.id]: e.target.value }))}
+                            className="text-xs border border-gray-200 rounded-lg px-2 py-1 bg-white"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleJobScheduleSave(job.id)}
+                            className="text-xs font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-2 py-1 hover:bg-blue-100"
+                          >
+                            Approve/Update Time
+                          </button>
+                        </div>
                       </div>
                       <div className="flex flex-row items-center gap-2 sm:flex-col sm:items-end">
                         <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${s.color}`}>{s.label}</span>

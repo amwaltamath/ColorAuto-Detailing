@@ -62,6 +62,13 @@ interface VehicleFormState {
   notes: string;
 }
 
+interface BookingRequestFormState {
+  vehicle_id: string;
+  service_type: string;
+  preferred_datetime: string;
+  notes: string;
+}
+
 interface Profile {
   id: string;
   first_name: string;
@@ -90,6 +97,15 @@ const INVOICE_STATUS_CONFIG: Record<string, { label: string; color: string }> = 
   overdue: { label: 'Overdue', color: 'text-red-700 bg-red-100' },
   void: { label: 'Void', color: 'text-gray-400 bg-gray-50' },
 };
+
+const CUSTOMER_BOOKING_SERVICES = [
+  'Window Tinting',
+  'Ceramic Coating',
+  'Paint Protection Film',
+  'Color PPF',
+  'Auto Detailing',
+  'Other',
+];
 
 function fmtDate(iso?: string) {
   if (!iso) return '—';
@@ -258,6 +274,15 @@ export function CustomerDashboard() {
   const [vehicleSaving, setVehicleSaving] = useState(false);
   const [vehicleError, setVehicleError] = useState('');
   const [vehicleSuccess, setVehicleSuccess] = useState('');
+  const [bookingForm, setBookingForm] = useState<BookingRequestFormState>({
+    vehicle_id: '',
+    service_type: 'Window Tinting',
+    preferred_datetime: '',
+    notes: '',
+  });
+  const [bookingSaving, setBookingSaving] = useState(false);
+  const [bookingError, setBookingError] = useState('');
+  const [bookingSuccess, setBookingSuccess] = useState('');
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -325,6 +350,46 @@ export function CustomerDashboard() {
     }
   };
 
+  const handleBookingSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBookingSaving(true);
+    setBookingError('');
+    setBookingSuccess('');
+
+    if (!bookingForm.service_type.trim()) {
+      setBookingError('Please select a service.');
+      setBookingSaving(false);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/customer/jobs', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(bookingForm),
+      });
+      const json = await res.json();
+
+      if (!res.ok) {
+        setBookingError(json.error || 'Unable to submit booking request.');
+        return;
+      }
+
+      setBookingSuccess('Booking request submitted. Our team will confirm or adjust your time soon.');
+      setBookingForm({
+        vehicle_id: '',
+        service_type: 'Window Tinting',
+        preferred_datetime: '',
+        notes: '',
+      });
+      await loadData();
+    } catch {
+      setBookingError('Network error while sending booking request.');
+    } finally {
+      setBookingSaving(false);
+    }
+  };
+
   useEffect(() => { loadData(); }, [loadData]);
 
   const activeJobs = jobs.filter(j => j.status === 'scheduled' || j.status === 'in_progress');
@@ -351,7 +416,10 @@ export function CustomerDashboard() {
       description: 'Schedule detailing, tint, or PPF when you’re ready.',
       done: jobs.length > 0,
       action: 'Book Now',
-      onAction: () => window.location.assign('/contact'),
+      onAction: () => {
+        setTab('overview');
+        setTimeout(() => document.getElementById('customer-booking-request-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 10);
+      },
     },
   ];
 
@@ -519,12 +587,13 @@ export function CustomerDashboard() {
                     <p className="text-gray-600 font-medium mb-1">No active services</p>
                     <p className="text-sm text-gray-400">Book a service to get started.</p>
                     <div className="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
-                      <a
-                        href="/contact"
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById('customer-booking-request-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
                         className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm"
                       >
                         Book Now
-                      </a>
+                      </button>
                       <button
                         type="button"
                         onClick={() => setTab('vehicles')}
@@ -536,6 +605,77 @@ export function CustomerDashboard() {
                   </div>
                 )}
 
+                <div id="customer-booking-request-form" className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 mb-1">Book Service</p>
+                      <h2 className="text-lg font-bold text-gray-900">Request a booking</h2>
+                      <p className="text-sm text-gray-500 mt-1">Pick your service and preferred time. Admin can approve or adjust the appointment time.</p>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleBookingSubmit} className="space-y-4">
+                    {bookingError && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">{bookingError}</div>}
+                    {bookingSuccess && <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm">{bookingSuccess}</div>}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="cd-label">Service *</label>
+                        <select
+                          className="cd-input"
+                          value={bookingForm.service_type}
+                          onChange={e => setBookingForm(v => ({ ...v, service_type: e.target.value }))}
+                          required
+                        >
+                          {CUSTOMER_BOOKING_SERVICES.map(service => (
+                            <option key={service} value={service}>{service}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="cd-label">Vehicle</label>
+                        <select
+                          className="cd-input"
+                          value={bookingForm.vehicle_id}
+                          onChange={e => setBookingForm(v => ({ ...v, vehicle_id: e.target.value }))}
+                        >
+                          <option value="">No vehicle selected</option>
+                          {vehicles.map(v => (
+                            <option key={v.id} value={v.id}>
+                              {v.year} {v.make} {v.model}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="cd-label">Preferred date/time</label>
+                      <input
+                        type="datetime-local"
+                        className="cd-input"
+                        value={bookingForm.preferred_datetime}
+                        onChange={e => setBookingForm(v => ({ ...v, preferred_datetime: e.target.value }))}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="cd-label">Notes</label>
+                      <textarea
+                        className="cd-input min-h-[96px]"
+                        value={bookingForm.notes}
+                        onChange={e => setBookingForm(v => ({ ...v, notes: e.target.value }))}
+                        placeholder="Any timing preferences or details for the team"
+                      />
+                    </div>
+
+                    <button type="submit" disabled={bookingSaving} className="cd-btn-primary">
+                      {bookingSaving ? 'Sending request…' : 'Send Booking Request'}
+                    </button>
+                  </form>
+                </div>
+
                 <div className="bg-gradient-to-br from-slate-900 to-blue-950 rounded-2xl p-5 text-white shadow-lg">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
@@ -544,12 +684,13 @@ export function CustomerDashboard() {
                       <p className="text-sm text-blue-100/80 mt-1">Keep your account current so we can match service history to the right car.</p>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3">
-                      <a
-                        href="/contact"
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById('customer-booking-request-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
                         className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-900 bg-white hover:bg-blue-50 transition-colors"
                       >
                         Book Now
-                      </a>
+                      </button>
                       <button
                         type="button"
                         onClick={() => setTab('vehicles')}
