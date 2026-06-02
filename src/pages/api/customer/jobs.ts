@@ -1,28 +1,21 @@
 import type { APIRoute } from 'astro';
 import { supabaseServer } from '../../../utils/supabaseServer';
+import { getAuthenticatedCustomer } from '../../../utils/customerAuth';
 
 /**
  * Customer-facing: returns the authenticated customer's jobs.
- * Uses x-user-id header to look up the crm_customers record.
+ * Uses JWT auth to resolve the CRM customer record.
  */
 export const GET: APIRoute = async ({ request }) => {
   if (!supabaseServer) {
     return new Response(JSON.stringify({ jobs: [] }), { status: 200 });
   }
   try {
-    const userId = request.headers.get('x-user-id');
-    if (!userId) {
+    const authCustomer = await getAuthenticatedCustomer(request);
+    if (!authCustomer) {
       return new Response(JSON.stringify({ error: 'Authentication required' }), { status: 401 });
     }
-
-    // Look up the customer record linked to this auth user
-    const { data: customer, error: customerError } = await supabaseServer
-      .from('crm_customers')
-      .select('id')
-      .eq('user_id', userId)
-      .single();
-
-    if (customerError || !customer) {
+    if (!authCustomer.customerId) {
       return new Response(JSON.stringify({ jobs: [] }), { status: 200 });
     }
 
@@ -34,7 +27,7 @@ export const GET: APIRoute = async ({ request }) => {
         crm_job_photos(id, photo_url, photo_type, caption),
         crm_invoices(id, invoice_number, status, total)
       `)
-      .eq('customer_id', customer.id)
+      .eq('customer_id', authCustomer.customerId)
       .order('scheduled_date', { ascending: false });
 
     if (error) return new Response(JSON.stringify({ error: error.message }), { status: 400 });

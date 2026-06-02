@@ -92,10 +92,8 @@ function fmtCurrency(n: number) {
 function getAuthHeaders(): Record<string, string> {
   if (typeof window === 'undefined') return {};
   const token = localStorage.getItem('authToken');
-  const userId = localStorage.getItem('userId');
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
-  if (userId) headers['x-user-id'] = userId;
   return headers;
 }
 

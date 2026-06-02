@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { supabaseServer } from '../../../utils/supabaseServer';
+import { getAuthenticatedCustomer } from '../../../utils/customerAuth';
 
 /**
  * GET  — fetch customer profile linked to the auth user.
@@ -10,15 +11,18 @@ export const GET: APIRoute = async ({ request }) => {
     return new Response(JSON.stringify({ profile: null }), { status: 200 });
   }
   try {
-    const userId = request.headers.get('x-user-id');
-    if (!userId) {
+    const authCustomer = await getAuthenticatedCustomer(request);
+    if (!authCustomer) {
       return new Response(JSON.stringify({ error: 'Authentication required' }), { status: 401 });
+    }
+    if (!authCustomer.customerId) {
+      return new Response(JSON.stringify({ profile: null }), { status: 200 });
     }
 
     const { data, error } = await supabaseServer
       .from('crm_customers')
       .select('*')
-      .eq('user_id', userId)
+      .eq('id', authCustomer.customerId)
       .maybeSingle();
 
     if (error) return new Response(JSON.stringify({ error: error.message }), { status: 400 });
@@ -35,8 +39,8 @@ export const PATCH: APIRoute = async ({ request }) => {
     return new Response(JSON.stringify({ error: 'Database not configured' }), { status: 503 });
   }
   try {
-    const userId = request.headers.get('x-user-id');
-    if (!userId) {
+    const authCustomer = await getAuthenticatedCustomer(request);
+    if (!authCustomer) {
       return new Response(JSON.stringify({ error: 'Authentication required' }), { status: 401 });
     }
 
@@ -47,38 +51,38 @@ export const PATCH: APIRoute = async ({ request }) => {
       if (key in body) updates[key] = body[key];
     }
 
-    // Upsert: create profile if not yet linked
-    const { data: existing } = await supabaseServer
-      .from('crm_customers')
-      .select('id')
-      .eq('user_id', userId)
-      .maybeSingle();
-
-    let result;
-    if (existing) {
+    if (authCustomer.customerId) {
       const { data, error } = await supabaseServer
         .from('crm_customers')
         .update(updates)
-        .eq('user_id', userId)
+        .eq('id', authCustomer.customerId)
         .select()
         .single();
       if (error) return new Response(JSON.stringify({ error: error.message }), { status: 400 });
-      result = data;
-    } else {
-      const { first_name, last_name, ...rest } = updates as Record<string, string>;
-      if (!first_name || !last_name) {
-        return new Response(JSON.stringify({ error: 'first_name and last_name required for new profile' }), { status: 400 });
-      }
-      const { data, error } = await supabaseServer
-        .from('crm_customers')
-        .insert({ user_id: userId, first_name, last_name, ...rest, source: 'website' })
-        .select()
-        .single();
-      if (error) return new Response(JSON.stringify({ error: error.message }), { status: 400 });
-      result = data;
+      return new Response(JSON.stringify({ profile: data }), { status: 200 });
     }
 
-    return new Response(JSON.stringify({ profile: result }), { status: 200 });
+    const { first_name, last_name, ...rest } = updates as Record<string, string>;
+    if (!first_name || !last_name) {
+      return new Response(JSON.stringify({ error: 'first_name and last_name required for new profile' }), { status: 400 });
+    }
+
+    const { data, error } = await supabaseServer
+      .from('crm_customers')
+      .insert({
+        user_id: authCustomer.authUserId,
+        email: authCustomer.authEmail,
+        first_name,
+        last_name,
+        ...rest,
+        source: 'website',
+      })
+      .select()
+      .single();
+
+    if (error) return new Response(JSON.stringify({ error: error.message }), { status: 400 });
+
+    return new Response(JSON.stringify({ profile: data }), { status: 200 });
   } catch (err) {
     console.error('Customer profile PATCH error:', err);
     return new Response(JSON.stringify({ error: 'Server error' }), { status: 500 });
