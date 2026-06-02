@@ -1,8 +1,38 @@
 ---
-import AuthLayout from '../../layouts/AuthLayout.astro';
+import Layout from '../../layouts/Layout.astro';
 import { RegisterForm } from '../../components/auth/RegisterForm';
 ---
 
-<AuthLayout title="Customer Registration">
-  <RegisterForm client:load />
-</AuthLayout>
+<Layout title="Create Account – Color Auto Detailing" noindex={true} hideChat={true}>
+  <script is:inline>
+    var role = localStorage.getItem('userRole');
+    if (localStorage.getItem('authToken')) {
+      if (role === 'customer') {
+        window.location.replace('/customer/dashboard');
+      } else if (role === 'employee' || role === 'admin') {
+        window.location.replace('/employee/dashboard');
+      }
+    }
+  </script>
+
+  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center px-4 py-12">
+    <div class="w-full max-w-md">
+      <div class="text-center mb-8">
+        <a href="/" class="inline-block">
+          <img src="/images/ColorAuto.png" alt="Color Auto Detailing" class="h-16 w-auto object-contain mx-auto mb-4 drop-shadow-lg" />
+        </a>
+        <p class="text-blue-200/70 text-sm">Customer Portal</p>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-2xl p-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-1">Create your account</h1>
+        <p class="text-sm text-gray-500 mb-6">Sign up to track your vehicle status and service history</p>
+        <RegisterForm client:load />
+      </div>
+
+      <p class="text-center mt-6 text-sm text-blue-200/50">
+        <a href="/" class="hover:text-white transition-colors">← Back to Color Auto Detailing</a>
+      </p>
+    </div>
+  </div>
+</Layout>

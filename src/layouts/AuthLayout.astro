@@ -13,8 +13,10 @@ interface Props {
 const { title, description, keywords, canonical, image, noindex } = Astro.props;
 ---
 
-<Layout title={title} description={description} keywords={keywords} canonical={canonical} image={image} noindex={noindex}>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700">
-    <slot />
+<Layout title={title} description={description} keywords={keywords} canonical={canonical} image={image} noindex={noindex} hideChat={true}>
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700 px-4 py-12">
+    <div class="w-full max-w-sm bg-white rounded-2xl shadow-2xl p-8">
+      <slot />
+    </div>
   </div>
 </Layout>
