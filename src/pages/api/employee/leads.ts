@@ -3,7 +3,10 @@ import { supabaseServer } from '../../../utils/supabaseServer';
 
 export const GET: APIRoute = async ({ url }) => {
   if (!supabaseServer) {
-    return new Response(JSON.stringify({ leads: [] }), { status: 200, headers: { 'content-type': 'application/json' } });
+    return new Response(
+      JSON.stringify({ leads: [], error: 'Database not configured. Set PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.' }),
+      { status: 503, headers: { 'content-type': 'application/json' } },
+    );
   }
 
   try {
@@ -42,7 +45,8 @@ export const GET: APIRoute = async ({ url }) => {
     return new Response(JSON.stringify({ leads: leadsWithCount }), { status: 200, headers: { 'content-type': 'application/json' } });
   } catch (err) {
     console.error('Error fetching leads:', err);
-    return new Response(JSON.stringify({ leads: [] }), { status: 200, headers: { 'content-type': 'application/json' } });
+    const message = err instanceof Error ? err.message : 'Failed to fetch leads';
+    return new Response(JSON.stringify({ leads: [], error: message }), { status: 500, headers: { 'content-type': 'application/json' } });
   }
 };
 

@@ -6,11 +6,11 @@ Add these to your `.env.local`:
 
 ```bash
 PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
-PUBLIC_SUPABASE_ANON_KEY=sb_publishable_OfCOL2FiIIY2RGYAIPeNlw_QC_DY-UW
-SUPABASE_SERVICE_ROLE_KEY=sb_secret_08lkvc6R4pdSYlh38Gv-Lw_MPHBemWT
+PUBLIC_SUPABASE_ANON_KEY=your_anon_key_from_supabase_dashboard
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_from_supabase_dashboard
 ```
 
-**Important**: `SUPABASE_SERVICE_ROLE_KEY` is server-only (no `PUBLIC_` prefix) — never expose it to the browser.
+**Important**: Copy keys from Supabase → Settings → API. Do **not** use placeholder values from docs — invalid keys cause "Unregistered API key" errors and an empty leads list in production.
 
 ## Vercel Deployment
 

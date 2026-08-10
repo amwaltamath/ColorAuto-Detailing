@@ -35,5 +35,8 @@
   },
   "devDependencies": {
     "sharp": "^0.34.5"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.62.4"
   }
 }

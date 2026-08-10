@@ -85,6 +85,7 @@ function timeAgo(dateStr: string) {
 export function LeadsTable() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
   const [sourceFilter, setSourceFilter] = useState('all');
@@ -109,9 +110,19 @@ export function LeadsTable() {
 
       const res = await fetch(`/api/employee/leads?${params}`);
       const data = await res.json();
+
+      if (!res.ok || data.error) {
+        setFetchError(data.error || `Could not load leads (${res.status})`);
+        setLeads([]);
+        return;
+      }
+
+      setFetchError(null);
       setLeads(data.leads || []);
     } catch (err) {
       console.error('Error fetching leads:', err);
+      setFetchError('Could not load leads — check your connection and try again.');
+      setLeads([]);
     } finally {
       setLoading(false);
     }
@@ -211,6 +222,19 @@ export function LeadsTable() {
 
   return (
     <div className="space-y-4">
+      {fetchError && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          <p className="font-medium">Could not load leads</p>
+          <p className="mt-1 text-red-700">{fetchError}</p>
+          <button
+            type="button"
+            onClick={() => { setLoading(true); fetchLeads(); }}
+            className="mt-2 text-red-800 underline hover:no-underline"
+          >
+            Retry
+          </button>
+        </div>
+      )}
       {/* Pipeline Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
         <button onClick={() => setStatusFilter('all')} className={`p-3 rounded-lg border text-center transition ${statusFilter === 'all' ? 'bg-gray-100 border-gray-300' : 'bg-white border-gray-200 hover:border-gray-300'}`}>
@@ -276,7 +300,9 @@ export function LeadsTable() {
       {/* Leads list */}
       {leads.length === 0 ? (
         <div className="text-gray-500 text-center py-8 text-sm">
-          {statusFilter !== 'all' || sourceFilter !== 'all' || searchQuery
+          {fetchError
+            ? 'Leads could not be loaded. Use Retry above or check the database connection.'
+            : statusFilter !== 'all' || sourceFilter !== 'all' || searchQuery
             ? 'No leads match your filters'
             : 'No leads yet — they\'ll appear here from your contact form, or add one manually'}
         </div>
