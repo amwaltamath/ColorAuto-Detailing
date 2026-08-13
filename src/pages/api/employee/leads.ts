@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { supabaseServer } from '../../../utils/supabaseServer';
+import { createOrbisxLead } from '../../../utils/orbisx';
 
 export const GET: APIRoute = async ({ url }) => {
   if (!supabaseServer) {
@@ -87,6 +88,24 @@ export const POST: APIRoute = async ({ request }) => {
     if (error) {
       return new Response(JSON.stringify({ error: error.message }), { status: 400, headers: { 'content-type': 'application/json' } });
     }
+
+    createOrbisxLead({
+      name,
+      email: email || null,
+      phone: phone || null,
+      serviceInterest: service_interest || null,
+      vehicleInfo: vehicle_info || null,
+      message: message || null,
+      source: source || 'website',
+      landingPage: landing_page || null,
+      utmSource: utm_source || null,
+      utmMedium: utm_medium || null,
+      utmCampaign: utm_campaign || null,
+      utmTerm: utm_term || null,
+      utmContent: utm_content || null,
+    }).catch((err) => {
+      console.error('Failed to sync lead to OrbisX:', err);
+    });
 
     return new Response(JSON.stringify({ ok: true, lead }), { status: 201, headers: { 'content-type': 'application/json' } });
   } catch (err) {

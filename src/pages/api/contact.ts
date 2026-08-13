@@ -1,5 +1,6 @@
 import type { APIContext } from "astro";
 import { supabaseServer } from "../../utils/supabaseServer";
+import { createOrbisxLead } from "../../utils/orbisx";
 
 interface ContactPayload {
   name: string;
@@ -399,6 +400,24 @@ export async function POST({ request }: APIContext) {
         console.error('Failed to create lead from contact form:', leadErr);
       }
     }
+
+    createOrbisxLead({
+      name,
+      email: email || null,
+      phone: phone || null,
+      serviceInterest: service || null,
+      vehicleInfo: vehicle || null,
+      message: message || null,
+      source: leadSource,
+      landingPage: (data.landing_page || '').trim() || null,
+      utmSource: (data.utm_source || '').trim() || null,
+      utmMedium: (data.utm_medium || '').trim() || null,
+      utmCampaign: (data.utm_campaign || '').trim() || null,
+      utmTerm: (data.utm_term || '').trim() || null,
+      utmContent: (data.utm_content || '').trim() || null,
+    }).catch((err) => {
+      console.error('Failed to sync lead to OrbisX:', err);
+    });
 
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
