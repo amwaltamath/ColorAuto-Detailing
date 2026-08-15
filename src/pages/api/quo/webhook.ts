@@ -1,6 +1,6 @@
 import type { APIContext } from 'astro';
 import { supabaseServer } from '../../../utils/supabaseServer';
-import { isWebChatRelayMessage } from '../../../utils/quo';
+import { WEB_CHAT_ALERT_PREFIX } from '../../../utils/quo';
 
 /**
  * POST /api/quo/webhook
@@ -108,8 +108,8 @@ export async function POST({ request }: APIContext) {
     const text = msg.text;
     const toNumbers: string[] = msg.to || [];
 
-    // Skip automated web-chat relay messages (not human team replies)
-    if (!text || isWebChatRelayMessage(text) || text.startsWith('💬')) {
+    // Skip automated team alert SMS (not a human reply to the visitor)
+    if (!text || text.startsWith(WEB_CHAT_ALERT_PREFIX) || text.startsWith('💬')) {
       console.log('[quo-webhook] Skipping API-originated outbound message');
       return new Response(JSON.stringify({ ok: true, ignored: true }), {
         status: 200,

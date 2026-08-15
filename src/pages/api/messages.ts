@@ -5,7 +5,6 @@ import {
   isQuoSelfSms,
   isSmsBridgeEnabled,
   quoExternalIdForPhone,
-  quoRelayWebChatToVisitor,
   quoSendSMS,
   quoUpsertContact,
   toE164Phone,
@@ -239,7 +238,7 @@ export async function POST({ request }: APIContext) {
       })();
     }
 
-    // ── Quo: forward web chat into OpenPhone inbox (reply from Quo app) ──
+    // ── Quo: alert team (reply to visitor from Quo app; customer stays in web chat) ──
     const visitorE164 = visitorPhone ? toE164Phone(visitorPhone) : null;
     const teamNotifyNumber = getTeamNotifyNumber();
 
@@ -267,35 +266,24 @@ export async function POST({ request }: APIContext) {
         .then(({ error: bridgeErr }) => {
           if (bridgeErr) console.error('[POST /api/messages] Bridge upsert error:', bridgeErr);
         });
-
-      quoRelayWebChatToVisitor(visitorPhone!, message.trim(), visitorName)
-        .then((res) => {
-          if (res.ok) {
-            console.log('[POST /api/messages] Quo thread relay sent to', visitorE164, '→', res.messageId);
-          } else if (!res.skipped) {
-            console.error('[POST /api/messages] Quo relay failed:', res.error);
-          }
-        })
-        .catch((err) => console.error('[POST /api/messages] Quo relay error:', err));
     } else if (!visitorE164 && smsBridgeEnabled && !shouldSkipSms) {
-      console.warn('[POST /api/messages] No visitor phone – message saved to dashboard only, not Quo');
+      console.warn('[POST /api/messages] No visitor phone – Quo replies will not route to this chat session');
     }
 
-    // Optional backup alert to a personal cell (not the primary Quo workflow)
     if (teamNotifyNumber && !shouldSkipSms && smsBridgeEnabled && !isQuoSelfSms(teamNotifyNumber)) {
-      const smsBody = visitorName?.trim()
-        ? `💬 Website Chat (${visitorName.trim()}): ${message.trim()}`
-        : `💬 Website Chat: ${message.trim()}`;
+      const who = visitorName?.trim() || 'Website visitor';
+      const phoneLine = visitorE164 ? `\nPhone: ${visitorE164}` : '';
+      const smsBody = `💬 Website Chat\nFrom: ${who}${phoneLine}\n\n${message.trim()}`;
 
       quoSendSMS(teamNotifyNumber, smsBody)
         .then((res) => {
           if (res.ok) {
-            console.log('[POST /api/messages] Backup team SMS sent to', teamNotifyNumber);
+            console.log('[POST /api/messages] Team Quo alert sent →', res.messageId);
           } else if (!res.skipped) {
-            console.error('[POST /api/messages] Backup team SMS failed:', res.error);
+            console.error('[POST /api/messages] Team Quo alert failed:', res.error);
           }
         })
-        .catch((err) => console.error('[POST /api/messages] Backup team SMS error:', err));
+        .catch((err) => console.error('[POST /api/messages] Team Quo alert error:', err));
     }
 
     if (shouldSkipSms) {

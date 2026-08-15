@@ -248,7 +248,7 @@ function ChatWidgetInner() {
               </button>
             </div>
             <p className="text-sm text-blue-100 mt-1">
-              {aiChatEnabled ? 'Instant help for booking, pricing, and service questions' : 'Enter your phone — we reply via text from our OpenPhone line'}
+              {aiChatEnabled ? 'Instant help for booking, pricing, and service questions' : 'Chat here on the site — our team replies via text'}
             </p>
           </div>
 
@@ -323,7 +323,7 @@ function ChatWidgetInner() {
                 />
                 <input
                   type="tel"
-                  placeholder="Your phone (required for text replies)"
+                  placeholder="Your phone (so we can reply via text)"
                   value={visitorPhone}
                   onChange={(e) => setVisitorPhone(e.target.value)}
                   required

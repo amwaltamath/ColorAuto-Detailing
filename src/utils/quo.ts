@@ -154,26 +154,8 @@ export function isSmsBridgeEnabled(): boolean {
   ).toLowerCase() === 'true';
 }
 
-/** Prefix for API relay SMS so Quo webhooks ignore them as employee replies. */
-export const WEB_CHAT_RELAY_PREFIX = '[WEB-CHAT]';
-
-export function isWebChatRelayMessage(text: string): boolean {
-  return text.trimStart().startsWith(WEB_CHAT_RELAY_PREFIX);
-}
-
-/**
- * Forward a website chat message into Quo by SMS from the business line to the visitor.
- * Creates/updates the conversation thread in the Quo inbox so the team can reply there.
- */
-export async function quoRelayWebChatToVisitor(
-  visitorPhone: string,
-  message: string,
-  visitorName?: string | null,
-): Promise<QuoSendResult> {
-  const label = visitorName?.trim() || 'Website visitor';
-  const body = `${WEB_CHAT_RELAY_PREFIX} ${label}:\n${message.trim()}`;
-  return quoSendSMS(visitorPhone, body);
-}
+/** Prefix for automated alert SMS (webhook ignores as employee chat reply). */
+export const WEB_CHAT_ALERT_PREFIX = '💬 Website Chat';
 
 /** True when notify target is the same line we send from (OpenPhone rejects / ignores self-SMS). */
 export function isQuoSelfSms(to: string): boolean {
