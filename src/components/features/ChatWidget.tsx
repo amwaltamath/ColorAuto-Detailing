@@ -140,6 +140,12 @@ function ChatWidgetInner() {
       return;
     }
 
+    const isFirstMessage = messages.filter((m) => m.senderType === 'visitor').length === 0;
+    if (isFirstMessage && !visitorPhone.trim()) {
+      alert('Please enter your phone number so we can reply via text.');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -242,7 +248,7 @@ function ChatWidgetInner() {
               </button>
             </div>
             <p className="text-sm text-blue-100 mt-1">
-              {aiChatEnabled ? 'Instant help for booking, pricing, and service questions' : 'We typically reply in minutes'}
+              {aiChatEnabled ? 'Instant help for booking, pricing, and service questions' : 'Enter your phone — we reply via text from our OpenPhone line'}
             </p>
           </div>
 
@@ -317,9 +323,10 @@ function ChatWidgetInner() {
                 />
                 <input
                   type="tel"
-                  placeholder="Your phone (optional, for text replies)"
+                  placeholder="Your phone (required for text replies)"
                   value={visitorPhone}
                   onChange={(e) => setVisitorPhone(e.target.value)}
+                  required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500"
                 />
               </>
