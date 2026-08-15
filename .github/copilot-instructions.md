@@ -3,7 +3,7 @@
 ## Stack & Runtime
 - **Tech**: Astro 5 SSR + React 19 + TypeScript + Tailwind v4 on Vercel Functions.
 - **Commands**: `npm run dev` (localhost:4321) · `npm run build` · `npm run preview`.
-- **Env**: `PUBLIC_API_URL` (browser), `API_URL` (server-only), `RESEND_API_KEY`, `CONTACT_TO_EMAIL` (comma-separated for multiple recipients), `CONTACT_FROM_EMAIL`, `PUBLIC_GTM_ID`, `CRON_SECRET`, `QUO_API_KEY`, `QUO_PHONE_NUMBER_ID`, `PUBLIC_RECAPTCHA_SITE_KEY`, `RECAPTCHA_SECRET_KEY`.
+- **Env**: `PUBLIC_API_URL` (browser), `API_URL` (server-only), `RESEND_API_KEY`, `CONTACT_TO_EMAIL` (comma-separated for multiple recipients), `CONTACT_FROM_EMAIL`, `PUBLIC_GTM_ID`, `CRON_SECRET`, `QUO_API_KEY`, `QUO_PHONE_NUMBER`, `PUBLIC_RECAPTCHA_SITE_KEY`, `RECAPTCHA_SECRET_KEY`.
 - **Adapter**: Vercel with `output: 'server'` in [astro.config.mjs](astro.config.mjs); API routes run as Vercel Functions. CSRF origin check disabled via `security: { checkOrigin: false }` so public POST forms (contact, apply) work across origins/proxies — honeypot + reCAPTCHA v3 provide bot protection instead.
 
 ## Core Architecture
@@ -50,7 +50,7 @@
 
 ## Common Tasks
 - **New service page**: Copy [src/pages/services/auto-detailing.astro](src/pages/services/auto-detailing.astro), update content, add nav link in [src/components/common/Navigation.astro](src/components/common/Navigation.astro)
-- **Fix contact form**: Ensure honeypot (`website` field) stays hidden/empty; verify `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL` in env. If submission navigates to `/api/contact` showing raw JSON, the client-side `submit` handler isn't attaching — check the inline `<script define:vars={...}>` block in [contact.astro](src/pages/contact.astro) for TS syntax (casts like `as HTMLInputElement` break it; `define:vars` scripts are NOT processed by Vite/TS).
+- **Fix contact form**: Ensure honeypot (`website` field) stays hidden/empty; verify `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL` in env
 - **Add employee tab**: Add button to nav-pills in [EmployeeLayout.astro](src/layouts/EmployeeLayout.astro), create API endpoint in [src/pages/api/employee](src/pages/api/employee), hydrate React component for content
 - **Admin seed**: POST to `/api/auth/seed-admin` with `{ email, password, role }` to create/promote a user to employee or admin (requires `SUPABASE_SERVICE_ROLE_KEY`)
 
@@ -59,7 +59,7 @@
 - **Build errors**: Run `npm run build` to catch strict TS type mismatches in API responses
 - **Auth issues**: Check `localStorage` via `getAuthToken()` in console; verify token in API requests (Bearer header)
 - **Chat/Messaging**: Schema in [supabase/schema.sql](supabase/schema.sql); endpoints at [src/pages/api/messages.ts](src/pages/api/messages.ts), [src/pages/api/messages/respond.ts](src/pages/api/messages/respond.ts), [src/pages/api/admin/chat-sessions.ts](src/pages/api/admin/chat-sessions.ts), [src/pages/api/quo/webhook.ts](src/pages/api/quo/webhook.ts)
-- **Quo SMS**: Utility at [src/utils/quo.ts](src/utils/quo.ts); phone number ID `QUO_PHONE_NUMBER_ID` env var; webhook receives `message.received` and `message.delivered` events
+- **Quo SMS**: Utility at [src/utils/quo.ts](src/utils/quo.ts); set `QUO_PHONE_NUMBER` (E.164, e.g. `+19706281505`) or optional `QUO_PHONE_NUMBER_ID`; webhook receives `message.received` and `message.delivered` events
 - **reCAPTCHA**: Site key loaded via `PUBLIC_RECAPTCHA_SITE_KEY` in [Layout.astro](src/layouts/Layout.astro) — script `src` MUST use template literal (`` src={`...?render=${KEY}`} ``), not a plain string with `{KEY}` (which won't interpolate). Form handlers should wrap `grecaptcha.execute()` in its own try/catch so a reCAPTCHA failure doesn't block submission; server-side `verifyRecaptcha()` in [contact.astro](src/pages/api/contact.ts) skips verification when no token is sent.
 - **Astro `<script>` vs `<script define:vars>`**: A plain `<script>` is bundled through Vite (TypeScript works). A `<script define:vars={...}>` is emitted inline as raw JS — strip ALL TS syntax (`as`, type annotations, generics) or it will throw a parse error in the browser and silently break the page.
 

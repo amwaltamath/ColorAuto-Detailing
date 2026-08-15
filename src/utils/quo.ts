@@ -11,8 +11,15 @@ function getApiKey(): string {
   return key;
 }
 
-function getPhoneNumberId(): string {
-  return process.env.QUO_PHONE_NUMBER_ID || import.meta.env.QUO_PHONE_NUMBER_ID || '';
+/** Quo "from" — phone number ID (PN…) or E.164 number (+1…). See Quo send-message docs. */
+function getFromNumber(): string {
+  return (
+    process.env.QUO_PHONE_NUMBER_ID ||
+    import.meta.env.QUO_PHONE_NUMBER_ID ||
+    process.env.QUO_PHONE_NUMBER ||
+    import.meta.env.QUO_PHONE_NUMBER ||
+    ''
+  );
 }
 
 export interface QuoSendResult {
@@ -29,11 +36,11 @@ export interface QuoSendResult {
  */
 export async function quoSendSMS(to: string, content: string): Promise<QuoSendResult> {
   const apiKey = getApiKey();
-  const from = getPhoneNumberId();
+  const from = getFromNumber();
 
   if (!from) {
-    console.error('[quo] QUO_PHONE_NUMBER_ID not set – cannot send SMS');
-    return { ok: false, error: 'QUO_PHONE_NUMBER_ID not configured' };
+    console.error('[quo] Set QUO_PHONE_NUMBER (+19706281505) or QUO_PHONE_NUMBER_ID – cannot send SMS');
+    return { ok: false, error: 'QUO_PHONE_NUMBER not configured' };
   }
 
   try {

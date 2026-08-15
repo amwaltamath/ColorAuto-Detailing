@@ -200,8 +200,7 @@ export async function POST({ request }: APIContext) {
       })();
     }
 
-    // ── Quo SMS bridge: send notification to visitor's phone or fallback number ──
-    // Normalize phone to E.164
+    // ── Quo SMS: notify team phone on every new visitor message ──
     const normalizePhone = (phone: string): string | null => {
       const digits = phone.replace(/\D/g, '');
       if (digits.length === 10) return `+1${digits}`;
@@ -211,48 +210,48 @@ export async function POST({ request }: APIContext) {
     };
 
     const visitorE164 = visitorPhone ? normalizePhone(visitorPhone) : null;
-    const fallbackNumber = process.env.QUO_SMS_NOTIFY_NUMBER || import.meta.env.QUO_SMS_NOTIFY_NUMBER;
-    const smsTarget = visitorE164 || fallbackNumber;
+    const teamNotifyNumber = process.env.QUO_SMS_NOTIFY_NUMBER || import.meta.env.QUO_SMS_NOTIFY_NUMBER;
 
-    if (smsTarget && !shouldSkipSms && smsBridgeEnabled) {
+    if (teamNotifyNumber && !shouldSkipSms && smsBridgeEnabled) {
       const smsBody = visitorName
         ? `💬 ${visitorName}: ${message.trim()}`
         : `💬 Website chat: ${message.trim()}`;
 
-      quoSendSMS(smsTarget, smsBody)
+      quoSendSMS(teamNotifyNumber, smsBody)
         .then((res) => {
           if (res.ok) {
-            console.log('[POST /api/messages] SMS sent to', smsTarget, '→', res.messageId);
+            console.log('[POST /api/messages] Team SMS sent to', teamNotifyNumber, '→', res.messageId);
           } else {
             console.error('[POST /api/messages] Quo SMS failed:', res.error);
           }
         })
         .catch((err) => console.error('[POST /api/messages] Quo SMS error:', err));
-
-      // Track bridge mapping so inbound SMS replies route to this session
-      if (supabaseServer && smsTarget) {
-        supabaseServer
-          .from('chat_sms_bridge')
-          .upsert(
-            {
-              phone_number: smsTarget,
-              session_id: sessionId,
-              updated_at: new Date().toISOString(),
-            },
-            { onConflict: 'phone_number' }
-          )
-          .then(({ error: bridgeErr }) => {
-            if (bridgeErr) console.error('[POST /api/messages] Bridge upsert error:', bridgeErr);
-          });
-      }
     }
-    if (smsTarget && shouldSkipSms) {
+
+    // Map visitor phone → chat session so SMS replies route back into the widget
+    if (visitorE164 && supabaseServer && smsBridgeEnabled && !shouldSkipSms) {
+      supabaseServer
+        .from('chat_sms_bridge')
+        .upsert(
+          {
+            phone_number: visitorE164,
+            session_id: sessionId,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'phone_number' }
+        )
+        .then(({ error: bridgeErr }) => {
+          if (bridgeErr) console.error('[POST /api/messages] Bridge upsert error:', bridgeErr);
+        });
+    }
+
+    if (shouldSkipSms) {
       console.log('[POST /api/messages] SMS skipped for test session:', sessionId);
     }
-    if (smsTarget && !smsBridgeEnabled) {
+    if (!smsBridgeEnabled) {
       console.log('[POST /api/messages] SMS bridge disabled via CHAT_SMS_BRIDGE_ENABLED');
     }
-    console.log('[POST /api/messages] QUO_SMS_NOTIFY_NUMBER:', fallbackNumber ? 'SET' : 'NOT SET');
+    console.log('[POST /api/messages] QUO_SMS_NOTIFY_NUMBER:', teamNotifyNumber ? 'SET' : 'NOT SET');
 
     // Fire push notification to employee devices (non-blocking)
     const pushTitle = visitorName

@@ -1,11 +1,42 @@
 ---
 import PublicLayout from '../layouts/PublicLayout.astro';
 import { getCollection } from 'astro:content';
+import { getSupabaseBlogPosts } from '../utils/blogPosts';
 
 // Get featured blog posts for Recent Work section
-const allPosts = await getCollection('blog');
-const featuredPosts = allPosts
-  .filter(post => post.data.featured)
+const localPosts = await getCollection('blog');
+const dbPosts = await getSupabaseBlogPosts();
+
+const mergedFeaturedPosts = [
+  ...dbPosts
+    .filter((post) => post.featured)
+    .map((post) => ({
+      slug: post.slug,
+      data: {
+        title: post.title,
+        description: post.description,
+        publishDate: post.publishDate,
+        image: post.image,
+        imageAlt: post.imageAlt,
+        category: post.category,
+        location: post.location,
+      },
+    })),
+  ...localPosts
+    .filter((post) => post.data.featured && !dbPosts.some((dbPost) => dbPost.slug === post.slug))
+    .map((post) => ({
+      slug: post.slug,
+      data: {
+        title: post.data.title,
+        description: post.data.description,
+        publishDate: post.data.publishDate,
+        image: post.data.image,
+        imageAlt: post.data.imageAlt,
+        category: post.data.category,
+        location: post.data.location,
+      },
+    })),
+]
   .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
   .slice(0, 3);
 ---
@@ -79,7 +110,7 @@ const featuredPosts = allPosts
       </div>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {featuredPosts.map((post) => (
+        {mergedFeaturedPosts.map((post) => (
           <article class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition group">
             <a href={`/work/${post.slug}`}>
               <div class="overflow-hidden">

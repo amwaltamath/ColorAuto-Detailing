@@ -1,7 +1,23 @@
 {
   "redirects": [
     {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.colorautodetailing.com"
+        }
+      ],
+      "destination": "https://colorautodetailing.com/$1",
+      "permanent": true
+    },
+    {
       "source": "/auto-detailing/",
+      "destination": "/services/auto-detailing",
+      "permanent": true
+    },
+    {
+      "source": "/auto-detailing",
       "destination": "/services/auto-detailing",
       "permanent": true
     },
@@ -26,17 +42,32 @@
       "permanent": true
     },
     {
+      "source": "/car-ceramic-coating",
+      "destination": "/services/ceramic-coating",
+      "permanent": true
+    },
+    {
       "source": "/ceramic-coating/",
       "destination": "/services/ceramic-coating",
       "permanent": true
     },
     {
       "source": "/paint-correction-quote/",
-      "destination": "/services/paint-protection-film",
+      "destination": "/services/auto-paint-correction",
+      "permanent": true
+    },
+    {
+      "source": "/paint-correction-quote",
+      "destination": "/services/auto-paint-correction",
       "permanent": true
     },
     {
       "source": "/auto-paint-correction/",
+      "destination": "/services/auto-paint-correction",
+      "permanent": true
+    },
+    {
+      "source": "/auto-paint-correction",
       "destination": "/services/auto-paint-correction",
       "permanent": true
     },
@@ -56,6 +87,11 @@
       "permanent": true
     },
     {
+      "source": "/commercial-tinting-service",
+      "destination": "/services/office-window-tint",
+      "permanent": true
+    },
+    {
       "source": "/commercial-window-tint/",
       "destination": "/services/office-window-tint",
       "permanent": true
@@ -67,6 +103,11 @@
     },
     {
       "source": "/residential-tinting-service/",
+      "destination": "/services/home-window-tint",
+      "permanent": true
+    },
+    {
+      "source": "/residential-tinting-service",
       "destination": "/services/home-window-tint",
       "permanent": true
     },
@@ -106,6 +147,11 @@
       "permanent": true
     },
     {
+      "source": "/paint-protection-film",
+      "destination": "/services/paint-protection-film",
+      "permanent": true
+    },
+    {
       "source": "/ppf/",
       "destination": "/services/paint-protection-film",
       "permanent": true
@@ -122,6 +168,11 @@
     },
     {
       "source": "/color-ppf/",
+      "destination": "/services/color-ppf",
+      "permanent": true
+    },
+    {
+      "source": "/color-ppf",
       "destination": "/services/color-ppf",
       "permanent": true
     },
@@ -151,13 +202,63 @@
       "permanent": true
     },
     {
-      "source": "/services",
-      "destination": "/services",
+      "source": "/contact-us/",
+      "destination": "/contact",
       "permanent": true
     },
     {
-      "source": "/contact-us/",
+      "source": "/contact-us",
       "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/flat-window-tinting/",
+      "destination": "/services/home-window-tint",
+      "permanent": true
+    },
+    {
+      "source": "/flat-window-tinting",
+      "destination": "/services/home-window-tint",
+      "permanent": true
+    },
+    {
+      "source": "/ppf-quote/",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/ppf-quote",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/window-tinting-quote/",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/window-tinting-quote",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/thank-you/",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/thank-you",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/my-account/",
+      "destination": "/customer/login",
+      "permanent": true
+    },
+    {
+      "source": "/my-account",
+      "destination": "/customer/login",
       "permanent": true
     }
   ],

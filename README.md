@@ -27,7 +27,7 @@ Use this section to quickly rehydrate context when an AI or new dev picks up the
 - `API_URL` (server only)
 - `RESEND_API_KEY`, `CONTACT_TO_EMAIL` (comma-separated for multiple recipients), `CONTACT_FROM_EMAIL`
 - `CRON_SECRET`
-- `QUO_API_KEY`, `QUO_PHONE_NUMBER_ID`
+- `QUO_API_KEY`, `QUO_PHONE_NUMBER` (E.164, e.g. `+19706281505`)
 - `PUBLIC_GTM_ID`
 
 ### Chat Feature (Employee + Public)

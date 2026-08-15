@@ -2,44 +2,76 @@
 import { getCollection } from 'astro:content';
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
+import { getSupabaseBlogPostBySlug } from '../../utils/blogPosts';
 
-export const prerender = true;
+const slug = Astro.params.slug || '';
+const dbPost = slug ? await getSupabaseBlogPostBySlug(slug) : null;
 
-export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts.map((post) => ({
-    params: { slug: post.slug },
-    props: { post },
-  }));
+let localPost: (Awaited<ReturnType<typeof getCollection>>)[number] | null = null;
+let Content: ((props: Record<string, any>) => any) | null = null;
+
+if (!dbPost) {
+  const localPosts = await getCollection('blog');
+  localPost = localPosts.find((candidate) => candidate.slug === slug) || null;
+
+  if (localPost) {
+    const rendered = await localPost.render();
+    Content = rendered.Content;
+  }
 }
 
-const { post } = Astro.props;
-const { Content } = await post.render();
+if (!dbPost && !localPost) {
+  return Astro.redirect('/work');
+}
+
+const postData = dbPost
+  ? {
+      slug: dbPost.slug,
+      title: dbPost.title,
+      description: dbPost.description,
+      publishDate: dbPost.publishDate,
+      image: dbPost.image,
+      imageAlt: dbPost.imageAlt,
+      category: dbPost.category,
+      location: dbPost.location,
+      author: dbPost.author,
+    }
+  : {
+      slug: localPost!.slug,
+      title: localPost!.data.title,
+      description: localPost!.data.description,
+      publishDate: localPost!.data.publishDate,
+      image: localPost!.data.image,
+      imageAlt: localPost!.data.imageAlt,
+      category: localPost!.data.category,
+      location: localPost!.data.location,
+      author: localPost!.data.author,
+    };
 
 const siteUrl = 'https://colorautodetailing.com';
 
 // Format date
-const formattedDate = post.data.publishDate.toLocaleDateString('en-US', {
+const formattedDate = postData.publishDate.toLocaleDateString('en-US', {
   month: 'long',
   day: 'numeric',
   year: 'numeric'
 });
 
 // ISO date for structured data
-const isoDate = post.data.publishDate.toISOString();
+const isoDate = postData.publishDate.toISOString();
 
 // BlogPosting schema
 const blogPostingSchema = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: post.data.title,
-  description: post.data.description,
-  image: new URL(post.data.image, siteUrl).href,
+  headline: postData.title,
+  description: postData.description,
+  image: postData.image.startsWith('http') ? postData.image : new URL(postData.image, siteUrl).href,
   datePublished: isoDate,
   dateModified: isoDate,
   author: {
     "@type": "Organization",
-    name: post.data.author,
+    name: postData.author,
     url: siteUrl,
   },
   publisher: {
@@ -52,29 +84,29 @@ const blogPostingSchema = {
   },
   mainEntityOfPage: {
     "@type": "WebPage",
-    "@id": new URL(`/work/${post.slug}`, siteUrl).href,
+    "@id": new URL(`/work/${postData.slug}`, siteUrl).href,
   },
-  keywords: [post.data.category, "Grand Junction", "ColorAuto", post.data.location],
+  keywords: [postData.category, "Grand Junction", "ColorAuto", postData.location],
 };
 ---
 
 <PublicLayout
-  title={`${post.data.title} | ColorAuto`}
-  description={post.data.description}
+  title={`${postData.title} | ColorAuto`}
+  description={postData.description}
   keywords={[
-    post.data.category,
+    postData.category,
     'Grand Junction',
     'ColorAuto',
     'auto detailing',
     'paint protection',
-    post.data.location
+    postData.location
   ]}
-  image={post.data.image}
+  image={postData.image}
 >
   <Breadcrumbs items={[
     { label: 'Home', href: '/' },
     { label: 'Our Work', href: '/our-work' },
-    { label: post.data.title }
+    { label: postData.title }
   ]} />
 
   <script type="application/ld+json" set:html={JSON.stringify(blogPostingSchema)} />
@@ -83,8 +115,8 @@ const blogPostingSchema = {
     <!-- Hero Image -->
     <div class="relative h-96 overflow-hidden">
       <img 
-        src={post.data.image} 
-        alt={post.data.imageAlt}
+        src={postData.image} 
+        alt={postData.imageAlt}
         class="w-full h-full object-cover"
         fetchpriority="high"
       />
@@ -93,9 +125,9 @@ const blogPostingSchema = {
         <div class="max-w-4xl mx-auto">
           <div class="inline-flex items-center gap-2 bg-blue-600 px-4 py-2 rounded-full text-sm font-semibold mb-4 uppercase shadow-lg backdrop-blur-sm bg-opacity-95 border border-blue-500">
             <span class="w-2 h-2 rounded-full bg-white"></span>
-            {post.data.category.replace('-', ' ')}
+            {postData.category.replace('-', ' ')}
           </div>
-          <h1 class="text-4xl md:text-5xl font-bold mb-3 drop-shadow-lg leading-tight">{post.data.title}</h1>
+          <h1 class="text-4xl md:text-5xl font-bold mb-3 drop-shadow-lg leading-tight">{postData.title}</h1>
           <div class="flex flex-wrap items-center gap-6 text-sm text-gray-200">
             <div class="flex items-center gap-2">
               <span>📅</span>
@@ -104,12 +136,12 @@ const blogPostingSchema = {
             <span class="text-gray-400">•</span>
             <div class="flex items-center gap-2">
               <span>📍</span>
-              <span>{post.data.location}</span>
+              <span>{postData.location}</span>
             </div>
             <span class="text-gray-400">•</span>
             <div class="flex items-center gap-2">
               <span>✍️</span>
-              <span>{post.data.author}</span>
+              <span>{postData.author}</span>
             </div>
           </div>
         </div>
@@ -128,38 +160,52 @@ const blogPostingSchema = {
         prose-li:relative prose-li:before:absolute prose-li:before:left-0 prose-li:before:content-['▸'] prose-li:before:text-blue-600 prose-li:before:font-bold
         prose-strong:text-gray-900 prose-strong:font-bold
         prose-em:text-gray-800 prose-em:italic">
-        <Content />
+        {dbPost ? (
+          <>
+            <p>{dbPost.projectSummary}</p>
+
+            <h2>Services Performed</h2>
+            <ul>
+              {dbPost.servicesPerformed.map((service) => (
+                <li>{service}</li>
+              ))}
+            </ul>
+
+            <h2>Installation Process</h2>
+            <ol>
+              <li><strong>Consultation and inspection</strong>: Confirmed goals and problem areas.</li>
+              <li><strong>Surface preparation</strong>: Decontamination and prep for the selected service.</li>
+              <li><strong>Professional installation</strong>: Applied {dbPost.materialHighlight} using shop best practices.</li>
+              <li><strong>Detail finishing</strong>: Final correction, wipe-down, and finish inspection.</li>
+              <li><strong>Delivery walkthrough</strong>: Shared care instructions and maintenance plan.</li>
+            </ol>
+
+            <h2>Results</h2>
+            <p>This project is now protected and easier to maintain with a cleaner finish and stronger long-term durability.</p>
+
+            <p><strong>Location</strong>: {dbPost.location}<br /><strong>Service Time</strong>: {dbPost.duration}<br /><strong>Product/Material</strong>: {dbPost.materialHighlight}</p>
+
+            <p>Ready for similar results? Learn more about our <a href={dbPost.ctaHref}>{dbPost.ctaLabel}</a> or <a href="/contact">contact us for a quote</a>. Call <strong>{dbPost.phoneNumber}</strong>.</p>
+          </>
+        ) : (
+          Content && <Content />
+        )}
       </div>
 
-      <!-- Image Gallery for Tacoma Post -->
-      {post.slug === 'f150-full-detail' && (
+      {dbPost && dbPost.gallery.length > 0 && (
         <div class="mt-16 pt-12 border-t border-gray-200">
           <h3 class="text-3xl font-bold mb-8 text-center text-gray-900">Project Gallery</h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="group overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition duration-300">
-              <img 
-                src="/images/Tacoma TRD PRO PPF.jpg" 
-                alt="2025 Tacoma TRD PRO front end PPF installation at ColorAuto Grand Junction" 
-                class="w-full h-64 object-cover group-hover:scale-110 transition duration-500"
-                loading="lazy"
-              />
-            </div>
-            <div class="group overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition duration-300">
-              <img 
-                src="/images/Tacoma TRD PRO PPF 2.jpg" 
-                alt="Tacoma TRD PRO XPEL PPF detail work on hood and fenders" 
-                class="w-full h-64 object-cover group-hover:scale-110 transition duration-500"
-                loading="lazy"
-              />
-            </div>
-            <div class="group overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition duration-300">
-              <img 
-                src="/images/Tacoma TRD PRO PPF 3.jpg" 
-                alt="Tacoma TRD PRO after ceramic coating showing deep gloss finish" 
-                class="w-full h-64 object-cover group-hover:scale-110 transition duration-500"
-                loading="lazy"
-              />
-            </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {dbPost.gallery.map((item) => (
+              <div class="group overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition duration-300">
+                <img 
+                  src={item.src}
+                  alt={item.alt}
+                  class="w-full h-64 object-cover group-hover:scale-110 transition duration-500"
+                  loading="lazy"
+                />
+              </div>
+            ))}
           </div>
         </div>
       )}
