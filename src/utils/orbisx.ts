@@ -133,16 +133,19 @@ export async function createOrbisxChatLead(input: {
   phone?: string | null;
   message: string;
 }): Promise<{ ok: boolean; error?: string }> {
-  const contact = input.name?.trim() || 'Website Chat Visitor';
   const phone = input.phone?.trim() || undefined;
   const email = input.email?.trim() || undefined;
   const trackingEmail = email || `website-chat+${input.sessionId.slice(-12)}@colorautodetailing.com`;
+  const visitorLabel = input.name?.trim();
+  const messageBody = visitorLabel
+    ? `[Website chat]\nVisitor: ${visitorLabel}\n\n${input.message.trim()}`
+    : `[Website chat]\n\n${input.message.trim()}`;
 
   return createOrbisxLead({
-    name: contact,
+    name: 'Website Chat',
     email: trackingEmail,
     phone: phone || null,
-    message: `[Website chat]\n\n${input.message.trim()}`,
+    message: messageBody,
     source: 'website',
     landingPage: '/',
   });

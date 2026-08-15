@@ -243,9 +243,7 @@ export async function POST({ request }: APIContext) {
     const teamNotifyNumber = process.env.QUO_SMS_NOTIFY_NUMBER || import.meta.env.QUO_SMS_NOTIFY_NUMBER;
 
     if (teamNotifyNumber && !shouldSkipSms && smsBridgeEnabled) {
-      const smsBody = visitorName
-        ? `💬 ${visitorName}: ${message.trim()}`
-        : `💬 Website chat: ${message.trim()}`;
+      const smsBody = `💬 Website Chat: ${message.trim()}`;
 
       quoSendSMS(teamNotifyNumber, smsBody)
         .then((res) => {
@@ -284,9 +282,7 @@ export async function POST({ request }: APIContext) {
     console.log('[POST /api/messages] QUO_SMS_NOTIFY_NUMBER:', teamNotifyNumber ? 'SET' : 'NOT SET');
 
     // Fire push notification to employee devices (non-blocking)
-    const pushTitle = visitorName
-      ? `💬 ${visitorName} sent a message`
-      : '💬 New customer message';
+    const pushTitle = '💬 Website Chat';
     const pushBody = message.trim().length > 100
       ? message.trim().slice(0, 100) + '…'
       : message.trim();
