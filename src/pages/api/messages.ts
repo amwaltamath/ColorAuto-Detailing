@@ -1,6 +1,13 @@
 import type { APIContext } from 'astro';
 import { supabaseServer } from '../../utils/supabaseServer';
-import { quoSendSMS } from '../../utils/quo';
+import {
+  getTeamNotifyNumber,
+  isSmsBridgeEnabled,
+  quoExternalIdForPhone,
+  quoSendSMS,
+  quoUpsertContact,
+  toE164Phone,
+} from '../../utils/quo';
 import { createOrbisxChatLead } from '../../utils/orbisx';
 import {
   detectHandoffRequest,
@@ -109,7 +116,7 @@ export async function POST({ request }: APIContext) {
   const { sessionId, message, visitorEmail, visitorName, visitorPhone } = body;
   const isTestSession = /^session_(ai_fulltest|dev|test)/i.test(sessionId || '');
   const skipSmsForTests = (process.env.SKIP_SMS_FOR_TEST_SESSIONS || import.meta.env.SKIP_SMS_FOR_TEST_SESSIONS || (import.meta.env.DEV ? 'true' : 'false')).toLowerCase() === 'true';
-  const smsBridgeEnabled = (process.env.CHAT_SMS_BRIDGE_ENABLED || import.meta.env.CHAT_SMS_BRIDGE_ENABLED || (import.meta.env.DEV ? 'false' : 'true')).toLowerCase() === 'true';
+  const smsBridgeEnabled = isSmsBridgeEnabled();
   const shouldSkipSms = isTestSession && skipSmsForTests;
 
   console.log('[POST /api/messages] Received:', { sessionId, message, visitorEmail, visitorName, visitorPhone });
@@ -231,19 +238,25 @@ export async function POST({ request }: APIContext) {
     }
 
     // ── Quo SMS: notify team phone on every new visitor message ──
-    const normalizePhone = (phone: string): string | null => {
-      const digits = phone.replace(/\D/g, '');
-      if (digits.length === 10) return `+1${digits}`;
-      if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
-      if (phone.startsWith('+') && digits.length >= 10) return `+${digits}`;
-      return null;
-    };
+    const visitorE164 = visitorPhone ? toE164Phone(visitorPhone) : null;
+    const teamNotifyNumber = getTeamNotifyNumber();
 
-    const visitorE164 = visitorPhone ? normalizePhone(visitorPhone) : null;
-    const teamNotifyNumber = process.env.QUO_SMS_NOTIFY_NUMBER || import.meta.env.QUO_SMS_NOTIFY_NUMBER;
+    if (visitorE164) {
+      const externalId = quoExternalIdForPhone(visitorPhone!, 'website-chat') || undefined;
+      if (externalId) {
+        quoUpsertContact({
+          phone: visitorPhone!,
+          firstName: 'Website Chat',
+          lastName: visitorName?.trim() || undefined,
+          externalId,
+        }).catch((err) => console.error('[POST /api/messages] Quo contact upsert error:', err));
+      }
+    }
 
     if (teamNotifyNumber && !shouldSkipSms && smsBridgeEnabled) {
-      const smsBody = `💬 Website Chat: ${message.trim()}`;
+      const smsBody = visitorName?.trim()
+        ? `💬 Website Chat (${visitorName.trim()}): ${message.trim()}`
+        : `💬 Website Chat: ${message.trim()}`;
 
       quoSendSMS(teamNotifyNumber, smsBody)
         .then((res) => {

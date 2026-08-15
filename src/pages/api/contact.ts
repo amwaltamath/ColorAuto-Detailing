@@ -1,6 +1,15 @@
 import type { APIContext } from "astro";
 import { supabaseServer } from "../../utils/supabaseServer";
 import { createOrbisxLead } from "../../utils/orbisx";
+import {
+  getTeamNotifyNumber,
+  isQuoSelfSms,
+  isSmsBridgeEnabled,
+  quoContactNameFromForm,
+  quoExternalIdForPhone,
+  quoSendSMS,
+  quoUpsertContact,
+} from "../../utils/quo";
 
 interface ContactPayload {
   name: string;
@@ -418,6 +427,35 @@ export async function POST({ request }: APIContext) {
     }).catch((err) => {
       console.error('Failed to sync lead to OrbisX:', err);
     });
+
+    if (phone && isSmsBridgeEnabled()) {
+      const externalId = quoExternalIdForPhone(phone, 'website-form');
+      const contactName = quoContactNameFromForm(name);
+
+      if (externalId) {
+        quoUpsertContact({
+          phone,
+          firstName: contactName.firstName,
+          lastName: contactName.lastName,
+          email,
+          externalId,
+        }).catch((err) => console.error('Failed to upsert Quo contact from contact form:', err));
+      }
+
+      const teamNotifyNumber = getTeamNotifyNumber();
+      if (teamNotifyNumber && !isQuoSelfSms(teamNotifyNumber)) {
+        const smsParts = [`📋 Contact Form (${name})`, email, message.trim()].filter(Boolean);
+        quoSendSMS(teamNotifyNumber, smsParts.join('\n'))
+          .then((res) => {
+            if (res.ok) {
+              console.log('[contact] Team SMS sent for form submission from', name);
+            } else if (!res.skipped) {
+              console.error('[contact] Quo SMS failed:', res.error);
+            }
+          })
+          .catch((err) => console.error('[contact] Quo SMS error:', err));
+      }
+    }
 
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,

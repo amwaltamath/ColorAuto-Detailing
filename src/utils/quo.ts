@@ -37,6 +37,123 @@ function normalizeE164(phone: string): string | null {
   return null;
 }
 
+export function toE164Phone(phone: string): string | null {
+  return normalizeE164(phone);
+}
+
+function quoHeaders(apiKey: string): Record<string, string> {
+  return {
+    Authorization: apiKey,
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  };
+}
+
+export interface QuoContactInput {
+  phone: string;
+  firstName: string;
+  lastName?: string;
+  email?: string;
+  externalId: string;
+}
+
+/** Create or update a Quo contact so thread names match website submissions. */
+export async function quoUpsertContact(input: QuoContactInput): Promise<{ ok: boolean; error?: string }> {
+  let apiKey: string;
+  try {
+    apiKey = getApiKey();
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : 'QUO_API_KEY missing' };
+  }
+
+  const e164 = normalizeE164(input.phone);
+  if (!e164) {
+    return { ok: false, error: 'Invalid phone number for Quo contact' };
+  }
+
+  const defaultFields: Record<string, unknown> = {
+    firstName: input.firstName.trim(),
+    phoneNumbers: [{ name: 'primary', value: e164 }],
+  };
+
+  if (input.lastName?.trim()) {
+    defaultFields.lastName = input.lastName.trim();
+  }
+
+  if (input.email?.trim()) {
+    defaultFields.emails = [{ name: 'primary', value: input.email.trim() }];
+  }
+
+  try {
+    const listRes = await fetch(
+      `${QUO_API_BASE}/contacts?externalIds=${encodeURIComponent(input.externalId)}`,
+      { headers: quoHeaders(apiKey) },
+    );
+
+    let contactId: string | undefined;
+    if (listRes.ok) {
+      const listJson = await listRes.json();
+      contactId = listJson?.data?.[0]?.id;
+    }
+
+    const payload = {
+      externalId: input.externalId,
+      source: 'public-api',
+      defaultFields,
+    };
+
+    const res = await fetch(
+      contactId ? `${QUO_API_BASE}/contacts/${contactId}` : `${QUO_API_BASE}/contacts`,
+      {
+        method: contactId ? 'PATCH' : 'POST',
+        headers: quoHeaders(apiKey),
+        body: JSON.stringify(payload),
+      },
+    );
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error('[quo] upsert contact failed:', res.status, text);
+      return { ok: false, error: `Quo contact API ${res.status}: ${text}` };
+    }
+
+    return { ok: true };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Quo contact request failed';
+    console.error('[quo] upsert contact error:', message);
+    return { ok: false, error: message };
+  }
+}
+
+function splitPersonName(fullName: string): { firstName: string; lastName?: string } {
+  const parts = fullName.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return { firstName: 'Website Lead' };
+  if (parts.length === 1) return { firstName: parts[0] };
+  return { firstName: parts[0], lastName: parts.slice(1).join(' ') };
+}
+
+export function quoExternalIdForPhone(phone: string, prefix: string): string | null {
+  const e164 = normalizeE164(phone);
+  if (!e164) return null;
+  return `${prefix}-${e164.replace(/\D/g, '')}`;
+}
+
+export function quoContactNameFromForm(fullName: string): { firstName: string; lastName?: string } {
+  return splitPersonName(fullName);
+}
+
+export function getTeamNotifyNumber(): string | undefined {
+  return process.env.QUO_SMS_NOTIFY_NUMBER || import.meta.env.QUO_SMS_NOTIFY_NUMBER;
+}
+
+export function isSmsBridgeEnabled(): boolean {
+  return (
+    process.env.CHAT_SMS_BRIDGE_ENABLED ||
+    import.meta.env.CHAT_SMS_BRIDGE_ENABLED ||
+    (import.meta.env.DEV ? 'false' : 'true')
+  ).toLowerCase() === 'true';
+}
+
 /** True when notify target is the same line we send from (OpenPhone rejects / ignores self-SMS). */
 export function isQuoSelfSms(to: string): boolean {
   const toE164 = normalizeE164(to);
