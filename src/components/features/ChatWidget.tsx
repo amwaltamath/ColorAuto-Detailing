@@ -307,13 +307,22 @@ function ChatWidgetInner() {
           {/* Input Form */}
           <form onSubmit={handleSendMessage} className="border-t border-gray-200 p-3 md:p-4 bg-white md:rounded-b-lg rounded-none space-y-2">
             {messages.filter((m) => m.senderType === 'visitor').length === 0 && (
-              <input
-                type="text"
-                placeholder="Your name (optional)"
-                value={visitorName}
-                onChange={(e) => setVisitorName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500"
-              />
+              <>
+                <input
+                  type="text"
+                  placeholder="Your name (optional)"
+                  value={visitorName}
+                  onChange={(e) => setVisitorName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+                />
+                <input
+                  type="tel"
+                  placeholder="Your phone (optional, for text replies)"
+                  value={visitorPhone}
+                  onChange={(e) => setVisitorPhone(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+                />
+              </>
             )}
             <div className="flex flex-col gap-2">
               <textarea

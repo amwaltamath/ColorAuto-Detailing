@@ -1,6 +1,7 @@
 import type { APIContext } from 'astro';
 import { supabaseServer } from '../../utils/supabaseServer';
 import { quoSendSMS } from '../../utils/quo';
+import { createOrbisxChatLead } from '../../utils/orbisx';
 import {
   detectHandoffRequest,
   generateAIEmployeeReply,
@@ -167,6 +168,35 @@ export async function POST({ request }: APIContext) {
     }
 
     console.log('[POST /api/messages] Message saved successfully:', data.id);
+
+    // Sync first chat message in a session to OrbisX (non-blocking).
+    (async () => {
+      try {
+        const { count } = await supabaseServer
+          .from('chat_messages')
+          .select('id', { count: 'exact', head: true })
+          .eq('session_id', sessionId)
+          .eq('sender_type', 'visitor');
+
+        if ((count || 0) > 1) return;
+
+        const result = await createOrbisxChatLead({
+          sessionId,
+          name: visitorName,
+          email: visitorEmail,
+          phone: visitorPhone,
+          message: message.trim(),
+        });
+
+        if (result.ok) {
+          console.log('[POST /api/messages] OrbisX chat lead synced for session:', sessionId);
+        } else {
+          console.error('[POST /api/messages] OrbisX chat sync failed:', result.error);
+        }
+      } catch (orbisErr) {
+        console.error('[POST /api/messages] OrbisX chat sync error:', orbisErr);
+      }
+    })();
 
     // Non-blocking AI qualification for employee triage.
     if (isAIQualificationEnabled()) {

@@ -124,3 +124,26 @@ export async function createOrbisxLead(input: OrbisxLeadInput): Promise<{ ok: bo
     return { ok: false, error: message };
   }
 }
+
+/** Sync a website chat message into OrbisX (once per session). */
+export async function createOrbisxChatLead(input: {
+  sessionId: string;
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  message: string;
+}): Promise<{ ok: boolean; error?: string }> {
+  const contact = input.name?.trim() || 'Website Chat Visitor';
+  const phone = input.phone?.trim() || undefined;
+  const email = input.email?.trim() || undefined;
+  const trackingEmail = email || `website-chat+${input.sessionId.slice(-12)}@colorautodetailing.com`;
+
+  return createOrbisxLead({
+    name: contact,
+    email: trackingEmail,
+    phone: phone || null,
+    message: `[Website chat]\n\n${input.message.trim()}`,
+    source: 'website',
+    landingPage: '/',
+  });
+}

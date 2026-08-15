@@ -3,7 +3,7 @@
  * Docs: https://www.quo.com/docs/mdx/api-reference/messages/send-a-text-message
  */
 
-const QUO_API_BASE = 'https://api.openphone.com/v1';
+const QUO_API_BASE = 'https://api.quo.com/v1';
 
 function getApiKey(): string {
   const key = process.env.QUO_API_KEY || import.meta.env.QUO_API_KEY;
@@ -26,6 +26,27 @@ export interface QuoSendResult {
   ok: boolean;
   messageId?: string;
   error?: string;
+  skipped?: boolean;
+}
+
+function normalizeE164(phone: string): string | null {
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
+  if (phone.startsWith('+') && digits.length >= 10) return `+${digits}`;
+  return null;
+}
+
+/** True when notify target is the same line we send from (OpenPhone rejects / ignores self-SMS). */
+export function isQuoSelfSms(to: string): boolean {
+  const toE164 = normalizeE164(to);
+  const from = getFromNumber();
+  if (!toE164 || !from) return false;
+
+  const fromE164 = from.startsWith('PN') ? null : normalizeE164(from);
+  if (fromE164 && toE164 === fromE164) return true;
+
+  return false;
 }
 
 /**
@@ -41,6 +62,17 @@ export async function quoSendSMS(to: string, content: string): Promise<QuoSendRe
   if (!from) {
     console.error('[quo] Set QUO_PHONE_NUMBER (+19706281505) or QUO_PHONE_NUMBER_ID – cannot send SMS');
     return { ok: false, error: 'QUO_PHONE_NUMBER not configured' };
+  }
+
+  if (isQuoSelfSms(to)) {
+    console.warn(
+      '[quo] QUO_SMS_NOTIFY_NUMBER matches your OpenPhone line – use a personal cell for SMS alerts',
+    );
+    return {
+      ok: false,
+      skipped: true,
+      error: 'Cannot SMS your OpenPhone number from itself; set QUO_SMS_NOTIFY_NUMBER to your personal cell',
+    };
   }
 
   try {
