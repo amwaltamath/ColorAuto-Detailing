@@ -1,4 +1,6 @@
 import type { APIContext } from "astro";
+import { supabaseServer } from "../../utils/supabaseServer";
+import { createOrbisxLead } from "../../utils/orbisx";
 
 interface ApplyPayload {
   name: string;
@@ -84,8 +86,26 @@ export async function POST({ request }: APIContext) {
     }
 
     const RESEND_API_KEY = (process.env.RESEND_API_KEY || "").trim();
-    const TO_EMAIL = "Admin@colorautodetailling.com";
+    const TO_EMAILS = (process.env.APPLY_TO_EMAIL || process.env.CONTACT_TO_EMAIL || "admin@colorautodetailing.com")
+      .split(",")
+      .map((e) => e.trim())
+      .filter(Boolean);
     const FROM_EMAIL = (process.env.CONTACT_FROM_EMAIL || "no-reply@colorautodetailing.com").trim();
+
+    if (!TO_EMAILS.length || TO_EMAILS.some((e) => !isValidEmail(e))) {
+      console.error("[apply] Invalid recipient email configuration:", TO_EMAILS);
+      return new Response(JSON.stringify({ ok: false, error: "Email service misconfigured (invalid recipient)" }), {
+        status: 500,
+        headers: { "content-type": "application/json" },
+      });
+    }
+    if (!FROM_EMAIL || !isValidEmail(FROM_EMAIL)) {
+      console.error("[apply] Invalid sender email configuration:", FROM_EMAIL);
+      return new Response(JSON.stringify({ ok: false, error: "Email service misconfigured (invalid sender)" }), {
+        status: 500,
+        headers: { "content-type": "application/json" },
+      });
+    }
 
     if (!RESEND_API_KEY) {
       console.warn("[DEV MODE] RESEND_API_KEY not configured. Logging application only.", { name, email, phone, position, experience, message });
@@ -212,7 +232,7 @@ export async function POST({ request }: APIContext) {
       },
       body: JSON.stringify({
         from: `ColorAuto <${FROM_EMAIL}>`,
-        to: [TO_EMAIL],
+        to: TO_EMAILS,
         reply_to: email,
         subject,
         text,
@@ -228,6 +248,42 @@ export async function POST({ request }: APIContext) {
         headers: { "content-type": "application/json" },
       });
     }
+
+    const applicationNotes = [
+      experience ? `Experience: ${experience}` : null,
+      "",
+      "Why they want to join:",
+      message,
+    ].filter((line) => line !== null).join("\n");
+
+    if (supabaseServer) {
+      try {
+        await supabaseServer.from('leads').insert({
+          name,
+          email: email || null,
+          phone: phone || null,
+          source: 'website',
+          service_interest: position || 'Job Application',
+          message: applicationNotes,
+          status: 'new',
+          landing_page: '/apply',
+        });
+      } catch (leadErr) {
+        console.error('Failed to create lead from job application:', leadErr);
+      }
+    }
+
+    createOrbisxLead({
+      name,
+      email: email || null,
+      phone: phone || null,
+      serviceInterest: position || 'Job Application',
+      message: applicationNotes,
+      source: 'website',
+      landingPage: '/apply',
+    }).catch((err) => {
+      console.error('Failed to sync job application to OrbisX:', err);
+    });
 
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
