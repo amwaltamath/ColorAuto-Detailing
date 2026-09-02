@@ -10,15 +10,35 @@ export interface GooglePlaceReviews {
   rating: number;
   reviewCount: number;
   reviews: GoogleReview[];
-  googleMapsUri?: string;
+  googleMapsUri: string;
+  writeReviewUri: string;
   source: 'google' | 'fallback';
+}
+
+/** ColorAuto Detailing — 562 S Westgate Dr, Grand Junction, CO */
+export const COLORAUTO_GOOGLE_PLACE_ID = 'ChIJ4wL7dYw0bocR-x3Kz3s2uC4';
+
+/** Verified Google Maps listing short link used across the site */
+export const COLORAUTO_GOOGLE_MAPS_URL = 'https://maps.app.goo.gl/U8GewAAibaMwEZ8q8';
+
+export function getGoogleMapsListingUrl(): string {
+  return COLORAUTO_GOOGLE_MAPS_URL;
+}
+
+export function getGoogleWriteReviewUrl(placeId = resolvePlaceId()): string {
+  return `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
+}
+
+function resolvePlaceId(): string {
+  return import.meta.env.GOOGLE_PLACE_ID || COLORAUTO_GOOGLE_PLACE_ID;
 }
 
 const FALLBACK: GooglePlaceReviews = {
   rating: 5,
   reviewCount: 72,
   source: 'fallback',
-  googleMapsUri: 'https://www.google.com/maps/place/?q=place_id:ChIJNbJl6dLXQYgRUd6uGVbDm10',
+  googleMapsUri: COLORAUTO_GOOGLE_MAPS_URL,
+  writeReviewUri: getGoogleWriteReviewUrl(),
   reviews: [
     {
       authorName: 'Alex R.',
@@ -64,6 +84,11 @@ function stars(rating: number): string {
 
 export { stars };
 
+function isColorAutoListing(displayName: unknown): boolean {
+  if (typeof displayName !== 'string') return false;
+  return /color\s*auto/i.test(displayName);
+}
+
 function mapReview(review: Record<string, unknown>): GoogleReview | null {
   const rating = typeof review.rating === 'number' ? review.rating : 0;
   const textObj = review.text as { text?: string } | undefined;
@@ -91,10 +116,11 @@ export async function getGoogleReviews(): Promise<GooglePlaceReviews> {
   }
 
   const apiKey = import.meta.env.GOOGLE_PLACES_API_KEY;
-  const placeId = import.meta.env.GOOGLE_PLACE_ID;
+  const placeId = resolvePlaceId();
+  const writeReviewUri = getGoogleWriteReviewUrl(placeId);
 
-  if (!apiKey || !placeId) {
-    return FALLBACK;
+  if (!apiKey) {
+    return { ...FALLBACK, writeReviewUri };
   }
 
   try {
@@ -102,31 +128,41 @@ export async function getGoogleReviews(): Promise<GooglePlaceReviews> {
       headers: {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': apiKey,
-        'X-Goog-FieldMask': 'rating,userRatingCount,reviews,googleMapsUri,displayName',
+        'X-Goog-FieldMask': 'rating,userRatingCount,reviews,displayName',
       },
     });
 
     if (!response.ok) {
       const body = await response.text().catch(() => '');
       console.error('[googlePlaces] API error:', response.status, body.slice(0, 200));
-      return FALLBACK;
+      return { ...FALLBACK, writeReviewUri };
     }
 
     const data = (await response.json()) as Record<string, unknown>;
+
+    if (!isColorAutoListing(data.displayName)) {
+      console.error(
+        '[googlePlaces] Place ID does not match ColorAuto listing:',
+        data.displayName,
+      );
+      return { ...FALLBACK, writeReviewUri: getGoogleWriteReviewUrl(COLORAUTO_GOOGLE_PLACE_ID) };
+    }
+
     const rawReviews = Array.isArray(data.reviews) ? data.reviews : [];
     const reviews = rawReviews
       .map((item) => mapReview(item as Record<string, unknown>))
       .filter((item): item is GoogleReview => Boolean(item));
 
     if (reviews.length === 0) {
-      return FALLBACK;
+      return { ...FALLBACK, writeReviewUri };
     }
 
     const result: GooglePlaceReviews = {
       rating: typeof data.rating === 'number' ? data.rating : FALLBACK.rating,
       reviewCount: typeof data.userRatingCount === 'number' ? data.userRatingCount : FALLBACK.reviewCount,
       reviews,
-      googleMapsUri: typeof data.googleMapsUri === 'string' ? data.googleMapsUri : FALLBACK.googleMapsUri,
+      googleMapsUri: COLORAUTO_GOOGLE_MAPS_URL,
+      writeReviewUri,
       source: 'google',
     };
 
@@ -134,6 +170,6 @@ export async function getGoogleReviews(): Promise<GooglePlaceReviews> {
     return result;
   } catch (error) {
     console.error('[googlePlaces] fetch failed:', error);
-    return FALLBACK;
+    return { ...FALLBACK, writeReviewUri };
   }
 }

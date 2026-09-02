@@ -23,9 +23,6 @@ const {
 
 const placeReviews = await getGoogleReviews();
 const reviews = placeReviews.reviews.slice(0, limit);
-const googleMapsUri =
-  placeReviews.googleMapsUri ||
-  'https://www.google.com/maps/place/?q=place_id:ChIJNbJl6dLXQYgRUd6uGVbDm10';
 ---
 
 <section class:list={['py-16', className]}>
@@ -44,7 +41,7 @@ const googleMapsUri =
               <>
                 <span>·</span>
                 <a
-                  href={googleMapsUri}
+                  href={placeReviews.googleMapsUri}
                   target="_blank"
                   rel="noopener noreferrer"
                   class="text-blue-600 font-semibold hover:underline"

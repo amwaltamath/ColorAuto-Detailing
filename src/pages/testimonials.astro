@@ -5,9 +5,6 @@ import GoogleReviews from '../components/common/GoogleReviews.astro';
 import { getGoogleReviews, stars } from '../utils/googlePlaces';
 
 const placeReviews = await getGoogleReviews();
-const googleMapsUri =
-  placeReviews.googleMapsUri ||
-  'https://www.google.com/maps/place/?q=place_id:ChIJNbJl6dLXQYgRUd6uGVbDm10';
 ---
 
 <PublicLayout
@@ -44,7 +41,7 @@ const googleMapsUri =
       </div>
       <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
         <a
-          href={googleMapsUri}
+          href={placeReviews.writeReviewUri}
           target="_blank"
           rel="noopener noreferrer"
           class="inline-block bg-white text-blue-700 font-bold py-3 px-8 rounded-lg hover:bg-blue-50 transition shadow-lg"
@@ -72,7 +69,7 @@ const googleMapsUri =
         We appreciate every review — it helps other Grand Junction drivers find trusted detailing, PPF, and tint services.
       </p>
       <a
-        href={googleMapsUri}
+        href={placeReviews.writeReviewUri}
         target="_blank"
         rel="noopener noreferrer"
         class="inline-block bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition"
