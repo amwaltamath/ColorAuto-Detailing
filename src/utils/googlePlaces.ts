@@ -16,7 +16,7 @@ export interface GooglePlaceReviews {
 }
 
 /** ColorAuto Detailing — 562 S Westgate Dr, Grand Junction, CO */
-export const COLORAUTO_GOOGLE_PLACE_ID = 'ChIJ4wL7dYw0bocR-x3Kz3s2uC4';
+export const COLORAUTO_GOOGLE_PLACE_ID = 'ChIJK7hIXhgdR4cR0sQGOiELHgQ';
 
 /** Verified Google Maps listing short link used across the site */
 export const COLORAUTO_GOOGLE_MAPS_URL = 'https://maps.app.goo.gl/U8GewAAibaMwEZ8q8';
@@ -95,7 +95,7 @@ function explainGoogleError(status: number, body: string): { summary: string; ne
     return {
       summary: 'Google returned a bad request (400).',
       nextSteps: [
-        'Verify GOOGLE_PLACE_ID is ColorAuto: ChIJ4wL7dYw0bocR-x3Kz3s2uC4',
+        'Verify GOOGLE_PLACE_ID is ColorAuto: ChIJK7hIXhgdR4cR0sQGOiELHgQ',
         'Confirm Places API (New) is enabled on the same project as the API key.',
       ],
     };
@@ -105,7 +105,7 @@ function explainGoogleError(status: number, body: string): { summary: string; ne
     return {
       summary: 'Place ID not found (404).',
       nextSteps: [
-        'Update GOOGLE_PLACE_ID to ColorAuto listing: ChIJ4wL7dYw0bocR-x3Kz3s2uC4',
+        'Update GOOGLE_PLACE_ID to ColorAuto listing: ChIJK7hIXhgdR4cR0sQGOiELHgQ',
       ],
     };
   }
