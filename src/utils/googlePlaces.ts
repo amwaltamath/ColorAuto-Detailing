@@ -36,6 +36,27 @@ export function getGoogleWriteReviewUrl(): string {
   return COLORAUTO_WRITE_REVIEW_URL;
 }
 
+/** Public review total when API is unavailable (update via GOOGLE_REVIEW_COUNT env). */
+export const COLORAUTO_KNOWN_REVIEW_COUNT = 400;
+
+function resolveReviewCount(apiCount?: number | null): number {
+  const override = Number(import.meta.env.GOOGLE_REVIEW_COUNT);
+  if (Number.isFinite(override) && override > 0) {
+    return Math.round(override);
+  }
+  if (typeof apiCount === 'number' && apiCount > 0) {
+    return apiCount;
+  }
+  return COLORAUTO_KNOWN_REVIEW_COUNT;
+}
+
+function resolveRating(apiRating?: number | null): number {
+  if (typeof apiRating === 'number' && apiRating > 0) {
+    return apiRating;
+  }
+  return 5;
+}
+
 function resolvePlaceId(): string {
   return import.meta.env.GOOGLE_PLACE_ID || COLORAUTO_GOOGLE_PLACE_ID;
 }
@@ -189,8 +210,10 @@ export async function testGooglePlacesConnection(): Promise<GooglePlacesDiagnost
 
     base.displayName = displayName;
     base.isColorAutoMatch = isColorAutoMatch;
-    base.rating = typeof data.rating === 'number' ? data.rating : null;
-    base.reviewCount = typeof data.userRatingCount === 'number' ? data.userRatingCount : null;
+    base.rating = resolveRating(typeof data.rating === 'number' ? data.rating : null);
+    base.reviewCount = resolveReviewCount(
+      typeof data.userRatingCount === 'number' ? data.userRatingCount : null,
+    );
     base.reviewsReturned = reviewsReturned;
     base.writeReviewUri = parseWriteReviewUri(data);
 
@@ -238,7 +261,7 @@ export async function testGooglePlacesConnection(): Promise<GooglePlacesDiagnost
 
 const FALLBACK: GooglePlaceReviews = {
   rating: 5,
-  reviewCount: 72,
+  reviewCount: COLORAUTO_KNOWN_REVIEW_COUNT,
   source: 'fallback',
   googleMapsUri: COLORAUTO_GOOGLE_MAPS_URL,
   writeReviewUri: COLORAUTO_WRITE_REVIEW_URL,
@@ -308,6 +331,23 @@ function parseWriteReviewUri(data: Record<string, unknown>): string {
   return COLORAUTO_WRITE_REVIEW_URL;
 }
 
+function buildGoogleReviewsResult(
+  data: Record<string, unknown>,
+  reviews: GoogleReview[],
+  source: 'google' | 'fallback',
+): GooglePlaceReviews {
+  return {
+    rating: resolveRating(typeof data.rating === 'number' ? data.rating : null),
+    reviewCount: resolveReviewCount(
+      typeof data.userRatingCount === 'number' ? data.userRatingCount : null,
+    ),
+    reviews: reviews.length > 0 ? reviews : FALLBACK.reviews,
+    googleMapsUri: COLORAUTO_GOOGLE_MAPS_URL,
+    writeReviewUri: parseWriteReviewUri(data),
+    source,
+  };
+}
+
 function mapReview(review: Record<string, unknown>): GoogleReview | null {
   const rating = typeof review.rating === 'number' ? review.rating : 0;
   const textObj = review.text as { text?: string } | undefined;
@@ -366,24 +406,12 @@ export async function getGoogleReviews(): Promise<GooglePlaceReviews> {
       return FALLBACK;
     }
 
-    const writeReviewUri = parseWriteReviewUri(data);
     const rawReviews = Array.isArray(data.reviews) ? data.reviews : [];
     const reviews = rawReviews
       .map((item) => mapReview(item as Record<string, unknown>))
       .filter((item): item is GoogleReview => Boolean(item));
 
-    if (reviews.length === 0) {
-      return { ...FALLBACK, writeReviewUri };
-    }
-
-    const result: GooglePlaceReviews = {
-      rating: typeof data.rating === 'number' ? data.rating : FALLBACK.rating,
-      reviewCount: typeof data.userRatingCount === 'number' ? data.userRatingCount : FALLBACK.reviewCount,
-      reviews,
-      googleMapsUri: COLORAUTO_GOOGLE_MAPS_URL,
-      writeReviewUri,
-      source: 'google',
-    };
+    const result = buildGoogleReviewsResult(data, reviews, 'google');
 
     cache = { data: result, expiresAt: Date.now() + CACHE_TTL_MS };
     return result;

@@ -1,6 +1,7 @@
 ﻿---
 import '../styles/global.css';
 import { ChatWidget } from '../components/features/ChatWidget';
+import { COLORAUTO_KNOWN_REVIEW_COUNT } from '../utils/googlePlaces';
 
 interface Props {
   title: string;
@@ -24,6 +25,12 @@ const defaultDescription = "ColorAuto Detailing — Auto detailing, paint protec
 const pageDescription = description || defaultDescription;
 const canonicalUrl = canonical || new URL(Astro.url.pathname, siteUrl).href;
 const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorAuto.png`;
+
+const reviewCountOverride = Number(import.meta.env.GOOGLE_REVIEW_COUNT);
+const schemaReviewCount =
+  Number.isFinite(reviewCountOverride) && reviewCountOverride > 0
+    ? String(Math.round(reviewCountOverride))
+    : String(COLORAUTO_KNOWN_REVIEW_COUNT);
 ---
 
 <!doctype html>
@@ -159,7 +166,7 @@ const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorA
       aggregateRating: {
         "@type": "AggregateRating",
         ratingValue: "5.0",
-        reviewCount: "72",
+        reviewCount: schemaReviewCount,
         bestRating: "5",
         worstRating: "1"
       },
