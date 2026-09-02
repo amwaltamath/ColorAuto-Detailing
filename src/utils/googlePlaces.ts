@@ -40,6 +40,202 @@ function resolvePlaceId(): string {
   return import.meta.env.GOOGLE_PLACE_ID || COLORAUTO_GOOGLE_PLACE_ID;
 }
 
+export interface GooglePlacesDiagnostics {
+  ok: boolean;
+  summary: string;
+  configured: {
+    apiKeyPresent: boolean;
+    apiKeyHint: string | null;
+    placeId: string;
+    expectedPlaceId: string;
+  };
+  httpStatus: number | null;
+  googleError: string | null;
+  displayName: string | null;
+  isColorAutoMatch: boolean;
+  rating: number | null;
+  reviewCount: number | null;
+  reviewsReturned: number;
+  writeReviewUri: string | null;
+  fallbackWriteReviewUri: string;
+  nextSteps: string[];
+}
+
+function maskApiKey(apiKey: string): string {
+  if (apiKey.length <= 8) return '***';
+  return `***${apiKey.slice(-4)}`;
+}
+
+function explainGoogleError(status: number, body: string): { summary: string; nextSteps: string[] } {
+  let parsed: Record<string, unknown> = {};
+  try {
+    parsed = JSON.parse(body) as Record<string, unknown>;
+  } catch {
+    // ignore
+  }
+
+  const message =
+    (parsed.error as { message?: string } | undefined)?.message ||
+    (typeof parsed.message === 'string' ? parsed.message : body.slice(0, 300));
+
+  if (status === 403) {
+    return {
+      summary: 'Google rejected the API key (403).',
+      nextSteps: [
+        'Enable **Places API (New)** on this Google Cloud project (not legacy Places API).',
+        'Link a billing account to the project.',
+        'Edit the API key → API restrictions → allow **Places API (New)** only.',
+        'Set application restrictions to **None** (required for Vercel server-side calls).',
+        'Paste the new key into Vercel as GOOGLE_PLACES_API_KEY and redeploy.',
+      ],
+    };
+  }
+
+  if (status === 400) {
+    return {
+      summary: 'Google returned a bad request (400).',
+      nextSteps: [
+        'Verify GOOGLE_PLACE_ID is ColorAuto: ChIJ4wL7dYw0bocR-x3Kz3s2uC4',
+        'Confirm Places API (New) is enabled on the same project as the API key.',
+      ],
+    };
+  }
+
+  if (status === 404) {
+    return {
+      summary: 'Place ID not found (404).',
+      nextSteps: [
+        'Update GOOGLE_PLACE_ID to ColorAuto listing: ChIJ4wL7dYw0bocR-x3Kz3s2uC4',
+      ],
+    };
+  }
+
+  return {
+    summary: `Places API request failed (${status}).`,
+    nextSteps: [
+      'Check Google Cloud billing and Places API (New) enablement.',
+      'Review the googleError field below for details.',
+      message ? `Google says: ${message}` : 'No additional error message returned.',
+    ].filter(Boolean) as string[],
+  };
+}
+
+export async function testGooglePlacesConnection(): Promise<GooglePlacesDiagnostics> {
+  const apiKey = import.meta.env.GOOGLE_PLACES_API_KEY;
+  const placeId = resolvePlaceId();
+
+  const base: GooglePlacesDiagnostics = {
+    ok: false,
+    summary: '',
+    configured: {
+      apiKeyPresent: Boolean(apiKey),
+      apiKeyHint: apiKey ? maskApiKey(apiKey) : null,
+      placeId,
+      expectedPlaceId: COLORAUTO_GOOGLE_PLACE_ID,
+    },
+    httpStatus: null,
+    googleError: null,
+    displayName: null,
+    isColorAutoMatch: false,
+    rating: null,
+    reviewCount: null,
+    reviewsReturned: 0,
+    writeReviewUri: null,
+    fallbackWriteReviewUri: COLORAUTO_WRITE_REVIEW_URL,
+    nextSteps: [],
+  };
+
+  if (!apiKey) {
+    return {
+      ...base,
+      summary: 'GOOGLE_PLACES_API_KEY is not set in the server environment.',
+      nextSteps: [
+        'Add GOOGLE_PLACES_API_KEY to .env.local for local dev.',
+        'Add GOOGLE_PLACES_API_KEY to Vercel → Settings → Environment Variables (Production).',
+        'Redeploy after saving env vars.',
+      ],
+    };
+  }
+
+  try {
+    const response = await fetch(`https://places.googleapis.com/v1/places/${placeId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': apiKey,
+        'X-Goog-FieldMask': 'rating,userRatingCount,reviews,displayName,googleMapsLinks',
+      },
+    });
+
+    base.httpStatus = response.status;
+    const body = await response.text();
+
+    if (!response.ok) {
+      const explained = explainGoogleError(response.status, body);
+      return {
+        ...base,
+        summary: explained.summary,
+        googleError: body.slice(0, 500),
+        nextSteps: explained.nextSteps,
+      };
+    }
+
+    const data = JSON.parse(body) as Record<string, unknown>;
+    const displayName = getDisplayName(data.displayName) || null;
+    const isColorAutoMatch = isColorAutoListing(data.displayName);
+    const rawReviews = Array.isArray(data.reviews) ? data.reviews : [];
+    const reviewsReturned = rawReviews
+      .map((item) => mapReview(item as Record<string, unknown>))
+      .filter(Boolean).length;
+
+    base.displayName = displayName;
+    base.isColorAutoMatch = isColorAutoMatch;
+    base.rating = typeof data.rating === 'number' ? data.rating : null;
+    base.reviewCount = typeof data.userRatingCount === 'number' ? data.userRatingCount : null;
+    base.reviewsReturned = reviewsReturned;
+    base.writeReviewUri = parseWriteReviewUri(data);
+
+    if (!isColorAutoMatch) {
+      return {
+        ...base,
+        summary: `API responded, but Place ID is "${displayName || 'unknown'}", not ColorAuto.`,
+        nextSteps: [
+          `Set GOOGLE_PLACE_ID=${COLORAUTO_GOOGLE_PLACE_ID} in Vercel and .env.local.`,
+          'Remove any Jent Construction or other business Place ID from env vars.',
+        ],
+      };
+    }
+
+    if (reviewsReturned === 0) {
+      return {
+        ...base,
+        ok: true,
+        summary: 'Places API works for ColorAuto, but Google returned zero text reviews in the API payload.',
+        nextSteps: [
+          'The site will still show fallback review cards until Google returns review text.',
+          'Write-review links should work using the Maps URL.',
+        ],
+      };
+    }
+
+    return {
+      ...base,
+      ok: true,
+      summary: `Places API is working for ColorAuto (${reviewsReturned} reviews, ${base.rating ?? '?'} stars).`,
+      nextSteps: ['No action needed — live reviews should appear on the homepage and /testimonials.'],
+    };
+  } catch (error) {
+    return {
+      ...base,
+      summary: 'Could not reach Google Places API.',
+      googleError: error instanceof Error ? error.message : String(error),
+      nextSteps: [
+        'Check network/firewall from your hosting environment.',
+        'Retry after confirming the API key and Places API (New) are enabled.',
+      ],
+    };
+  }
+}
+
 const FALLBACK: GooglePlaceReviews = {
   rating: 5,
   reviewCount: 72,
