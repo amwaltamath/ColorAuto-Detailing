@@ -21,12 +21,19 @@ export const COLORAUTO_GOOGLE_PLACE_ID = 'ChIJ4wL7dYw0bocR-x3Kz3s2uC4';
 /** Verified Google Maps listing short link used across the site */
 export const COLORAUTO_GOOGLE_MAPS_URL = 'https://maps.app.goo.gl/U8GewAAibaMwEZ8q8';
 
+/**
+ * Direct write-review URL derived from ColorAuto's verified Maps listing.
+ * Avoids search.google.com/local/writereview, which often 404s.
+ */
+export const COLORAUTO_WRITE_REVIEW_URL =
+  'https://www.google.com/maps/place/ColorAuto+Detailing/data=!4m3!3m2!1s0x87471d185e48b82b:0x41e0b213a06c4d2!12e1';
+
 export function getGoogleMapsListingUrl(): string {
   return COLORAUTO_GOOGLE_MAPS_URL;
 }
 
-export function getGoogleWriteReviewUrl(placeId = resolvePlaceId()): string {
-  return `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
+export function getGoogleWriteReviewUrl(): string {
+  return COLORAUTO_WRITE_REVIEW_URL;
 }
 
 function resolvePlaceId(): string {
@@ -38,7 +45,7 @@ const FALLBACK: GooglePlaceReviews = {
   reviewCount: 72,
   source: 'fallback',
   googleMapsUri: COLORAUTO_GOOGLE_MAPS_URL,
-  writeReviewUri: getGoogleWriteReviewUrl(),
+  writeReviewUri: COLORAUTO_WRITE_REVIEW_URL,
   reviews: [
     {
       authorName: 'Alex R.',
@@ -84,9 +91,25 @@ function stars(rating: number): string {
 
 export { stars };
 
+function getDisplayName(displayName: unknown): string {
+  if (typeof displayName === 'string') return displayName;
+  if (displayName && typeof displayName === 'object') {
+    const text = (displayName as { text?: string }).text;
+    if (typeof text === 'string') return text;
+  }
+  return '';
+}
+
 function isColorAutoListing(displayName: unknown): boolean {
-  if (typeof displayName !== 'string') return false;
-  return /color\s*auto/i.test(displayName);
+  return /color\s*auto/i.test(getDisplayName(displayName));
+}
+
+function parseWriteReviewUri(data: Record<string, unknown>): string {
+  const links = data.googleMapsLinks as { writeAReviewUri?: string } | undefined;
+  if (typeof links?.writeAReviewUri === 'string' && links.writeAReviewUri.startsWith('https://')) {
+    return links.writeAReviewUri;
+  }
+  return COLORAUTO_WRITE_REVIEW_URL;
 }
 
 function mapReview(review: Record<string, unknown>): GoogleReview | null {
@@ -117,10 +140,9 @@ export async function getGoogleReviews(): Promise<GooglePlaceReviews> {
 
   const apiKey = import.meta.env.GOOGLE_PLACES_API_KEY;
   const placeId = resolvePlaceId();
-  const writeReviewUri = getGoogleWriteReviewUrl(placeId);
 
   if (!apiKey) {
-    return { ...FALLBACK, writeReviewUri };
+    return FALLBACK;
   }
 
   try {
@@ -128,14 +150,14 @@ export async function getGoogleReviews(): Promise<GooglePlaceReviews> {
       headers: {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': apiKey,
-        'X-Goog-FieldMask': 'rating,userRatingCount,reviews,displayName',
+        'X-Goog-FieldMask': 'rating,userRatingCount,reviews,displayName,googleMapsLinks',
       },
     });
 
     if (!response.ok) {
       const body = await response.text().catch(() => '');
       console.error('[googlePlaces] API error:', response.status, body.slice(0, 200));
-      return { ...FALLBACK, writeReviewUri };
+      return FALLBACK;
     }
 
     const data = (await response.json()) as Record<string, unknown>;
@@ -143,11 +165,12 @@ export async function getGoogleReviews(): Promise<GooglePlaceReviews> {
     if (!isColorAutoListing(data.displayName)) {
       console.error(
         '[googlePlaces] Place ID does not match ColorAuto listing:',
-        data.displayName,
+        getDisplayName(data.displayName) || data.displayName,
       );
-      return { ...FALLBACK, writeReviewUri: getGoogleWriteReviewUrl(COLORAUTO_GOOGLE_PLACE_ID) };
+      return FALLBACK;
     }
 
+    const writeReviewUri = parseWriteReviewUri(data);
     const rawReviews = Array.isArray(data.reviews) ? data.reviews : [];
     const reviews = rawReviews
       .map((item) => mapReview(item as Record<string, unknown>))
@@ -170,6 +193,6 @@ export async function getGoogleReviews(): Promise<GooglePlaceReviews> {
     return result;
   } catch (error) {
     console.error('[googlePlaces] fetch failed:', error);
-    return { ...FALLBACK, writeReviewUri };
+    return FALLBACK;
   }
 }
