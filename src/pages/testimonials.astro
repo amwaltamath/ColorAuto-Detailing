@@ -1,0 +1,118 @@
+---
+import PublicLayout from '../layouts/PublicLayout.astro';
+import Breadcrumbs from '../components/common/Breadcrumbs.astro';
+import GoogleReviews from '../components/common/GoogleReviews.astro';
+import { getGoogleReviews, stars } from '../utils/googlePlaces';
+
+const placeReviews = await getGoogleReviews();
+const googleMapsUri =
+  placeReviews.googleMapsUri ||
+  'https://www.google.com/maps/place/?q=place_id:ChIJNbJl6dLXQYgRUd6uGVbDm10';
+---
+
+<PublicLayout
+  title="Customer Reviews | ColorAuto Detailing Grand Junction"
+  description="Read real Google reviews for ColorAuto Detailing in Grand Junction, CO. 5-star auto detailing, PPF, ceramic coating, and window tinting."
+  keywords={[
+    'ColorAuto reviews',
+    'auto detailing reviews Grand Junction',
+    'Google reviews window tint',
+    'PPF reviews Colorado',
+  ]}
+  image="/images/background.jpg"
+>
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Reviews' },
+  ]} />
+
+  <section class="relative text-white py-20 overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="/images/background.jpg" alt="" class="w-full h-full object-cover" loading="eager" />
+      <div class="absolute inset-0 bg-black/65"></div>
+    </div>
+    <div class="relative max-w-7xl mx-auto px-4 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">Customer Reviews</h1>
+      <p class="text-xl text-gray-200 max-w-2xl mx-auto drop-shadow-md">
+        Real feedback from Grand Junction customers on Google
+      </p>
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <span class="text-yellow-400 text-2xl tracking-wide">{stars(placeReviews.rating)}</span>
+        <span class="text-lg font-semibold">{placeReviews.rating.toFixed(1)} out of 5</span>
+        <span class="text-gray-300">·</span>
+        <span class="text-gray-200">{placeReviews.reviewCount.toLocaleString()} Google reviews</span>
+      </div>
+      <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href={googleMapsUri}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-block bg-white text-blue-700 font-bold py-3 px-8 rounded-lg hover:bg-blue-50 transition shadow-lg"
+        >
+          Leave a Review on Google
+        </a>
+        <a href="tel:970-628-1505" class="inline-block border-2 border-white text-white font-bold py-3 px-8 rounded-lg hover:bg-white/10 transition">
+          Call 970-628-1505
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <GoogleReviews
+    limit={placeReviews.reviews.length}
+    showHeader={false}
+    showSummary={false}
+    class="bg-white"
+  />
+
+  <section class="bg-gray-50 py-12 border-t border-gray-200">
+    <div class="max-w-3xl mx-auto px-4 text-center">
+      <h2 class="text-2xl font-bold mb-4">Had a great experience?</h2>
+      <p class="text-gray-600 mb-6">
+        We appreciate every review — it helps other Grand Junction drivers find trusted detailing, PPF, and tint services.
+      </p>
+      <a
+        href={googleMapsUri}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-block bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition"
+      >
+        Write a Google Review
+      </a>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: "ColorAuto Detailing",
+    url: "https://colorautodetailing.com",
+    telephone: "970-628-1505",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "562 S Westgate Drive",
+      addressLocality: "Grand Junction",
+      addressRegion: "CO",
+      postalCode: "81505",
+      addressCountry: "US",
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: placeReviews.rating.toFixed(1),
+      reviewCount: String(placeReviews.reviewCount),
+      bestRating: "5",
+      worstRating: "1",
+    },
+    review: placeReviews.reviews.slice(0, 5).map((review) => ({
+      "@type": "Review",
+      author: { "@type": "Person", name: review.authorName },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: String(review.rating),
+        bestRating: "5",
+        worstRating: "1",
+      },
+      reviewBody: review.text,
+    })),
+  })} />
+</PublicLayout>

@@ -1,0 +1,99 @@
+---
+import { getGoogleReviews, stars } from '../../utils/googlePlaces';
+
+interface Props {
+  limit?: number;
+  showHeader?: boolean;
+  showSummary?: boolean;
+  showViewAll?: boolean;
+  heading?: string;
+  subheading?: string;
+  class?: string;
+}
+
+const {
+  limit = 3,
+  showHeader = true,
+  showSummary = true,
+  showViewAll = false,
+  heading = 'What Customers Say',
+  subheading,
+  class: className = '',
+} = Astro.props;
+
+const placeReviews = await getGoogleReviews();
+const reviews = placeReviews.reviews.slice(0, limit);
+const googleMapsUri =
+  placeReviews.googleMapsUri ||
+  'https://www.google.com/maps/place/?q=place_id:ChIJNbJl6dLXQYgRUd6uGVbDm10';
+---
+
+<section class:list={['py-16', className]}>
+  <div class="max-w-7xl mx-auto px-4">
+    {showHeader && (
+      <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold mb-3">{heading}</h2>
+        {subheading && <p class="text-lg text-gray-600 max-w-2xl mx-auto">{subheading}</p>}
+        {showSummary && (
+          <div class="mt-4 flex flex-wrap items-center justify-center gap-3 text-sm text-gray-600">
+            <span class="text-yellow-500 text-lg tracking-wide">{stars(placeReviews.rating)}</span>
+            <span class="font-semibold text-gray-900">{placeReviews.rating.toFixed(1)} / 5</span>
+            <span>·</span>
+            <span>{placeReviews.reviewCount.toLocaleString()} Google reviews</span>
+            {placeReviews.source === 'google' && (
+              <>
+                <span>·</span>
+                <a
+                  href={googleMapsUri}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-blue-600 font-semibold hover:underline"
+                >
+                  View on Google
+                </a>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    )}
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {reviews.map((review) => (
+        <article class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm h-full flex flex-col">
+          <div class="flex items-start gap-3 mb-4">
+            {review.authorPhotoUrl ? (
+              <img
+                src={review.authorPhotoUrl}
+                alt=""
+                width="40"
+                height="40"
+                class="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                loading="lazy"
+                referrerpolicy="no-referrer"
+              />
+            ) : (
+              <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold flex-shrink-0">
+                {review.authorName.charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div class="min-w-0">
+              <p class="font-semibold text-gray-900 truncate">{review.authorName}</p>
+              {review.relativeTime && <p class="text-xs text-gray-500">{review.relativeTime}</p>}
+            </div>
+          </div>
+          <div class="text-yellow-500 text-lg mb-3">{stars(review.rating)}</div>
+          <p class="text-gray-700 flex-1 leading-relaxed">"{review.text}"</p>
+        </article>
+      ))}
+    </div>
+
+    {showViewAll && (
+      <div class="text-center mt-10">
+        <a href="/testimonials" class="inline-block text-blue-600 font-semibold hover:underline">
+          Read all customer reviews →
+        </a>
+      </div>
+    )}
+  </div>
+</section>

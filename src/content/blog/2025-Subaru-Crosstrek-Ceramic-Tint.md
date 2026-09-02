@@ -4,7 +4,7 @@ description: "2025 Subaru Crosstrek protected with Level 1 ceramic coating and P
 publishDate: 2026-01-29
 image: "/images/2025 Subaru Crosstrek.jpg"
 imageAlt: "2025 Subaru Crosstrek with ceramic coating and PRIME XR+ tint"
-category: "ceramic-coating"
+category: "window-tint"
 featured: true
 location: "Grand Junction, CO"
 ---
