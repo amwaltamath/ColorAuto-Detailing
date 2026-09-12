@@ -56,18 +56,27 @@ const placeReviews = await getGoogleReviews();
   </section>
 
   <GoogleReviews
-    limit={placeReviews.reviews.length}
     showHeader={false}
     showSummary={false}
+    showViewAll={false}
     class="bg-white"
   />
 
   <section class="bg-gray-50 py-12 border-t border-gray-200">
     <div class="max-w-3xl mx-auto px-4 text-center">
-      <h2 class="text-2xl font-bold mb-4">Had a great experience?</h2>
+      <h2 class="text-2xl font-bold mb-3">See every review on Google</h2>
       <p class="text-gray-600 mb-6">
-        We appreciate every review — it helps other Grand Junction drivers find trusted detailing, PPF, and tint services.
+        Google only lets websites show a handful of recent reviews, but you can read all{' '}
+        {placeReviews.reviewCount.toLocaleString()} customer reviews on our Google Maps listing.
       </p>
+      <a
+        href={placeReviews.reviewsUri}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-block bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition mr-0 sm:mr-4 mb-4 sm:mb-0"
+      >
+        Open all Google reviews
+      </a>
       <a
         href={placeReviews.writeReviewUri}
         target="_blank"

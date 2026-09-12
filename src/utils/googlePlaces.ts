@@ -12,6 +12,7 @@ export interface GooglePlaceReviews {
   reviews: GoogleReview[];
   googleMapsUri: string;
   writeReviewUri: string;
+  reviewsUri: string;
   source: 'google' | 'fallback';
 }
 
@@ -27,6 +28,10 @@ export const COLORAUTO_GOOGLE_MAPS_URL = 'https://maps.app.goo.gl/U8GewAAibaMwEZ
  */
 export const COLORAUTO_WRITE_REVIEW_URL =
   'https://www.google.com/maps/place/ColorAuto+Detailing/data=!4m3!3m2!1s0x87471d185e48b82b:0x41e0b213a06c4d2!12e1';
+
+/** Opens the Google Maps reviews tab for ColorAuto */
+export const COLORAUTO_REVIEWS_URL =
+  'https://www.google.com/maps/place/ColorAuto+Detailing/data=!4m4!3m3!1s0x87471d185e48b82b:0x41e0b213a06c4d2!9m1!1b1';
 
 export function getGoogleMapsListingUrl(): string {
   return COLORAUTO_GOOGLE_MAPS_URL;
@@ -265,6 +270,7 @@ const FALLBACK: GooglePlaceReviews = {
   source: 'fallback',
   googleMapsUri: COLORAUTO_GOOGLE_MAPS_URL,
   writeReviewUri: COLORAUTO_WRITE_REVIEW_URL,
+  reviewsUri: COLORAUTO_REVIEWS_URL,
   reviews: [
     {
       authorName: 'Alex R.',
@@ -323,6 +329,14 @@ function isColorAutoListing(displayName: unknown): boolean {
   return /color\s*auto/i.test(getDisplayName(displayName));
 }
 
+function parseReviewsUri(data: Record<string, unknown>): string {
+  const links = data.googleMapsLinks as { reviewsUri?: string } | undefined;
+  if (typeof links?.reviewsUri === 'string' && links.reviewsUri.startsWith('https://')) {
+    return links.reviewsUri;
+  }
+  return COLORAUTO_REVIEWS_URL;
+}
+
 function parseWriteReviewUri(data: Record<string, unknown>): string {
   const links = data.googleMapsLinks as { writeAReviewUri?: string } | undefined;
   if (typeof links?.writeAReviewUri === 'string' && links.writeAReviewUri.startsWith('https://')) {
@@ -344,6 +358,7 @@ function buildGoogleReviewsResult(
     reviews: reviews.length > 0 ? reviews : FALLBACK.reviews,
     googleMapsUri: COLORAUTO_GOOGLE_MAPS_URL,
     writeReviewUri: parseWriteReviewUri(data),
+    reviewsUri: parseReviewsUri(data),
     source,
   };
 }

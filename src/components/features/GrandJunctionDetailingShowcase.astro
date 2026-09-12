@@ -1,0 +1,232 @@
+---
+import '../../styles/grand-junction-showcase.css';
+---
+
+<section class="ca-detailing-showcase" aria-labelledby="gj-showcase-heading">
+  <div class="ca-detailing-showcase__inner">
+    <div class="ca-detailing-showcase__copy">
+      <h2 id="gj-showcase-heading">Grand Junction&apos;s Best Auto Detailing Company</h2>
+      <p>
+        ColorAuto Detailing is the shop local drivers trust for showroom-level results — from
+        daily drivers to luxury SUVs, trucks, and fleet vehicles across the Western Slope.
+      </p>
+      <ul>
+        <li>Certified XPEL paint protection film &amp; window tint installer</li>
+        <li>Ceramic coating, paint correction &amp; full interior/exterior detailing</li>
+        <li>400+ Google reviews from real Grand Junction customers</li>
+        <li>Same-week scheduling at 562 S Westgate Drive</li>
+      </ul>
+      <div class="ca-detailing-showcase__actions">
+        <button type="button" class="ca-detailing-showcase__cta" data-quote-popup>
+          Get a Free Quote
+        </button>
+        <button type="button" class="ca-detailing-showcase__cta ca-detailing-showcase__cta--secondary" data-showcase-trigger>
+          See why Grand Junction chooses ColorAuto
+        </button>
+      </div>
+    </div>
+
+    <div class="ca-showcase-stage" id="caShowcaseStage">
+      <div class="ca-showcase-tilt">
+        <div class="ca-showcase-phone" id="caShowcasePhone">
+          <div class="ca-showcase-screen" id="caShowcaseScreen">
+            <div class="ca-showcase-progress" id="caShowcaseProgress"></div>
+
+            <div class="ca-showcase-status">
+              <span id="caShowcaseClock">10:31</span>
+              <span>5G ▮▮▮▮</span>
+            </div>
+
+            <div class="ca-showcase-view" id="caShowcaseCompose">
+              <div class="ca-showcase-nav">
+                <span style="color: var(--ca-ios-accent); font-size: 14px;">ColorAuto</span>
+                <span class="title">Grand Junction, CO</span>
+                <button type="button" class="ca-showcase-send" id="caShowcaseSend">Go Live</button>
+              </div>
+              <div class="ca-showcase-chip-row">
+                <span class="ca-showcase-chip">Auto Detailing</span>
+                <span class="ca-showcase-chip">PPF</span>
+                <span class="ca-showcase-chip">Ceramic</span>
+                <span class="ca-showcase-chip">Window Tint</span>
+              </div>
+              <div class="ca-showcase-body">
+                <p><strong>Why ColorAuto is Grand Junction&apos;s top detailer</strong></p>
+                <p>
+                  Premium products, certified installers, and results you can see in the sun on
+                  Horizon Drive or the Colorado National Monument loop.
+                </p>
+                <p>
+                  Tap <strong>Go Live</strong> to see what happens when word gets out about
+                  Western Colorado&apos;s best auto detailing shop.
+                </p>
+              </div>
+            </div>
+
+            <div class="ca-showcase-sending" id="caShowcaseSending">
+              <div class="ca-showcase-ring" id="caShowcaseRing">
+                <svg width="68" height="68" aria-hidden="true">
+                  <circle class="track" cx="34" cy="34" r="30"></circle>
+                  <circle class="fill" cx="34" cy="34" r="30"></circle>
+                </svg>
+                <span class="count" id="caShowcaseRingCount">4</span>
+              </div>
+              <h3 style="font-size: 15px; font-weight: 600;">Spreading the word in Grand Junction</h3>
+              <p id="caShowcaseSendingSub" style="font-size: 12px; color: var(--ca-ios-ink-2); font-family: var(--ca-mono);">
+                Loading local reviews &amp; bookings…
+              </p>
+            </div>
+
+            <div class="ca-showcase-toasts" id="caShowcaseToasts"></div>
+
+            <div class="ca-showcase-verdict" id="caShowcaseVerdict">
+              <h3>#1 Auto Detailing in Grand Junction</h3>
+              <p>PPF · Ceramic · Tint · Detailing</p>
+              <button type="button" class="ca-showcase-verdict__btn" data-quote-popup>
+                Get Your Free Quote
+              </button>
+            </div>
+
+            <div class="ca-showcase-homebar"></div>
+          </div>
+          <div class="ca-showcase-island"></div>
+        </div>
+      </div>
+      <p class="ca-showcase-hint">Tap <b>Go Live</b> on the phone · 4 second preview</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  const ALERTS = [
+    { ico: '⭐', tint: '#f59e0b', head: 'Google Review', msg: '"Best auto detailing in Grand Junction — hands down."', ago: 'now' },
+    { ico: '🛡️', tint: '#2563eb', head: 'PPF Booked', msg: 'Full front XPEL on a 2025 Silverado — drop-off tomorrow.', ago: '1s' },
+    { ico: '✨', tint: '#7c3aed', head: 'Ceramic Coating', msg: 'Level 2 ceramic booked for a BMW X5 from Fruita.', ago: '1s' },
+    { ico: '🪟', tint: '#0ea5e9', head: 'Window Tint', msg: 'Prime XR tint quote accepted — Grand Junction client.', ago: '2s' },
+    { ico: '📍', tint: '#16a34a', head: 'Local Search', msg: 'Ranking climb: "auto detailing Grand Junction"', ago: '2s' },
+    { ico: '🚗', tint: '#2563eb', head: 'Detailing', msg: 'Paint correction + interior detail — same-week slot filled.', ago: '3s' },
+    { ico: '💬', tint: '#f59e0b', head: 'Google Review', msg: '"PPF looks invisible. Best shop on the Western Slope."', ago: '3s' },
+    { ico: '🏆', tint: '#1d4ed8', head: 'ColorAuto', msg: 'Another 5-star week in Grand Junction, CO.', ago: '4s' },
+  ];
+
+  function initShowcase() {
+    const root = document.querySelector('.ca-detailing-showcase');
+    if (!root || root.dataset.initialized === 'true') return;
+    root.dataset.initialized = 'true';
+
+    const phone = root.querySelector('#caShowcasePhone');
+    const compose = root.querySelector('#caShowcaseCompose');
+    const sending = root.querySelector('#caShowcaseSending');
+    const progress = root.querySelector('#caShowcaseProgress');
+    const ring = root.querySelector('#caShowcaseRing');
+    const ringCount = root.querySelector('#caShowcaseRingCount');
+    const sendingSub = root.querySelector('#caShowcaseSendingSub');
+    const toasts = root.querySelector('#caShowcaseToasts');
+    const verdict = root.querySelector('#caShowcaseVerdict');
+    const sendBtn = root.querySelector('#caShowcaseSend');
+    const externalTrigger = root.querySelector('[data-showcase-trigger]');
+    const clock = root.querySelector('#caShowcaseClock');
+
+    if (!phone || !sendBtn) return;
+
+    let timers = [];
+
+    const wait = (fn, ms) => {
+      timers.push(window.setTimeout(fn, ms));
+    };
+
+    function updateClock() {
+      if (!clock) return;
+      clock.textContent = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    }
+    updateClock();
+    window.setInterval(updateClock, 15000);
+
+    const reset = () => {
+      timers.forEach(clearTimeout);
+      timers = [];
+      toasts.innerHTML = '';
+      verdict?.classList.remove('is-on');
+      sending?.classList.remove('is-on');
+      compose?.classList.remove('is-hidden');
+      progress?.classList.remove('is-run');
+      ring?.classList.remove('is-run');
+      phone.classList.remove('is-live');
+      sendBtn.disabled = false;
+      if (ringCount) ringCount.textContent = '4';
+      if (sendingSub) sendingSub.textContent = 'Loading local reviews & bookings…';
+      void progress?.offsetWidth;
+    };
+
+    const pushToast = (alert) => {
+      const el = document.createElement('div');
+      el.className = 'ca-showcase-toast';
+      el.style.setProperty('--tint', alert.tint);
+      el.innerHTML = `
+        <div class="ico">${alert.ico}</div>
+        <div>
+          <div class="head">${alert.head}</div>
+          <div class="msg">${alert.msg}</div>
+        </div>
+        <div class="ago">${alert.ago}</div>`;
+      toasts.prepend(el);
+      while (toasts.children.length > 4) {
+        toasts.lastElementChild?.remove();
+      }
+    };
+
+    const startCascade = () => {
+      sendBtn.disabled = true;
+      compose?.classList.add('is-hidden');
+      progress?.classList.add('is-run');
+
+      wait(() => {
+        sending?.classList.add('is-on');
+        ring?.classList.add('is-run');
+      }, 350);
+
+      const subs = [
+        'Checking Google reviews in Grand Junction…',
+        'Syncing PPF & ceramic bookings…',
+        'Window tint requests from the Western Slope…',
+        'Updating ColorAuto reputation feed…',
+      ];
+
+      for (let s = 4; s >= 1; s -= 1) {
+        wait(() => {
+          if (ringCount) ringCount.textContent = String(s);
+          if (sendingSub) sendingSub.textContent = subs[4 - s] || subs[subs.length - 1];
+        }, (4 - s) * 1000);
+      }
+
+      wait(() => {
+        sending?.classList.remove('is-on');
+        phone.classList.add('is-live');
+        ALERTS.forEach((alert, i) => {
+          wait(() => pushToast(alert), i * 520);
+        });
+        wait(() => verdict?.classList.add('is-on'), ALERTS.length * 520 + 400);
+      }, 4000);
+    };
+
+    sendBtn.addEventListener('click', () => {
+      reset();
+      startCascade();
+    });
+
+    externalTrigger?.addEventListener('click', () => {
+      root.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      reset();
+      startCascade();
+    });
+
+    root.querySelectorAll('[data-quote-popup]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.dispatchEvent(new CustomEvent('openQuoteModal'));
+      });
+    });
+  }
+
+  initShowcase();
+  document.addEventListener('astro:page-load', initShowcase);
+</script>

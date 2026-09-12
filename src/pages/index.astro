@@ -2,6 +2,7 @@
 import PublicLayout from '../layouts/PublicLayout.astro';
 import QuoteModal from '../components/features/QuoteModal';
 import GoogleReviews from '../components/common/GoogleReviews.astro';
+import GrandJunctionDetailingShowcase from '../components/features/GrandJunctionDetailingShowcase.astro';
 ---
 
 <PublicLayout
@@ -236,7 +237,9 @@ import GoogleReviews from '../components/common/GoogleReviews.astro';
     </div>
   </section>
 
-  <GoogleReviews class="bg-white" showViewAll={true} />
+  <GrandJunctionDetailingShowcase />
+
+  <GoogleReviews class="bg-white" showViewAll={true} limit={5} />
 
   <!-- FAQ -->
   <section class="py-20 bg-gradient-to-b from-white to-gray-50">
