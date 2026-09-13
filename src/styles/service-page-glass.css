@@ -280,27 +280,65 @@ nav[aria-label='Breadcrumb']:has(+ .ca-hero-split--service) svg {
 .ca-service-page .bg-white,
 .ca-service-page .bg-gray-50,
 .ca-service-page .bg-gray-100 {
-  background: rgba(255, 255, 255, 0.07) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16);
   backdrop-filter: blur(16px) saturate(150%);
-  color: inherit;
+  color: #e2e8f0;
+}
+
+.ca-service-page .bg-green-50 {
+  background: rgba(34, 197, 94, 0.16) !important;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  backdrop-filter: blur(16px) saturate(150%);
+  color: #e2e8f0;
 }
 
 .ca-service-page .bg-blue-50 {
-  background: rgba(37, 99, 235, 0.12) !important;
-  border: 1px solid rgba(96, 165, 250, 0.22);
+  background: rgba(37, 99, 235, 0.16) !important;
+  border: 1px solid rgba(96, 165, 250, 0.28);
   backdrop-filter: blur(14px);
+  color: #e2e8f0;
+}
+
+/* Readable copy inside frosted panels (film options, install cards, etc.) */
+.ca-service-page .bg-white :is(.text-gray-600, .text-gray-500),
+.ca-service-page .bg-gray-50 :is(.text-gray-600, .text-gray-500),
+.ca-service-page .bg-gray-100 :is(.text-gray-600, .text-gray-500),
+.ca-service-page .bg-green-50 :is(.text-gray-600, .text-gray-500),
+.ca-service-page .bg-blue-50 :is(.text-gray-600, .text-gray-500) {
+  color: rgba(241, 245, 249, 0.94) !important;
+}
+
+.ca-service-page .bg-white :is(.text-gray-700, .text-gray-800),
+.ca-service-page .bg-gray-50 :is(.text-gray-700, .text-gray-800),
+.ca-service-page .bg-gray-100 :is(.text-gray-700, .text-gray-800),
+.ca-service-page .bg-green-50 :is(.text-gray-700, .text-gray-800),
+.ca-service-page .bg-blue-50 :is(.text-gray-700, .text-gray-800) {
+  color: #f8fafc !important;
+}
+
+.ca-service-page .bg-white .font-semibold,
+.ca-service-page .bg-gray-50 .font-semibold,
+.ca-service-page .bg-gray-100 .font-semibold,
+.ca-service-page .bg-green-50 .font-semibold,
+.ca-service-page .bg-blue-50 .font-semibold {
+  color: #f8fafc;
 }
 
 .ca-service-page .border-gray-200,
+.ca-service-page .border-gray-300,
 .ca-service-page .border-blue-200,
 .ca-service-page .border-b,
 .ca-service-page .border-t {
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
 }
 
 .ca-service-page .border-l-4.border-blue-500 {
   border-left-color: #3b82f6 !important;
+}
+
+.ca-service-page .border-l-4.border-green-500 {
+  border-left-color: #22c55e !important;
 }
 
 .ca-service-page .shadow,
@@ -341,6 +379,25 @@ nav[aria-label='Breadcrumb']:has(+ .ca-hero-split--service) svg {
     linear-gradient(135deg, rgba(37, 99, 235, 0.92) 0%, rgba(29, 78, 216, 0.95) 100%);
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* CTA banners stay fully visible — no scroll fade */
+.ca-glass-banner.fade-in-section {
+  opacity: 1;
+  transform: none;
+}
+
+.ca-glass-banner h2,
+.ca-glass-banner .text-white {
+  color: #fff !important;
+}
+
+.ca-glass-banner p,
+.ca-glass-banner .text-blue-100,
+.ca-glass-banner .text-green-100,
+.ca-glass-banner .text-gray-300,
+.ca-glass-banner .text-purple-100 {
+  color: rgba(239, 246, 255, 0.96) !important;
 }
 
 .ca-glass-banner__inner {
