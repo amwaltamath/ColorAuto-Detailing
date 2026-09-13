@@ -3,6 +3,8 @@ import PublicLayout from '../layouts/PublicLayout.astro';
 import QuoteModal from '../components/features/QuoteModal';
 import GoogleReviews from '../components/common/GoogleReviews.astro';
 import GrandJunctionDetailingShowcase from '../components/features/GrandJunctionDetailingShowcase.astro';
+import HeroDetailingVisual from '../components/features/HeroDetailingVisual.astro';
+import '../styles/hero-split.css';
 ---
 
 <PublicLayout
@@ -21,40 +23,50 @@ import GrandJunctionDetailingShowcase from '../components/features/GrandJunction
 >
   <QuoteModal client:load isOpen={false} service="General Quote" />
   <!-- Hero Section -->
-  <section class="relative min-h-[80vh] md:min-h-screen text-white overflow-hidden">
-    <!-- Background Image + Gradient -->
-    <div class="absolute inset-0">
-      <img src="/images/background.jpg" alt="Professional auto detailing service at ColorAuto in Grand Junction, Colorado" class="w-full h-full object-cover" fetchpriority="high" />
-      <div class="absolute inset-0 bg-black/65"></div>
-    </div>
+  <section class="ca-hero-split">
+    <div class="ca-hero-split__inner">
+      <HeroDetailingVisual />
 
-    <!-- Content -->
-    <div class="relative z-10 max-w-7xl mx-auto px-4">
-      <div class="pt-28 md:pt-40 max-w-3xl">
-        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight mb-6">
-          Grand Junction Auto Detailing & Protection Experts
+      <div class="ca-hero-split__content">
+        <span class="ca-hero-split__eyebrow">Grand Junction, Colorado</span>
+        <h1 class="ca-hero-split__title">
+          Grand Junction Auto Detailing &amp; Protection Experts
         </h1>
-        <p class="text-lg md:text-xl text-gray-200 mb-6">
-          Premium detailing, paint protection film, ceramic coating, and window tinting in Grand Junction.
+        <p class="ca-hero-split__subtitle">
+          ColorAuto is the Western Slope&apos;s trusted shop for premium detailing, XPEL paint protection film,
+          ceramic coating, and window tint — with 400+ Google reviews from local drivers.
         </p>
-        <div class="flex flex-col sm:flex-row gap-4">
-          <button data-quote-popup class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition shadow-lg border-0 cursor-pointer">Get a Free Quote</button>
-          <a href="tel:970-628-1505" class="bg-white/10 backdrop-blur text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/20 transition border border-white/20">Call: 970-628-1505</a>
+        <div class="ca-hero-split__actions">
+          <button type="button" data-quote-popup class="ca-hero-split__btn-primary">
+            Get a Free Quote
+          </button>
+          <a href="tel:970-628-1505" class="ca-hero-split__btn-secondary">
+            Call 970-628-1505
+          </a>
         </div>
+        <ul class="ca-hero-split__trust">
+          <li>XPEL certified installer</li>
+          <li>Same-week scheduling</li>
+          <li>562 S Westgate Drive</li>
+        </ul>
       </div>
     </div>
   </section>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('[data-quote-popup]').forEach((btn) => {
-          btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const event = new CustomEvent('openQuoteModal');
-            document.dispatchEvent(event);
-          });
+  <script>
+    function bindQuotePopups() {
+      document.querySelectorAll('[data-quote-popup]').forEach((btn) => {
+        if (btn.dataset.quoteBound === 'true') return;
+        btn.dataset.quoteBound = 'true';
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          document.dispatchEvent(new CustomEvent('openQuoteModal'));
         });
       });
-    </script>
+    }
+
+    bindQuotePopups();
+    document.addEventListener('astro:page-load', bindQuotePopups);
+  </script>
 
   <!-- Location Info -->
   <section class="bg-gray-100 py-6">

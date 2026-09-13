@@ -1,0 +1,99 @@
+<div class="ca-hero-visual" id="caHeroVisual" aria-hidden="true">
+  <div class="ca-hero-visual__frame">
+    <div class="ca-hero-visual__chrome">
+      <span class="ca-hero-visual__dot"></span>
+      <span class="ca-hero-visual__dot"></span>
+      <span class="ca-hero-visual__dot"></span>
+      <span class="ca-hero-visual__url">colorautodetailing.com</span>
+    </div>
+
+    <div class="ca-hero-visual__photo-wrap">
+      <img
+        src="/images/professional auto detailing.jpg"
+        alt=""
+        class="ca-hero-visual__photo"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+      <div class="ca-hero-visual__photo-overlay"></div>
+      <span class="ca-hero-visual__float">XPEL Certified</span>
+      <span class="ca-hero-visual__badge">★ 400+ Google reviews</span>
+      <div class="ca-hero-visual__flow" id="caHeroFlow"></div>
+    </div>
+
+    <div class="ca-hero-visual__pipeline">
+      <p class="ca-hero-visual__pipeline-label">Grand Junction booking flow</p>
+      <div class="ca-hero-visual__stages" id="caHeroStages">
+        <div class="ca-hero-visual__stage is-active" data-stage="0" style="--stage-color: #3b82f6; --stage-width: 100%;">
+          <span class="ca-hero-visual__stage-icon">📋</span>
+          <span class="ca-hero-visual__stage-body">
+            <span class="ca-hero-visual__stage-value">Quote requests</span>
+            <span class="ca-hero-visual__stage-name">Free estimates this week</span>
+          </span>
+          <span class="ca-hero-visual__stage-check">✓</span>
+        </div>
+        <div class="ca-hero-visual__stage" data-stage="1" style="--stage-color: #2563eb; --stage-width: 88%;">
+          <span class="ca-hero-visual__stage-icon">📅</span>
+          <span class="ca-hero-visual__stage-body">
+            <span class="ca-hero-visual__stage-value">Same-week bookings</span>
+            <span class="ca-hero-visual__stage-name">Detailing &amp; tint slots</span>
+          </span>
+          <span class="ca-hero-visual__stage-check">✓</span>
+        </div>
+        <div class="ca-hero-visual__stage" data-stage="2" style="--stage-color: #1d4ed8; --stage-width: 76%;">
+          <span class="ca-hero-visual__stage-icon">🛡️</span>
+          <span class="ca-hero-visual__stage-body">
+            <span class="ca-hero-visual__stage-value">PPF &amp; ceramic</span>
+            <span class="ca-hero-visual__stage-name">Paint protection installs</span>
+          </span>
+          <span class="ca-hero-visual__stage-check">✓</span>
+        </div>
+        <div class="ca-hero-visual__stage" data-stage="3" style="--stage-color: #16a34a; --stage-width: 64%;">
+          <span class="ca-hero-visual__stage-icon">✨</span>
+          <span class="ca-hero-visual__stage-body">
+            <span class="ca-hero-visual__stage-value">Showroom finish</span>
+            <span class="ca-hero-visual__stage-name">5-star Western Slope results</span>
+          </span>
+          <span class="ca-hero-visual__stage-check">✓</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="ca-hero-visual__caption">Quote → book → protect — Grand Junction&apos;s top auto detailing shop.</p>
+</div>
+
+<script>
+  function initHeroVisual() {
+    const root = document.getElementById('caHeroVisual');
+    if (!root || root.dataset.initialized === 'true') return;
+    root.dataset.initialized = 'true';
+
+    const stages = Array.from(root.querySelectorAll('.ca-hero-visual__stage'));
+    const flow = root.querySelector('#caHeroFlow');
+    if (!stages.length) return;
+
+    let active = 0;
+
+    const setStage = (index) => {
+      active = index;
+      stages.forEach((stage, i) => {
+        stage.classList.toggle('is-active', i === index);
+        stage.classList.toggle('is-past', i < index);
+      });
+      if (flow) {
+        flow.classList.remove('is-active');
+        void flow.offsetWidth;
+        flow.classList.add('is-active');
+      }
+    };
+
+    setStage(0);
+    window.setInterval(() => {
+      setStage((active + 1) % stages.length);
+    }, 3200);
+  }
+
+  initHeroVisual();
+  document.addEventListener('astro:page-load', initHeroVisual);
+</script>
