@@ -1,6 +1,9 @@
 ---
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
+import ServicePageHero from '../../components/common/ServicePageHero.astro';
+import GlassHighlightsBar from '../../components/common/GlassHighlightsBar.astro';
+import '../../styles/service-page-glass.css';
 ---
 
 <PublicLayout
@@ -28,65 +31,18 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
     { label: 'Auto Window Tinting' }
   ]} />
 
-  <!-- Hero Section -->
-  <section class="relative text-white overflow-hidden" style="padding-top: 5rem; padding-bottom: 5rem;">
-    <div class="absolute inset-0">
-      <img
-        src="/images/primexr.jpg"
-        alt="Professional auto window tinting on a vehicle in Grand Junction, CO"
-        class="w-full h-full object-cover"
-      />
-      <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/60 to-black/40"></div>
-    </div>
-    <div class="relative max-w-7xl mx-auto px-4">
-      <div class="max-w-2xl">
-        <p class="text-amber-400 font-semibold text-sm uppercase tracking-widest mb-3">Grand Junction, CO</p>
-        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight mb-6">
-          Auto Window Tinting
-        </h1>
-        <p class="text-lg md:text-xl text-gray-200 mb-8">
-          Protect your car, stay cooler, and look great. XPEL PRIME ceramic films with 99% UV block, lifetime warranty, and Colorado-law-compliant installation.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4">
-          <a
-            href="/contact"
-            class="inline-block bg-amber-400 text-black font-bold py-4 px-8 rounded-lg hover:bg-amber-300 transition shadow-lg text-center text-lg"
-          >
-            Get a Free Quote
-          </a>
-          <a
-            href="tel:970-628-1505"
-            class="inline-block bg-white/10 border-2 border-white text-white font-bold py-4 px-8 rounded-lg hover:bg-white/20 transition text-center text-lg"
-          >
-            Call 970-628-1505
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <ServicePageHero
+    title="Auto Window Tinting"
+    subtitle="XPEL PRIME ceramic films with 99% UV block, lifetime warranty, and Colorado-law-compliant installation."
+    image="/images/primexr.jpg"
+    imageAlt="Professional auto window tinting on a vehicle in Grand Junction, CO"
+    badge="Lifetime warranty"
+  />
 
-  <!-- Trust Bar -->
-  <section class="bg-gray-900 text-white py-4">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-sm font-semibold">
-        <div class="flex items-center justify-center gap-2">
-          <span class="text-amber-400 text-lg">✓</span> Lifetime Warranty
-        </div>
-        <div class="flex items-center justify-center gap-2">
-          <span class="text-amber-400 text-lg">✓</span> Colorado Law Compliant
-        </div>
-        <div class="flex items-center justify-center gap-2">
-          <span class="text-amber-400 text-lg">✓</span> Certified Installers
-        </div>
-        <div class="flex items-center justify-center gap-2">
-          <span class="text-amber-400 text-lg">✓</span> XPEL Authorized Dealer
-        </div>
-      </div>
-    </div>
-  </section>
+  <GlassHighlightsBar />
 
   <!-- Benefits + Quote Box -->
-  <section class="bg-white py-16">
+  <section class="ca-service-page py-16">
     <div class="max-w-7xl mx-auto px-4">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
@@ -196,7 +152,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
   </section>
 
   <!-- XPEL Film Options -->
-  <section class="bg-gray-900 py-16">
+  <section class="ca-service-page py-16">
     <div class="max-w-7xl mx-auto px-4">
       <div class="text-center mb-12">
         <h2 class="text-4xl font-bold text-white mb-3">Choose Your XPEL PRIME Film</h2>
@@ -262,7 +218,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
   </section>
 
   <!-- Vehicle Types -->
-  <section class="bg-white py-14">
+  <section class="ca-service-page py-14">
     <div class="max-w-7xl mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-4">We Tint All Vehicle Types</h2>
       <p class="text-center text-gray-600 mb-10">From daily drivers to exotics—every vehicle gets the same expert installation.</p>
@@ -283,7 +239,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
   </section>
 
   <!-- FAQ Section -->
-  <section class="bg-gray-50 py-16">
+  <section class="ca-service-page py-16">
     <div class="max-w-3xl mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-10">Frequently Asked Questions</h2>
       <div class="space-y-5">
@@ -353,7 +309,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
   </section>
 
   <!-- CTA Banner -->
-  <section class="bg-gradient-to-r from-blue-700 to-blue-900 py-14">
+  <section class="ca-glass-banner">
     <div class="max-w-4xl mx-auto px-4 text-center">
       <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Ready to Tint Your Car?</h2>
       <p class="text-blue-100 text-lg mb-8">
@@ -377,7 +333,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
   </section>
 
   <!-- Location Strip -->
-  <section class="bg-white border-t border-gray-200 py-8">
+  <section class="ca-service-page ca-service-page--strip py-8">
     <div class="max-w-7xl mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
         <div>
@@ -398,7 +354,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
   </section>
 
   <!-- Related Services -->
-  <section class="bg-gray-50 py-12">
+  <section class="ca-service-page py-12">
     <div class="max-w-7xl mx-auto px-4">
       <h2 class="text-2xl font-bold text-center mb-8">Complete Vehicle Protection</h2>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
@@ -423,6 +379,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
   </section>
 
   <!-- Schema Markup -->
+
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@graph": [

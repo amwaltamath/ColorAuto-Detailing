@@ -1,0 +1,246 @@
+.ca-glass-section {
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  padding: 4.5rem 0;
+  background:
+    radial-gradient(800px 480px at 20% 0%, rgba(37, 99, 235, 0.18), transparent 60%),
+    radial-gradient(700px 420px at 90% 100%, rgba(15, 23, 42, 0.45), transparent 55%),
+    linear-gradient(180deg, #0f172a 0%, #111827 50%, #0b1220 100%);
+}
+
+.ca-glass-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/images/background.jpg') center / cover no-repeat;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.ca-glass-section--alt {
+  background:
+    radial-gradient(700px 420px at 80% 0%, rgba(37, 99, 235, 0.14), transparent 58%),
+    radial-gradient(600px 380px at 10% 100%, rgba(15, 23, 42, 0.4), transparent 55%),
+    linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+}
+
+.ca-glass-section__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.ca-glass-section__header {
+  text-align: center;
+  max-width: 42rem;
+  margin: 0 auto 2.75rem;
+}
+
+.ca-glass-section__eyebrow {
+  display: inline-block;
+  padding: 0.3rem 0.85rem;
+  margin-bottom: 0.85rem;
+  background: rgba(37, 99, 235, 0.14);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  border-radius: 999px;
+  color: #93c5fd;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ca-glass-section__title {
+  font-size: clamp(1.85rem, 4vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+}
+
+.ca-glass-section__subtitle {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(226, 232, 240, 0.75);
+}
+
+.ca-glass-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.ca-glass-grid--main {
+  grid-template-columns: 1fr;
+}
+
+.ca-glass-grid--specialty {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .ca-glass-grid--main {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .ca-glass-grid--specialty {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ca-glass-grid--specialty {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.ca-glass-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1.1rem;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: 0 18px 40px rgba(2, 8, 23, 0.28);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.ca-glass-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(96, 165, 250, 0.45);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 50px rgba(2, 8, 23, 0.38), 0 0 0 1px rgba(96, 165, 250, 0.15);
+}
+
+.ca-glass-card__media {
+  position: relative;
+  overflow: hidden;
+  background: #1e293b;
+}
+
+.ca-glass-card--large .ca-glass-card__media {
+  height: 13.5rem;
+}
+
+.ca-glass-card--compact .ca-glass-card__media {
+  height: 10.5rem;
+}
+
+.ca-glass-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s ease;
+}
+
+.ca-glass-card:hover .ca-glass-card__image {
+  transform: scale(1.06);
+}
+
+.ca-glass-card__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.05) 0%, rgba(15, 23, 42, 0.72) 100%);
+}
+
+.ca-glass-card__badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.28rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(10px);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #bfdbfe;
+}
+
+.ca-glass-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1.15rem 1.2rem 1.25rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ca-glass-card--large .ca-glass-card__body {
+  padding: 1.35rem 1.35rem 1.45rem;
+}
+
+.ca-glass-card__title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.45rem;
+  color: #f8fafc;
+}
+
+.ca-glass-card--large .ca-glass-card__title {
+  font-size: 1.45rem;
+  margin-bottom: 0.55rem;
+}
+
+.ca-glass-card__text {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: rgba(226, 232, 240, 0.78);
+  margin-bottom: 0.85rem;
+  flex: 1;
+}
+
+.ca-glass-card--compact .ca-glass-card__text {
+  font-size: 0.84rem;
+  margin-bottom: 0.7rem;
+}
+
+.ca-glass-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.ca-glass-card__tag {
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.18);
+  border: 1px solid rgba(96, 165, 250, 0.25);
+  font-size: 0.64rem;
+  font-weight: 600;
+  color: #bfdbfe;
+}
+
+.ca-glass-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #93c5fd;
+  transition: color 0.2s ease, gap 0.2s ease;
+}
+
+.ca-glass-card:hover .ca-glass-card__cta {
+  color: #dbeafe;
+  gap: 0.55rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ca-glass-card,
+  .ca-glass-card__image {
+    transition: none !important;
+  }
+}

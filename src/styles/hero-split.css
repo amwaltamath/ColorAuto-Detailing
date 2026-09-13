@@ -362,7 +362,6 @@
   }
 
   .ca-hero-split__content {
-    order: 2;
     text-align: center;
   }
 
@@ -377,10 +376,6 @@
 
   .ca-hero-split__trust {
     justify-content: center;
-  }
-
-  .ca-hero-visual {
-    order: 1;
   }
 }
 

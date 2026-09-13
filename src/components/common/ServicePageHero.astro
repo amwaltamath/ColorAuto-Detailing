@@ -1,0 +1,50 @@
+---
+import '../../styles/hero-split.css';
+
+interface Props {
+  title: string;
+  subtitle: string;
+  image: string;
+  imageAlt: string;
+  eyebrow?: string;
+  badge?: string;
+  secondarySubtitle?: string;
+}
+
+const {
+  title,
+  subtitle,
+  image,
+  imageAlt,
+  eyebrow = 'Grand Junction, Colorado',
+  badge,
+  secondarySubtitle,
+} = Astro.props;
+---
+
+<section class="ca-hero-split ca-hero-split--service">
+  <div class="ca-hero-split__inner">
+    <div class="ca-hero-split__content">
+      <span class="ca-hero-split__eyebrow">{eyebrow}</span>
+      <h1 class="ca-hero-split__title">{title}</h1>
+      <p class="ca-hero-split__subtitle">{subtitle}</p>
+      {secondarySubtitle && (
+        <p class="ca-hero-split__subtitle ca-hero-split__subtitle--secondary">{secondarySubtitle}</p>
+      )}
+      <div class="ca-hero-split__actions">
+        <button type="button" data-quote-popup class="ca-hero-split__btn-primary">
+          Get a Free Quote
+        </button>
+        <a href="tel:970-628-1505" class="ca-hero-split__btn-secondary">Call 970-628-1505</a>
+      </div>
+    </div>
+
+    <div class="ca-service-hero-visual">
+      <div class="ca-service-hero-visual__frame">
+        <img src={image} alt={imageAlt} class="ca-service-hero-visual__image" loading="eager" fetchpriority="high" />
+        <div class="ca-service-hero-visual__shade"></div>
+        {badge && <span class="ca-service-hero-visual__badge">{badge}</span>}
+      </div>
+    </div>
+  </div>
+</section>

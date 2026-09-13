@@ -1,0 +1,49 @@
+---
+interface Props {
+  href: string;
+  image: string;
+  alt: string;
+  title: string;
+  description: string;
+  badge?: string;
+  tags?: string[];
+  compact?: boolean;
+  ariaLabel?: string;
+}
+
+const {
+  href,
+  image,
+  alt,
+  title,
+  description,
+  badge,
+  tags = [],
+  compact = false,
+  ariaLabel,
+} = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={['ca-glass-card', compact ? 'ca-glass-card--compact' : 'ca-glass-card--large']}
+  aria-label={ariaLabel ?? `Learn more about ${title}`}
+>
+  <div class="ca-glass-card__media">
+    <img src={image} alt={alt} class="ca-glass-card__image" loading="lazy" decoding="async" />
+    <div class="ca-glass-card__shade"></div>
+    {badge && <span class="ca-glass-card__badge">{badge}</span>}
+  </div>
+  <div class="ca-glass-card__body">
+    {tags.length > 0 && (
+      <div class="ca-glass-card__tags">
+        {tags.map((tag) => (
+          <span class="ca-glass-card__tag">{tag}</span>
+        ))}
+      </div>
+    )}
+    <h3 class="ca-glass-card__title">{title}</h3>
+    <p class="ca-glass-card__text">{description}</p>
+    <span class="ca-glass-card__cta">Get a quote →</span>
+  </div>
+</a>

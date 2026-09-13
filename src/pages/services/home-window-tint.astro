@@ -1,6 +1,8 @@
 ---
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
+import ServicePageHero from '../../components/common/ServicePageHero.astro';
+import '../../styles/service-page-glass.css';
 ---
 
 <PublicLayout
@@ -20,18 +22,15 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
     { label: 'Services', href: '/services' },
     { label: 'Home Window Tint' }
   ]} />
-  <!-- Hero Section -->
-  <section class="relative text-white py-70 overflow-hidden">
-    <img src="/images/Colorauto window tint.jpg" alt="Residential home window tinting for energy savings and UV protection" class="absolute inset-0 w-full h-full object-cover" />
-    <div class="absolute inset-0 bg-black/60"></div>
-    <div class="relative max-w-7xl mx-auto px-4 text-center">
-        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight mb-6">Home Window Tint</h1>
-        <p class="text-lg md:text-xl text-gray-200 mb-6">Home window tinting provides year-round comfort, energy savings, and protection for your home. Our premium flat window films reduce heat, block harmful UV rays, and provide privacy while maintaining your home's aesthetic appeal.</p>
-    </div>
-  </section>
+  <ServicePageHero
+    title="Home Window Tint"
+    subtitle="Reduce heat, block UV rays, and add privacy with premium residential window film."
+    image="/images/Colorauto window tint.jpg"
+    imageAlt="Residential home window tinting for energy savings and UV protection"
+    badge="Residential"
+  />
 
-  <!-- Main Content -->
-  <div class="max-w-7xl mx-auto px-4 py-12">
+  <section class="ca-service-page"><div class="ca-service-page__inner max-w-7xl mx-auto px-4 py-12">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
       <!-- Left Column -->
       <div>
@@ -174,7 +173,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
   </div>
 
   <!-- Why Choose Us Section -->
-  <section class="bg-gray-100 py-12">
+  <section class="ca-service-page py-12">
     <div class="max-w-7xl mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-8">Why Choose ColorAuto for Home Window Tinting?</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -198,7 +197,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
   </section>
 
   <!-- Location Section -->
-  <section class="bg-white border-t border-b border-gray-200 py-8">
+  <section class="ca-service-page ca-service-page--strip py-8">
     <div class="max-w-7xl mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="text-center">
@@ -229,7 +228,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
   </section>
 
   <!-- Full-width CTA Banner -->
-  <section class="bg-gradient-to-r from-green-600 to-green-800 py-12">
+  <section class="ca-glass-banner">
     <div class="max-w-4xl mx-auto px-4 text-center">
       <h2 class="text-3xl font-bold text-white mb-4">Upgrade Your Home Comfort</h2>
       <p class="text-green-100 text-lg mb-8">Reduce heat, glare, and UV damage — schedule your free home consultation.</p>
@@ -241,7 +240,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
   </section>
 
   <!-- Related Services -->
-  <section class="bg-white py-12">
+  <section class="ca-service-page py-12">
     <div class="max-w-7xl mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-8">Complete Tinting Solutions</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -260,6 +259,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
       </div>
     </div>
   </section>
+
 
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",

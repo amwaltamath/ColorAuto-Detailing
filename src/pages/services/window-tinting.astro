@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
+import ServicePageHero from '../../components/common/ServicePageHero.astro';
+import '../../styles/service-page-glass.css';
 import { getSupabaseBlogPosts } from '../../utils/blogPosts';
 
 const faqSchema = {
@@ -107,20 +109,15 @@ const tintPosts = [
     { label: 'Services', href: '/services' },
     { label: 'Window Tinting' }
   ]} />
-  <!-- Hero Section -->
-  <section class="relative text-white py-70 overflow-hidden">
-    <div class="absolute inset-0">
-      <img src="/images/primexr.jpg" alt="Professional automotive window tinting in Grand Junction, CO" class="w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-black/60"></div>
-    </div>
-    <div class="relative max-w-7xl mx-auto px-4 text-center">
-      <h1 class="text-5xl font-bold mb-4 drop-shadow-lg">Grand Junction Window Tinting</h1>
-      <p class="text-xl text-gray-200 drop-shadow-md">Automotive, home, and office window tinting by certified local experts</p>
-    </div>
-  </section>
+  <ServicePageHero
+    title="Grand Junction Window Tinting"
+    subtitle="Automotive, home, and office window tinting by certified local experts."
+    image="/images/primexr.jpg"
+    imageAlt="Professional automotive window tinting in Grand Junction, CO"
+    badge="Prime XR"
+  />
 
-  <!-- Main Content -->
-  <div class="max-w-7xl mx-auto px-4 py-12">
+  <section class="ca-service-page"><div class="ca-service-page__inner max-w-7xl mx-auto px-4 py-12">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
       <!-- Left Column -->
       <div>
@@ -278,7 +275,7 @@ const tintPosts = [
   </div>
 
   <!-- XPEL Film Options -->
-  <section class="bg-gray-900 py-16">
+  <section class="ca-service-page py-16">
     <div class="max-w-7xl mx-auto px-4">
       <div class="text-center mb-10">
         <h2 class="text-4xl font-bold text-white mb-3">Choose Your XPEL PRIME Film</h2>
@@ -324,7 +321,7 @@ const tintPosts = [
   </section>
 
   <!-- Services for Home & Office -->
-  <section class="bg-gray-100 py-12">
+  <section class="ca-service-page py-12">
     <div class="max-w-7xl mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-4">Window Film for Every Application</h2>
       <p class="text-center text-gray-600 mb-8">We also provide professional window tinting for homes and offices</p>
@@ -347,7 +344,7 @@ const tintPosts = [
 
   <!-- Recent Window Tint Projects -->
   {tintPosts.length > 0 && (
-    <section class="bg-gray-50 py-16">
+    <section class="ca-service-page py-16">
       <div class="max-w-7xl mx-auto px-4">
         <div class="text-center mb-12">
           <h2 class="text-3xl font-bold mb-4">Recent Window Tint Projects</h2>
@@ -402,7 +399,7 @@ const tintPosts = [
   )}
 
   <!-- FAQ Section -->
-  <section class="bg-white py-16">
+  <section class="ca-service-page py-16">
     <div class="max-w-3xl mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-10">Window Tint FAQ — Grand Junction, CO</h2>
       <div class="space-y-4" id="faq-list">
@@ -456,7 +453,7 @@ const tintPosts = [
   </section>
 
   <!-- Location Section -->
-  <section class="bg-white border-t border-b border-gray-200 py-8">
+  <section class="ca-service-page ca-service-page--strip py-8">
     <div class="max-w-7xl mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="text-center">
@@ -487,7 +484,7 @@ const tintPosts = [
   </section>
 
   <!-- Full-width CTA Banner -->
-  <section class="bg-gradient-to-r from-blue-600 to-blue-800 py-12">
+  <section class="ca-glass-banner">
     <div class="max-w-4xl mx-auto px-4 text-center">
       <h2 class="text-3xl font-bold text-white mb-4">Tint Your Windows Today</h2>
       <p class="text-blue-100 text-lg mb-8">Expert window tinting with premium XPEL film — heat rejection, UV protection, and privacy.</p>
@@ -499,7 +496,7 @@ const tintPosts = [
   </section>
 
   <!-- Related Services -->
-  <section class="bg-white py-12">
+  <section class="ca-service-page py-12">
     <div class="max-w-7xl mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-8">Complete Vehicle Protection</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -568,6 +565,7 @@ const tintPosts = [
       });
     });
   </script>
+
 
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <script type="application/ld+json" set:html={JSON.stringify({

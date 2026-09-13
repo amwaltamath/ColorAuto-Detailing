@@ -1,6 +1,8 @@
 ---
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
+import ServicePageHero from '../../components/common/ServicePageHero.astro';
+import '../../styles/service-page-glass.css';
 ---
 
 <PublicLayout
@@ -19,20 +21,15 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
     { label: 'Services', href: '/services' },
     { label: 'Auto Detailing' }
   ]} />
-  <!-- Hero Section -->
-  <section class="relative text-white py-70 overflow-hidden">
-    <div class="absolute inset-0">
-      <img src="/images/autodetailing.jpg" alt="Professional auto detailing service in Grand Junction, CO" class="w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-black/60"></div>
-    </div>
-    <div class="relative max-w-7xl mx-auto px-4 text-center">
-      <h1 class="text-5xl font-bold mb-4 drop-shadow-lg">Auto Detailing</h1>
-      <p class="text-xl text-gray-200 drop-shadow-md">Professional car detailing to restore and protect your vehicle's appearance</p>
-    </div>
-  </section>
+  <ServicePageHero
+    title="Auto Detailing"
+    subtitle="Professional car detailing to restore and protect your vehicle's appearance in Grand Junction."
+    image="/images/autodetailing.jpg"
+    imageAlt="Professional auto detailing service in Grand Junction, CO"
+    badge="Most booked"
+  />
 
-  <!-- Main Content -->
-  <div class="max-w-7xl mx-auto px-4 py-12">
+  <section class="ca-service-page"><div class="ca-service-page__inner max-w-7xl mx-auto px-4 py-12">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
       <!-- Left Column - Details -->
       <div>
@@ -266,9 +263,10 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
       </div>
     </div>
   </div>
+  </section>
 
   <!-- Full-width CTA Banner -->
-  <section class="bg-gradient-to-r from-blue-600 to-blue-800 py-12">
+  <section class="ca-glass-banner">
     <div class="max-w-4xl mx-auto px-4 text-center">
       <h2 class="text-3xl font-bold text-white mb-4">Ready to Restore Your Vehicle?</h2>
       <p class="text-blue-100 text-lg mb-8">Get a free, no-obligation quote for professional auto detailing in Grand Junction.</p>
@@ -280,7 +278,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
   </section>
 
   <!-- Other Services -->
-  <section class="bg-white py-12">
+  <section class="ca-service-page py-12">
     <div class="max-w-7xl mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-10">Other Services</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -316,7 +314,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
   </section>
 
   <!-- Location Section -->
-  <section class="bg-white border-t border-b border-gray-200 py-8">
+  <section class="ca-service-page ca-service-page--strip py-8">
     <div class="max-w-7xl mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="text-center">
@@ -347,7 +345,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
   </section>
 
   <!-- Related Services -->
-  <section class="bg-gray-100 py-12">
+  <section class="ca-service-page py-12">
     <div class="max-w-7xl mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-8">Enhance Your Detailing</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -366,6 +364,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
       </div>
     </div>
   </section>
+
 
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",

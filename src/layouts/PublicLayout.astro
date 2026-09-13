@@ -2,6 +2,7 @@
 import Layout from './Layout.astro';
 import Navigation from '../components/common/Navigation.astro';
 import Footer from '../components/common/Footer.astro';
+import QuoteModal from '../components/features/QuoteModal';
 
 interface Props {
   title: string;
@@ -17,8 +18,24 @@ const { title, description, keywords, canonical, image, noindex } = Astro.props;
 
 <Layout title={title} description={description} keywords={keywords} canonical={canonical} image={image} noindex={noindex}>
   <Navigation />
+  <QuoteModal client:load isOpen={false} service="General Quote" />
   <main id="main-content" class="min-h-screen">
     <slot />
   </main>
   <Footer />
+  <script>
+    function bindQuotePopups() {
+      document.querySelectorAll('[data-quote-popup]').forEach((btn) => {
+        if (btn.dataset.quoteBound === 'true') return;
+        btn.dataset.quoteBound = 'true';
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          document.dispatchEvent(new CustomEvent('openQuoteModal'));
+        });
+      });
+    }
+
+    bindQuotePopups();
+    document.addEventListener('astro:page-load', bindQuotePopups);
+  </script>
 </Layout>
