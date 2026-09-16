@@ -59,65 +59,52 @@ import '../styles/service-page-glass.css';
   <GlassLocationBar />
   <GlassHighlightsBar />
 
-  <!-- Main Services -->
+  <!-- Services -->
   <section class="ca-glass-section">
     <div class="ca-glass-section__inner">
       <div class="ca-glass-section__header">
-        <span class="ca-glass-section__eyebrow">Core Services</span>
-        <h2 class="ca-glass-section__title">Professional Car Detailing</h2>
+        <span class="ca-glass-section__eyebrow">Our Services</span>
+        <h2 class="ca-glass-section__title">Detailing, Protection &amp; Tint</h2>
         <p class="ca-glass-section__subtitle">
-          Grand Junction&apos;s go-to shop for showroom-level detailing, color PPF, and ceramic protection.
+          Everything we do most for Grand Junction drivers and property owners — one team, XPEL-certified installs, and free quotes.
         </p>
       </div>
-      <div class="ca-glass-grid ca-glass-grid--main">
+      <div class="ca-glass-grid ca-glass-grid--specialty">
         <ServiceGlassCard
           href="/services/auto-detailing"
           image="/images/professional auto detailing.jpg"
           alt="Professional auto detailing and interior cleaning in Grand Junction"
           title="Auto Detailing"
-          description="Hand wash, clay bar, paint correction, and full interior/exterior detailing for a mirror finish."
+          description="Hand wash, interior deep clean, and full exterior finish for a showroom look."
           badge="Most booked"
-          tags={['Interior + Exterior', 'Paint correction']}
+          tags={['Interior + Exterior']}
+          compact={true}
         />
         <ServiceGlassCard
-          href="/services/color-ppf"
-          image="/images/colorppf.jpg"
-          alt="Color paint protection film wrap by ColorAuto"
-          title="Color PPF"
-          description="Factory-look color paint protection film that shields your finish while changing your style."
-          badge="XPEL"
-          tags={['Color change', 'Chip protection']}
+          href="/services/auto-paint-correction"
+          image="/images/paint correction.jpg"
+          alt="Paint correction removing swirls and scratches in Grand Junction"
+          title="Paint Correction"
+          description="Machine polish to remove swirls, haze, and oxidation before coating or PPF."
+          tags={['Mirror finish']}
+          compact={true}
         />
         <ServiceGlassCard
           href="/services/ceramic-coating"
           image="/images/ceramic coating.jpg"
           alt="Ceramic coating application for long-lasting vehicle protection"
           title="Ceramic Coating"
-          description="Hydrophobic ceramic layers that repel dirt, UV, and Colorado road grime for years of gloss."
+          description="Hydrophobic ceramic layers that repel dirt, UV, and Colorado road grime."
           badge="Long-lasting"
-          tags={['5+ year gloss', 'UV protection']}
+          tags={['5+ year gloss']}
+          compact={true}
         />
-      </div>
-    </div>
-  </section>
-
-  <!-- Specialty Services -->
-  <section class="ca-glass-section ca-glass-section--alt">
-    <div class="ca-glass-section__inner">
-      <div class="ca-glass-section__header">
-        <span class="ca-glass-section__eyebrow">Specialty Services</span>
-        <h2 class="ca-glass-section__title">Protection &amp; Window Tint</h2>
-        <p class="ca-glass-section__subtitle">
-          From XPEL paint protection to automotive, home, and commercial tint across the Western Slope.
-        </p>
-      </div>
-      <div class="ca-glass-grid ca-glass-grid--specialty">
         <ServiceGlassCard
           href="/services/paint-protection-film"
           image="/images/Paint Protection Film.jpg"
           alt="XPEL paint protection film installation on vehicle hood"
           title="Paint Protection Film"
-          description="Invisible XPEL film that stops rock chips, scratches, and road debris."
+          description="Clear XPEL film that stops rock chips, scratches, and road debris."
           badge="XPEL"
           tags={['Self-healing']}
           compact={true}
@@ -127,13 +114,13 @@ import '../styles/service-page-glass.css';
           image="/images/window tint.jpg"
           alt="Professional automotive window tinting service"
           title="Automotive Window Tint"
-          description="Premium heat rejection and clarity built for Colorado sun and daily driving."
+          description="XPEL PRIME ceramic tint for heat rejection, UV block, and Colorado compliance."
           badge="Prime XR"
           tags={['Lifetime warranty']}
           compact={true}
         />
         <ServiceGlassCard
-          href="/ads/home-window-tint"
+          href="/services/home-window-tint"
           image="/images/homewindowtint.jpg"
           alt="Home window tinting for UV and heat reduction"
           title="Home Window Tint"
@@ -142,12 +129,21 @@ import '../styles/service-page-glass.css';
           compact={true}
         />
         <ServiceGlassCard
-          href="/ads/office-window-tint"
+          href="/services/office-window-tint"
           image="/images/officewindowtint.jpg"
           alt="Office and commercial window tinting for privacy and energy savings"
           title="Office / Commercial Tint"
-          description="Privacy, comfort, and energy savings for offices, storefronts, and commercial spaces."
-          tags={['Commercial', 'Privacy']}
+          description="Privacy, comfort, and energy savings for offices and storefronts."
+          tags={['Commercial']}
+          compact={true}
+        />
+        <ServiceGlassCard
+          href="/services/color-ppf"
+          image="/images/colorppf.jpg"
+          alt="Color paint protection film wrap by ColorAuto"
+          title="Color PPF"
+          description="Custom color-change PPF when you want a new look plus chip protection — ask about availability."
+          tags={['Custom color']}
           compact={true}
         />
       </div>

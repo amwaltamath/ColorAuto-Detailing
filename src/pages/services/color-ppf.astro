@@ -3,7 +3,6 @@ import PublicLayout from '../../layouts/PublicLayout.astro';
 import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 import ServicePageHero from '../../components/common/ServicePageHero.astro';
 import '../../styles/service-page-glass.css';
-import ColorPPFVisualizer from '../../components/features/ColorPPFVisualizer';
 ---
 
 <PublicLayout
@@ -208,17 +207,6 @@ import ColorPPFVisualizer from '../../components/features/ColorPPFVisualizer';
       updateImageAndColor();
     });
   </script>
-
-  <!-- Try It On Your Car Visualizer -->
-  <section class="ca-service-page py-16">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="text-center mb-10">
-        <h2 class="text-3xl md:text-4xl font-bold mb-3">See It On <span class="bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">Your Car</span></h2>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">Upload a photo of your vehicle and preview different Color PPF options to find your perfect match.</p>
-      </div>
-      <ColorPPFVisualizer client:load />
-    </div>
-  </section>
 
   <section class="ca-service-page"><div class="ca-service-page__inner max-w-7xl mx-auto px-4 py-12">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
