@@ -1,0 +1,117 @@
+---
+interface Props {
+  theme?: 'glass' | 'light';
+}
+
+const { theme = 'glass' } = Astro.props;
+---
+
+<div class:list={['ca-pricing', theme === 'light' && 'ca-pricing--light']}>
+  <div class="ca-pricing__block">
+    <h3 class="ca-pricing__heading">Detail Packages</h3>
+    <div class="ca-pricing__scroll">
+      <table class="ca-pricing__table">
+        <thead>
+          <tr>
+            <th scope="col">Service</th>
+            <th scope="col">
+              Small
+              <span class="ca-pricing__col-hint">Two-door vehicles</span>
+            </th>
+            <th scope="col">
+              Medium
+              <span class="ca-pricing__col-hint">Four-door vehicles</span>
+            </th>
+            <th scope="col">
+              Large
+              <span class="ca-pricing__col-hint">3rd row seating</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Full Detail <span class="ca-pricing__row-hint">Interior + exterior + engine bay</span></th>
+            <td>$325</td>
+            <td>$375</td>
+            <td>$425</td>
+          </tr>
+          <tr>
+            <th scope="row">Interior Detail</th>
+            <td>$175</td>
+            <td>$225</td>
+            <td>$250</td>
+          </tr>
+          <tr>
+            <th scope="row">Exterior Detail</th>
+            <td>$175</td>
+            <td>$225</td>
+            <td>$250</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="ca-pricing__block">
+    <h3 class="ca-pricing__heading">Maintenance Detail</h3>
+    <p class="ca-pricing__intro">
+      Vacuum, interior wipe-down, hand wash, wheels, windows, door jams, and spray wax.
+    </p>
+    <div class="ca-pricing__scroll">
+      <table class="ca-pricing__table">
+        <thead>
+          <tr>
+            <th scope="col">Service</th>
+            <th scope="col">
+              Small
+              <span class="ca-pricing__col-hint">Two-door vehicles</span>
+            </th>
+            <th scope="col">
+              Medium
+              <span class="ca-pricing__col-hint">Four-door vehicles</span>
+            </th>
+            <th scope="col">
+              Large
+              <span class="ca-pricing__col-hint">3rd row seating</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Maintenance Detail</th>
+            <td>$100</td>
+            <td>$150</td>
+            <td>$200</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="ca-pricing__block">
+    <h3 class="ca-pricing__heading">Wash Only / Vacuum &amp; Wipe Down</h3>
+    <div class="ca-pricing__scroll">
+      <table class="ca-pricing__table ca-pricing__table--compact">
+        <thead>
+          <tr>
+            <th scope="col">Service</th>
+            <th scope="col">Two-door vehicles</th>
+            <th scope="col">Four-door vehicles</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Wash Only</th>
+            <td>$50</td>
+            <td>$75</td>
+          </tr>
+          <tr>
+            <th scope="row">Vacuum &amp; Wipe Down Only</th>
+            <td>$50</td>
+            <td>$75</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

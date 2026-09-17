@@ -471,3 +471,126 @@ nav[aria-label='Breadcrumb']:has(+ .ca-hero-split--service) svg {
     text-align: center;
   }
 }
+
+/* Detailing price tables (service page + ads) */
+.ca-pricing {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.ca-pricing__block {
+  padding: 1.25rem 1.35rem;
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+}
+
+.ca-pricing__heading {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #f8fafc;
+  margin-bottom: 0.65rem;
+}
+
+.ca-pricing__intro {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: rgba(226, 232, 240, 0.88);
+  margin-bottom: 0.85rem;
+}
+
+.ca-pricing__scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ca-pricing__table {
+  width: 100%;
+  min-width: 32rem;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.ca-pricing__table th,
+.ca-pricing__table td {
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  vertical-align: top;
+}
+
+.ca-pricing__table thead th {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(191, 219, 254, 0.95);
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.ca-pricing__table tbody th[scope='row'] {
+  font-weight: 600;
+  color: #f1f5f9;
+  max-width: 14rem;
+}
+
+.ca-pricing__table tbody td {
+  font-weight: 700;
+  color: #93c5fd;
+  white-space: nowrap;
+}
+
+.ca-pricing__col-hint,
+.ca-pricing__row-hint {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: normal;
+  color: rgba(203, 213, 225, 0.75);
+  margin-top: 0.2rem;
+  line-height: 1.35;
+}
+
+.ca-pricing__row-hint {
+  margin-top: 0.35rem;
+}
+
+.ca-pricing--light .ca-pricing__block {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.ca-pricing--light .ca-pricing__heading {
+  color: #111827;
+}
+
+.ca-pricing--light .ca-pricing__intro {
+  color: #4b5563;
+}
+
+.ca-pricing--light .ca-pricing__table th,
+.ca-pricing--light .ca-pricing__table td {
+  border-bottom-color: #e5e7eb;
+}
+
+.ca-pricing--light .ca-pricing__table thead th {
+  color: #374151;
+  background: #f9fafb;
+}
+
+.ca-pricing--light .ca-pricing__table tbody th[scope='row'] {
+  color: #1f2937;
+}
+
+.ca-pricing--light .ca-pricing__table tbody td {
+  color: #1d4ed8;
+}
+
+.ca-pricing--light .ca-pricing__col-hint,
+.ca-pricing--light .ca-pricing__row-hint {
+  color: #6b7280;
+}

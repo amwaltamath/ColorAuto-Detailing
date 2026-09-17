@@ -1,6 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import QuoteModal from '../../components/features/QuoteModal';
+import DetailingPricingTables from '../../components/common/DetailingPricingTables.astro';
+import '../../styles/service-page-glass.css';
 
 const title = "Professional Auto Detailing | ColorAuto Detailing";
 const description = "Expert auto detailing services in Grand Junction. Hand wash, interior cleaning, exterior protection. Book your appointment now!";
@@ -208,37 +210,40 @@ const keywords = ['auto detailing', 'car detailing', 'professional detailing', '
     </div>
   </section>
 
-  <!-- Other Services -->
+  <!-- Pricing -->
   <section class="bg-white py-16">
     <div class="max-w-6xl mx-auto px-4">
-      <h2 class="text-4xl font-bold text-center mb-12">Other Services</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="bg-gray-50 rounded-lg shadow p-8 border border-gray-200">
-          <div class="flex items-baseline justify-between mb-4">
-            <h3 class="text-2xl font-bold">Hand Wash</h3>
-            <span class="text-xl font-semibold text-blue-700">$45+</span>
+      <h2 class="text-4xl font-bold text-center mb-4">Detailing Prices</h2>
+      <p class="text-center text-gray-600 mb-10 max-w-2xl mx-auto">Transparent pricing by vehicle size. Full detail includes interior, exterior, and engine bay.</p>
+      <DetailingPricingTables theme="light" />
+    </div>
+  </section>
+
+  <!-- Quick options -->
+  <section class="bg-gray-50 py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-12">Quick Service Options</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-lg shadow p-8 border border-gray-200">
+          <div class="flex items-baseline justify-between mb-4 gap-2 flex-wrap">
+            <h3 class="text-2xl font-bold">Wash Only</h3>
+            <span class="text-lg font-semibold text-blue-700">$50 / $75</span>
           </div>
-          <p class="text-gray-600 mb-4">Premium hand wash with pH-balanced care</p>
-          <ul class="space-y-2 text-gray-700">
-            <li class="flex items-start"><span class="text-green-600 mr-2">•</span><span>Premium hand wash with pH-balanced soap</span></li>
-            <li class="flex items-start"><span class="text-green-600 mr-2">•</span><span>Wheels cleaned</span></li>
-            <li class="flex items-start"><span class="text-green-600 mr-2">•</span><span>Exterior windows</span></li>
-            <li class="flex items-start"><span class="text-green-600 mr-2">•</span><span>Towel and compressed air dried</span></li>
-          </ul>
+          <p class="text-gray-600 text-sm">Two-door $50 · Four-door $75</p>
         </div>
-        <div class="bg-gray-50 rounded-lg shadow p-8 border border-gray-200">
-          <div class="flex items-baseline justify-between mb-4">
-            <h3 class="text-2xl font-bold">Maintenance Detail</h3>
-            <span class="text-xl font-semibold text-blue-700">$125+</span>
+        <div class="bg-white rounded-lg shadow p-8 border border-gray-200">
+          <div class="flex items-baseline justify-between mb-4 gap-2 flex-wrap">
+            <h3 class="text-2xl font-bold">Vacuum &amp; Wipe Down</h3>
+            <span class="text-lg font-semibold text-blue-700">$50 / $75</span>
           </div>
-          <p class="text-gray-600 mb-4">Everything in Hand Wash plus added protection and interior care</p>
-          <ul class="space-y-2 text-gray-700">
-            <li class="flex items-start"><span class="text-green-600 mr-2">•</span><span>Everything in the Hand Wash</span></li>
-            <li class="flex items-start"><span class="text-green-600 mr-2">•</span><span>Spray wax</span></li>
-            <li class="flex items-start"><span class="text-green-600 mr-2">•</span><span>Vacuum carpets, seats, and floor mats</span></li>
-            <li class="flex items-start"><span class="text-green-600 mr-2">•</span><span>Wipe down and dust interior plastic trim</span></li>
-            <li class="flex items-start"><span class="text-green-600 mr-2">•</span><span>Interior windows</span></li>
-          </ul>
+          <p class="text-gray-600 text-sm">Two-door $50 · Four-door $75</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-8 border border-gray-200">
+          <div class="flex items-baseline justify-between mb-4 gap-2 flex-wrap">
+            <h3 class="text-2xl font-bold">Maintenance Detail</h3>
+            <span class="text-lg font-semibold text-blue-700">$100–$200</span>
+          </div>
+          <p class="text-gray-600 text-sm">Small $100 · Medium $150 · Large $200</p>
         </div>
       </div>
     </div>
