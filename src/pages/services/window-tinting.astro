@@ -12,6 +12,14 @@ const faqSchema = {
   "mainEntity": [
     {
       "@type": "Question",
+      "name": "Where can I get window tinting near me in Grand Junction?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ColorAuto Detailing at 562 S Westgate Drive, Grand Junction, CO 81505 is a local window tint shop serving Grand Junction, Fruita, Clifton, Palisade, and Mesa County. We install XPEL PRIME automotive, home, and office film with same-week scheduling. Call 970-628-1505 or request a quote online."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "Is window tinting legal in Colorado?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -89,18 +97,20 @@ const tintPosts = [
 ---
 
 <PublicLayout
-  title="Grand Junction Window Tinting | Automotive, Home & Office | ColorAuto"
-  description="#1 Grand Junction window tinting for cars, homes, and offices. Professional installation, UV protection, heat reduction, and privacy. Lifetime warranty. Get a free quote!"
+  title="Window Tinting Near Me | Grand Junction, CO | ColorAuto"
+  description="Window tinting near me in Grand Junction — ColorAuto at 562 S Westgate Dr installs XPEL automotive, home & office tint. UV block, heat rejection, lifetime warranty. Call 970-628-1505."
   keywords={[
+    'window tinting near me',
+    'window tint near me',
+    'window tinting near me Grand Junction',
+    'car window tinting near me',
     'Grand Junction window tinting',
-    'window tinting Grand Junction',
-    'car window tint',
+    'window tinting Grand Junction CO',
+    'auto window tint Grand Junction',
     'home window tint',
     'office window tint',
-    'UV protection',
-    'privacy tint',
-    'XPEL PRIME',
-    'tint installer Grand Junction'
+    'XPEL window tint',
+    'ceramic window tint near me'
   ]}
   image="/images/primexr.jpg"
 >
@@ -110,10 +120,10 @@ const tintPosts = [
     { label: 'Window Tinting' }
   ]} />
   <ServicePageHero
-    title="Grand Junction Window Tinting"
-    subtitle="Automotive, home, and office window tinting by certified local experts."
+    title="Window Tinting Near Grand Junction, CO"
+    subtitle="Local XPEL tint for cars, homes, and offices — the shop Western Slope drivers find when they search window tinting near me."
     image="/images/primexr.jpg"
-    imageAlt="Professional automotive window tinting in Grand Junction, CO"
+    imageAlt="Window tinting near me — XPEL install at ColorAuto Detailing in Grand Junction, Colorado"
     badge="Prime XR"
   />
 
@@ -121,9 +131,12 @@ const tintPosts = [
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
       <!-- Left Column -->
       <div>
-        <h2 class="text-3xl font-bold mb-6">Why Choose Our Grand Junction Window Tinting?</h2>
+        <h2 class="text-3xl font-bold mb-6">Window Tinting Near Me — Grand Junction Shop</h2>
         <p class="text-lg text-gray-700 mb-6">
-          Window tinting provides more than just a sleek appearance. Our premium films offer UV protection, heat reduction, glare elimination, and enhanced privacy for your vehicle, home, or office.
+          If you searched for <strong>window tinting near me</strong>, you&apos;re in the right place. ColorAuto is at 562 S Westgate Drive in Grand Junction — not a national chain, but your local XPEL installer for automotive, residential, and commercial tint across Mesa County.
+        </p>
+        <p class="text-lg text-gray-700 mb-6">
+          Our premium films add UV protection, heat rejection, glare control, and privacy for your vehicle, home, or office — with lifetime warranty options on XPEL PRIME automotive film.
         </p>
 
         <h3 class="text-2xl font-bold mb-4 text-blue-600">Key Benefits</h3>
@@ -398,11 +411,40 @@ const tintPosts = [
     </section>
   )}
 
+  <!-- Service area -->
+  <section class="ca-service-page ca-service-page--strip py-12">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-2xl font-bold mb-4">Areas We Serve</h2>
+      <p class="text-gray-700 mb-6 leading-relaxed">
+        Drivers and property owners throughout the Grand Valley choose us for window tinting near me results — convenient to Horizon Drive, downtown Grand Junction, and I-70 corridor traffic.
+      </p>
+      <p class="text-gray-600 text-sm">
+        Grand Junction · Fruita · Clifton · Palisade · Orchard Mesa · Redlands · Loma · Mack · Mesa County · Western Colorado
+      </p>
+      <p class="mt-6">
+        <a href="/services/auto-window-tinting" class="text-blue-600 font-semibold hover:underline">Automotive window tinting →</a>
+        <span class="text-gray-400 mx-2" aria-hidden="true">|</span>
+        <a href="/services/home-window-tint" class="text-blue-600 font-semibold hover:underline">Home tint →</a>
+        <span class="text-gray-400 mx-2" aria-hidden="true">|</span>
+        <a href="/services/office-window-tint" class="text-blue-600 font-semibold hover:underline">Office tint →</a>
+      </p>
+    </div>
+  </section>
+
   <!-- FAQ Section -->
   <section class="ca-service-page py-16">
     <div class="max-w-3xl mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-10">Window Tint FAQ — Grand Junction, CO</h2>
       <div class="space-y-4" id="faq-list">
+        <div class="border border-gray-200 rounded-lg">
+          <button class="faq-toggle w-full text-left px-6 py-4 font-semibold text-lg flex justify-between items-center cursor-pointer bg-transparent border-0">
+            Where can I get window tinting near me in Grand Junction?
+            <span class="text-blue-600 text-2xl">+</span>
+          </button>
+          <div class="faq-answer px-6 text-gray-600">
+            ColorAuto Detailing at 562 S Westgate Drive, Grand Junction, CO 81505. We&apos;re an XPEL-certified shop with same-week automotive, home, and office tint appointments. Call <a href="tel:970-628-1505" class="text-blue-600 font-semibold hover:underline">970-628-1505</a> or use the booking form on this page.
+          </div>
+        </div>
         <div class="border border-gray-200 rounded-lg">
           <button class="faq-toggle w-full text-left px-6 py-4 font-semibold text-lg flex justify-between items-center cursor-pointer bg-transparent border-0">
             How much does window tinting cost in Grand Junction?
@@ -573,7 +615,7 @@ const tintPosts = [
     "@type": "Service",
     name: "Window Tinting",
     serviceType: "AutoDetailing",
-    description: "#1 Grand Junction window tinting for cars, homes, and offices. Professional installation, UV protection, heat reduction, and privacy. Lifetime warranty.",
+    description: "Window tinting near me in Grand Junction, CO — automotive, home, and office XPEL tint at ColorAuto Detailing, 562 S Westgate Drive.",
     url: "https://colorautodetailing.com/services/window-tinting",
     provider: {
       "@type": "AutoRepair",
@@ -588,10 +630,13 @@ const tintPosts = [
         addressCountry: "US"
       }
     },
-    areaServed: {
-      "@type": "City",
-      name: "Grand Junction"
-    },
+    areaServed: [
+      { "@type": "City", name: "Grand Junction" },
+      { "@type": "City", name: "Fruita" },
+      { "@type": "City", name: "Clifton" },
+      { "@type": "City", name: "Palisade" },
+      { "@type": "AdministrativeArea", name: "Mesa County, Colorado" }
+    ],
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: "5.0",
