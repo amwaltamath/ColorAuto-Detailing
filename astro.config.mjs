@@ -10,6 +10,7 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://colorautodetailing.com',
+  trailingSlash: 'never',
 
   // Enable server output so API routes deploy as Vercel functions
   output: 'server',

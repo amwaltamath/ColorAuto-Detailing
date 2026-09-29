@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 import { getSupabaseBlogPostBySlug } from '../../utils/blogPosts';
+import { SITE_ORIGIN, canonicalUrlForPath } from '../../utils/seo';
 
 const slug = Astro.params.slug || '';
 const dbPost = slug ? await getSupabaseBlogPostBySlug(slug) : null;
@@ -48,7 +49,7 @@ const postData = dbPost
       author: localPost!.data.author,
     };
 
-const siteUrl = 'https://colorautodetailing.com';
+const siteUrl = SITE_ORIGIN;
 
 // Format date
 const formattedDate = postData.publishDate.toLocaleDateString('en-US', {

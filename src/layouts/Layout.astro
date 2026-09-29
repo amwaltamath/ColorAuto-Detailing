@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { ChatWidget } from '../components/features/ChatWidget';
 import { COLORAUTO_KNOWN_REVIEW_COUNT } from '../utils/googlePlaces';
+import { SITE_ORIGIN, canonicalUrlForPath, normalizeCanonicalUrl } from '../utils/seo';
 
 interface Props {
   title: string;
@@ -20,11 +21,12 @@ const GOOGLE_SITE_VERIFICATION = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION
 const RECAPTCHA_SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 const { title, description, keywords = [], canonical, image, noindex = false, hideChat = false, pixelContentName } = Astro.props;
 
-const siteUrl = 'https://colorautodetailing.com';
 const defaultDescription = "ColorAuto Detailing — Auto detailing, paint protection film, ceramic coating, and window tinting in Grand Junction, CO.";
 const pageDescription = description || defaultDescription;
-const canonicalUrl = canonical || new URL(Astro.url.pathname, siteUrl).href;
-const ogImage = image ? new URL(image, siteUrl).href : `${siteUrl}/images/ColorAuto.png`;
+const canonicalUrl = canonical
+  ? normalizeCanonicalUrl(canonical)
+  : canonicalUrlForPath(Astro.url.pathname);
+const ogImage = image ? new URL(image, SITE_ORIGIN).href : `${SITE_ORIGIN}/images/ColorAuto.png`;
 
 const reviewCountOverride = Number(import.meta.env.GOOGLE_REVIEW_COUNT);
 const schemaReviewCount =
@@ -127,10 +129,10 @@ const schemaReviewCount =
       name: "ColorAuto Detailing",
       alternateName: ["Color Auto Detailing", "ColorAuto"],
       description: "Professional auto detailing, paint protection film (PPF), ceramic coating, and window tinting in Grand Junction, CO.",
-      url: "https://colorautodetailing.com",
+      url: SITE_ORIGIN,
       telephone: "970-628-1505",
       email: "admin@colorautodetailing.com",
-      image: "https://colorautodetailing.com/images/ColorAuto.png",
+      image: `${SITE_ORIGIN}/images/ColorAuto.png`,
       priceRange: "$$",
       address: {
         "@type": "PostalAddress",

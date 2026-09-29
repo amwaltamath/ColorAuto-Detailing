@@ -1,6 +1,17 @@
 {
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.colorautodetailing.com" }],
+      "destination": "https://colorautodetailing.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "permanent": true
+    },
+    {
       "source": "/auto-detailing/",
       "destination": "/services/auto-detailing",
       "permanent": true
