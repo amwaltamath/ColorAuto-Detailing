@@ -1,32 +1,37 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import QRCode from 'qrcode';
+import { SITE_ORIGIN } from '../utils/seo';
 
-const siteUrl = 'https://colorautodetailing.com';
+const siteUrl = SITE_ORIGIN;
 const cardUrl = `${siteUrl}/business-card`;
 
-// Generate QR code as data URL (encodes vCard data directly)
 const vcardData = [
   'BEGIN:VCARD',
   'VERSION:3.0',
+  'N:;ColorAuto Detailing;;;',
   'FN:ColorAuto Detailing',
   'ORG:ColorAuto Detailing',
+  'TITLE:Professional Auto Detailing',
   'TEL;TYPE=WORK,VOICE:+19706281505',
   'EMAIL;TYPE=WORK:admin@colorautodetailing.com',
   'ADR;TYPE=WORK:;;562 S Westgate Drive;Grand Junction;CO;81505;USA',
   `URL:${siteUrl}`,
+  'NOTE:Auto Detailing • Paint Correction • PPF • Ceramic Coating • Window Tinting • Color PPF',
   'END:VCARD',
-].join('\n');
+].join('\r\n');
 
-const qrDataUrl = await QRCode.toDataURL(vcardData, {
-  width: 200,
+const qrOptions = {
+  width: 220,
   margin: 2,
-  color: {
-    dark: '#1e293b',
-    light: '#ffffff',
-  },
-  errorCorrectionLevel: 'M',
-});
+  color: { dark: '#1e293b', light: '#ffffff' },
+  errorCorrectionLevel: 'M' as const,
+};
+
+const [qrCardUrl, qrContactUrl] = await Promise.all([
+  QRCode.toDataURL(cardUrl, qrOptions),
+  QRCode.toDataURL(vcardData, qrOptions),
+]);
 ---
 
 <Layout
@@ -59,6 +64,36 @@ const qrDataUrl = await QRCode.toDataURL(vcardData, {
           <h1 class="text-2xl font-bold text-gray-900">ColorAuto Detailing</h1>
           <p class="text-blue-600 font-medium mt-1">Professional Auto Detailing</p>
           <p class="text-gray-500 text-sm mt-1">Grand Junction, Colorado</p>
+
+          <!-- QR codes -->
+          <div class="mt-6 bg-gray-50 rounded-xl p-5 text-left">
+            <p class="text-sm font-semibold text-gray-900 text-center mb-1">Scan with your camera</p>
+            <p class="text-xs text-gray-500 text-center mb-4">Share this card in person — no app required</p>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex flex-col items-center text-center">
+                <img
+                  src={qrCardUrl}
+                  alt="QR code to open ColorAuto digital business card"
+                  class="w-full max-w-[140px] aspect-square rounded-lg border border-gray-200 bg-white p-1"
+                  width="220"
+                  height="220"
+                />
+                <p class="text-xs font-medium text-gray-800 mt-2">Open digital card</p>
+                <p class="text-[11px] text-gray-500 leading-snug mt-0.5">Opens this page on any phone</p>
+              </div>
+              <div class="flex flex-col items-center text-center">
+                <img
+                  src={qrContactUrl}
+                  alt="QR code to save ColorAuto Detailing to contacts"
+                  class="w-full max-w-[140px] aspect-square rounded-lg border border-gray-200 bg-white p-1"
+                  width="220"
+                  height="220"
+                />
+                <p class="text-xs font-medium text-gray-800 mt-2">Save contact</p>
+                <p class="text-[11px] text-gray-500 leading-snug mt-0.5">Adds phone, email &amp; address</p>
+              </div>
+            </div>
+          </div>
 
           <!-- Divider -->
           <div class="my-6 border-t border-gray-200"></div>
@@ -152,18 +187,6 @@ const qrDataUrl = await QRCode.toDataURL(vcardData, {
             <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">Ceramic Coating</span>
             <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">Window Tinting</span>
             <span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">Color PPF</span>
-          </div>
-
-          <!-- QR Code -->
-          <div class="bg-gray-50 rounded-xl p-6 mb-6">
-            <p class="text-sm font-medium text-gray-700 mb-3">Scan to save contact</p>
-            <img
-              src={qrDataUrl}
-              alt="QR code — scan to save ColorAuto Detailing contact"
-              class="w-48 h-48 mx-auto rounded-lg"
-              width="200"
-              height="200"
-            />
           </div>
 
           <!-- Action Buttons -->
