@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getEmployeeUserId } from '../../utils/employeeSession';
 
 export const ProfileSettings = () => {
   const [profile, setProfile] = useState({
@@ -45,7 +46,7 @@ export const ProfileSettings = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-user-id': localStorage.getItem('user_id') || '',
+          'x-user-id': getEmployeeUserId(),
         },
         body: JSON.stringify(profile),
       });

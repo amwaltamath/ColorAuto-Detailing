@@ -187,6 +187,7 @@ const { title, description, keywords, canonical, image, noindex } = Astro.props;
       try {
         localStorage.removeItem('authToken');
         localStorage.removeItem('userRole');
+        localStorage.removeItem('user_id');
       } catch (e) {
         console.error('Failed to clear auth token', e);
       }

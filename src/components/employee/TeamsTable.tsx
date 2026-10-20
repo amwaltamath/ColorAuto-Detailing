@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { getEmployeeUserId } from '../../utils/employeeSession';
 
 interface Team {
   id: string;
@@ -22,7 +23,7 @@ export const TeamsTable = () => {
     const fetchTeams = async () => {
       try {
         const response = await fetch('/api/employee/teams', {
-          headers: { 'x-user-id': localStorage.getItem('user_id') || '' },
+          headers: { 'x-user-id': getEmployeeUserId() },
         });
         const data = await response.json();
         setTeams(data.teams || []);

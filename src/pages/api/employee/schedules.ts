@@ -7,9 +7,9 @@ export const GET: APIRoute = async (context) => {
   }
 
   try {
-    const userId = context.request.headers.get('x-user-id');
+    const userId = (context.request.headers.get('x-user-id') || '').replace(/\r/g, '').trim();
     if (!userId) {
-      return new Response(JSON.stringify({ error: 'User ID required' }), { status: 400 });
+      return new Response(JSON.stringify({ schedules: [] }), { status: 200 });
     }
 
     // Get employee profile

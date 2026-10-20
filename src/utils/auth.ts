@@ -3,6 +3,8 @@
  * Handles token management, session validation, and user authentication flows
  */
 
+import { clearUserSession } from './employeeSession';
+
 interface AuthResponse {
   token: string;
   user: {
@@ -49,6 +51,7 @@ export function getAuthToken(): string | null {
 export function clearAuthToken(): void {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('authToken');
+    clearUserSession();
   }
 }
 

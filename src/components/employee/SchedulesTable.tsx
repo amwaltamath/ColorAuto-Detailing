@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ScheduleModal } from './ScheduleModal';
+import { getEmployeeUserId } from '../../utils/employeeSession';
 
 interface Schedule {
   id: string;
@@ -30,7 +31,7 @@ export const SchedulesTable = () => {
   const fetchSchedules = async () => {
     try {
       const response = await fetch('/api/employee/schedules', {
-        headers: { 'x-user-id': localStorage.getItem('user_id') || '' },
+        headers: { 'x-user-id': getEmployeeUserId() },
       });
       const data = await response.json();
       setSchedules(data.schedules || []);
@@ -68,7 +69,7 @@ export const SchedulesTable = () => {
       const method = selectedSchedule ? 'PUT' : 'POST';
       const response = await fetch('/api/employee/schedules', {
         method,
-        headers: { 'Content-Type': 'application/json', 'x-user-id': localStorage.getItem('user_id') || '' },
+        headers: { 'Content-Type': 'application/json', 'x-user-id': getEmployeeUserId() },
         body: JSON.stringify(formData),
       });
 
@@ -96,7 +97,7 @@ export const SchedulesTable = () => {
     try {
       const response = await fetch('/api/employee/schedules', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'x-user-id': localStorage.getItem('user_id') || '' },
+        headers: { 'Content-Type': 'application/json', 'x-user-id': getEmployeeUserId() },
         body: JSON.stringify({ id: scheduleId, status: newStatus }),
       });
 
@@ -116,7 +117,7 @@ export const SchedulesTable = () => {
     try {
       const response = await fetch(`/api/employee/schedules/${scheduleId}`, {
         method: 'DELETE',
-        headers: { 'x-user-id': localStorage.getItem('user_id') || '' },
+        headers: { 'x-user-id': getEmployeeUserId() },
       });
 
       if (!response.ok) throw new Error('Failed to delete schedule');

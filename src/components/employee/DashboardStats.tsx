@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNativePush } from '../../utils/useNativePush';
+import { getEmployeeUserId } from '../../utils/employeeSession';
 
 interface ScheduleStats {
   today: number;
@@ -22,7 +23,7 @@ export const DashboardStats = () => {
     const fetchStats = async () => {
       try {
         const response = await fetch('/api/employee/schedules', {
-          headers: { 'x-user-id': localStorage.getItem('user_id') || '' },
+          headers: { 'x-user-id': getEmployeeUserId() },
         });
         const data = await response.json();
         const schedules = data.schedules || [];

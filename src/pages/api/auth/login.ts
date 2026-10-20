@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { sanitizeEnv } from '../../../utils/envSanitize';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -12,8 +13,8 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL ?? process.env.PUBLIC_SUPABASE_URL;
-    const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? process.env.PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseUrl = sanitizeEnv(import.meta.env.PUBLIC_SUPABASE_URL ?? process.env.PUBLIC_SUPABASE_URL);
+    const supabaseAnonKey = sanitizeEnv(import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? process.env.PUBLIC_SUPABASE_ANON_KEY);
 
     if (!supabaseUrl || !supabaseAnonKey) {
       return new Response(JSON.stringify({ error: 'Auth service not configured' }), {
@@ -41,7 +42,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     // For employee login, verify role using admin API (fresh metadata, not cached JWT)
     if (requestedRole === 'employee') {
-      const serviceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
+      const serviceKey = sanitizeEnv(import.meta.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY);
       if (serviceKey) {
         const adminSupabase = createClient(supabaseUrl, serviceKey);
         const { data: adminData } = await adminSupabase.auth.admin.getUserById(user.id);
