@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { LeadModal } from './LeadModal';
 import { LeadDetailPanel } from './LeadDetailPanel';
+import { LeadsImportModal } from './LeadsImportModal';
 
 export interface Lead {
   id: string;
@@ -91,6 +92,7 @@ export function LeadsTable() {
   const [sourceFilter, setSourceFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | undefined>();
   const [detailLead, setDetailLead] = useState<Lead | undefined>();
 
@@ -279,6 +281,13 @@ export function LeadsTable() {
           ))}
         </select>
         <button
+          type="button"
+          onClick={() => setImportOpen(true)}
+          className="px-4 py-2 bg-white border border-gray-300 text-gray-800 rounded-lg hover:bg-gray-50 transition text-sm font-medium whitespace-nowrap"
+        >
+          Import CSV
+        </button>
+        <button
           onClick={() => { setSelectedLead(undefined); setModalOpen(true); }}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium whitespace-nowrap"
         >
@@ -426,6 +435,12 @@ export function LeadsTable() {
         onClose={() => { setModalOpen(false); setSelectedLead(undefined); }}
         onSave={handleSaveLead}
         lead={selectedLead}
+      />
+
+      <LeadsImportModal
+        isOpen={importOpen}
+        onClose={() => setImportOpen(false)}
+        onComplete={() => fetchLeads()}
       />
     </div>
   );

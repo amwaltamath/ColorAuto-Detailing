@@ -85,6 +85,59 @@ https://colorautodetailing.com/ads/[SERVICE]?utm_source=facebook&utm_medium=paid
 - Auto Detailing: `https://colorautodetailing.com/ads/auto-detailing?utm_source=facebook&utm_medium=paid_social&utm_campaign=ColorAuto+Premier+Leads+2026&utm_content=auto-detailing`
 - Color PPF: `https://colorautodetailing.com/ads/color-ppf?utm_source=facebook&utm_medium=paid_social&utm_campaign=ColorAuto+Premier+Leads+2026&utm_content=color-ppf`
 
+### Meta Instant Forms → Employee dashboard
+
+Instant Form submissions can flow into **Employee dashboard → Leads** (same Supabase table as website quotes).
+
+**Production webhook URL:**
+
+```
+https://colorautodetailing.com/api/webhooks/meta-leads
+```
+
+**Vercel environment variables:**
+
+| Variable | Purpose |
+|----------|---------|
+| `META_WEBHOOK_VERIFY_TOKEN` | Any secret string you choose; must match Meta webhook setup |
+| `META_APP_SECRET` | App → Settings → Basic → App Secret (validates `X-Hub-Signature-256`) |
+| `META_PAGE_ACCESS_TOKEN` | Page token with `leads_retrieval` (fetches name, phone, email from each lead) |
+
+**Supabase (one-time):** run `supabase/meta_leads_migration.sql` in the SQL editor so `leads.external_id` exists (prevents duplicate rows if Meta retries the webhook).
+
+**Meta Developers setup:**
+
+1. [developers.facebook.com](https://developers.facebook.com) → your app (or create **Business** app).
+2. Add product **Webhooks** → **Page** → Subscribe to field **`leadgen`**.
+3. Callback URL: `https://colorautodetailing.com/api/webhooks/meta-leads`  
+   Verify token: same as `META_WEBHOOK_VERIFY_TOKEN` → click **Verify and save**.
+4. **Generate** a **Page access token** for the ColorAuto Facebook Page with:
+   - `leads_retrieval`
+   - `pages_manage_metadata`
+   - `pages_read_engagement`  
+   Paste into `META_PAGE_ACCESS_TOKEN` on Vercel and redeploy.
+5. In **Webhooks → Page**, subscribe your Page to the app (Install app on Page if prompted).
+6. Submit a **test lead** from Ads Manager (Instant Form preview) and confirm a new row in the dashboard with source **Meta Ads**.
+
+Leads are stored with `source: meta_ads`, UTM fields from form/ad IDs, and sync to OrbisX when configured.
+
+**Team alerts (same as contact form):**
+
+- **Email** → `CONTACT_TO_EMAIL` via Resend (`RESEND_API_KEY`, `CONTACT_FROM_EMAIL`)
+- **SMS** → `QUO_SMS_NOTIFY_NUMBER` (personal cell, not the shop line) when `CHAT_SMS_BRIDGE_ENABLED=true` and Quo is configured
+
+Each new Meta lead triggers both (if configured). Email includes a **View in dashboard** button; SMS includes name, phone, service, and the dashboard link.
+
+### Bulk import (Meta CSV export)
+
+**Employee dashboard → Leads → Import CSV**
+
+1. In Meta Ads Manager, open your lead form / leads list and **Download** (CSV).
+2. Upload the file in the dashboard. Rows use Meta columns (`full_name`, `email`, `phone_number`, `id`, `campaign_name`, `ad_name`, `created_time`, custom questions).
+3. Leads with the same Meta **`id`** as an existing row (webhook or prior import) are **skipped** so you can re-import safely.
+
+Run `supabase/meta_leads_migration.sql` once so `external_id` deduplication works.
+
 ### Lead Campaign Specs
 
 **Campaign Objective:** Leads

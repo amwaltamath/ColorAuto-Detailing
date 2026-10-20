@@ -213,6 +213,8 @@ CREATE TABLE IF NOT EXISTS leads (
   utm_term TEXT,
   utm_content TEXT,
   landing_page TEXT,
+  -- External systems (e.g. meta_leadgen:{id} for Meta Instant Forms)
+  external_id TEXT,
   -- Timestamps
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
@@ -232,6 +234,7 @@ CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);
 CREATE INDEX IF NOT EXISTS idx_leads_source ON leads(source);
 CREATE INDEX IF NOT EXISTS idx_leads_created_at ON leads(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_leads_assigned_to ON leads(assigned_to);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_leads_external_id ON leads (external_id) WHERE external_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_lead_notes_lead_id ON lead_notes(lead_id);
 
 ALTER TABLE leads ENABLE ROW LEVEL SECURITY;

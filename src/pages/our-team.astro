@@ -1,5 +1,101 @@
 ---
 import PublicLayout from '../layouts/PublicLayout.astro';
+
+type TeamMember = {
+  name: string;
+  role: string;
+  roleClass: string;
+  image: string;
+  bio: string;
+  tags: { label: string; accent?: boolean; accentClass?: string }[];
+};
+
+const team: TeamMember[] = [
+  {
+    name: 'Paul',
+    role: 'Founder, Owner & Lead Installer',
+    roleClass: 'text-blue-700',
+    image: '/images/team/paul.jpg',
+    bio: 'Founder and owner of ColorAuto Detailing, Paul leads a dedicated team of automotive care professionals committed to excellence in every detail. From expert installers to meticulous detailers, our crew shares a passion for protecting and enhancing your vehicle\'s appearance.',
+    tags: [
+      { label: 'Lead Installer', accent: true, accentClass: 'bg-blue-50 text-blue-700' },
+      { label: 'Owner' },
+      { label: 'CEO' },
+    ],
+  },
+  {
+    name: 'Ashlee',
+    role: 'Window Tint Specialist',
+    roleClass: 'text-emerald-700',
+    image: '/images/team/ashlee.jpg',
+    bio: 'Automotive tint and home and office film installer who leads the team in delivering high-quality, precise installations with a focus on customer satisfaction.',
+    tags: [
+      { label: 'Automotive Tint', accent: true, accentClass: 'bg-emerald-50 text-emerald-700' },
+      { label: 'Home Window Tinting' },
+      { label: 'Office Window Tint' },
+    ],
+  },
+  {
+    name: 'Window Film Team',
+    role: 'Home & Office Window Film',
+    roleClass: 'text-emerald-700',
+    image: '/images/team/window-film-1.jpg',
+    bio: 'Certified installer focused on residential and commercial window film — clean lines, lasting performance, and clear communication from measure to final walkthrough.',
+    tags: [
+      { label: 'Home Tint', accent: true, accentClass: 'bg-emerald-50 text-emerald-700' },
+      { label: 'Office Tint' },
+      { label: 'Film Install' },
+    ],
+  },
+  {
+    name: 'Install & Detail',
+    role: 'Detailing Specialist',
+    roleClass: 'text-gray-800',
+    image: '/images/team/team-4.jpg',
+    bio: 'Hands-on specialist keeping interiors and exteriors dialed in — from thorough cleans to the finishing touches customers notice when they pick up their vehicle.',
+    tags: [
+      { label: 'Interior', accent: true, accentClass: 'bg-gray-100 text-gray-800' },
+      { label: 'Exterior' },
+      { label: 'Finishing' },
+    ],
+  },
+  {
+    name: 'Detailing Team',
+    role: 'Detailing Technician',
+    roleClass: 'text-red-700',
+    image: '/images/team/team-5.jpg',
+    bio: 'Shop-floor technician supporting paint correction, protection installs, and daily detailing workflows with an eye for consistency and quality.',
+    tags: [
+      { label: 'Detailing', accent: true, accentClass: 'bg-red-50 text-red-700' },
+      { label: 'PPF Support' },
+      { label: 'Quality' },
+    ],
+  },
+  {
+    name: 'Evan',
+    role: 'Detailing Technician',
+    roleClass: 'text-red-700',
+    image: '/images/team/evan.jpg',
+    bio: 'Focused on interior/exterior restoration, engine bay care, and meticulous finishing work.',
+    tags: [
+      { label: 'Interior', accent: true, accentClass: 'bg-red-50 text-red-700' },
+      { label: 'Exterior' },
+      { label: 'Finishing' },
+    ],
+  },
+  {
+    name: 'Jacob',
+    role: 'Professional Detailer',
+    roleClass: 'text-blue-700',
+    image: '/images/team/jacob.jpg',
+    bio: 'Detail specialist focused on quality and customer satisfaction.',
+    tags: [
+      { label: 'Quality Check', accent: true, accentClass: 'bg-blue-50 text-blue-700' },
+      { label: 'Paint Correction' },
+      { label: 'Detailer' },
+    ],
+  },
+];
 ---
 
 <PublicLayout
@@ -11,7 +107,7 @@ import PublicLayout from '../layouts/PublicLayout.astro';
     'certified installers',
     'Grand Junction auto shop'
   ]}
-  image="/images/team/team-hero.jpg"
+  image="/images/ourteam.JPG"
 >
   <section class="relative text-white py-70 overflow-hidden">
     <div class="absolute inset-0">
@@ -29,71 +125,37 @@ import PublicLayout from '../layouts/PublicLayout.astro';
     <div class="max-w-6xl mx-auto px-4">
       <h2 class="text-3xl font-bold text-center text-gray-900 mb-10">Meet Our Specialists</h2>
       <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <div class="group rounded-2xl border border-gray-100 bg-gradient-to-b from-white to-gray-50 p-8 shadow-sm hover:shadow-xl transition-all duration-300">
-          <div class="flex items-center gap-4 mb-4">
-            <img src="/images/team/Paul.jpg" alt="Paul — Founder, Owner & Lead Installer" class="h-20 w-20 rounded-2xl object-cover shadow-lg" loading="lazy" />
-            <div>
-              <h3 class="text-xl font-bold text-gray-900">Paul</h3>
-              <p class="text-sm text-blue-700 font-semibold">Founder, Owner & Lead Installer</p>
+        {team.map((member) => (
+          <div class="group rounded-2xl border border-gray-100 bg-gradient-to-b from-white to-gray-50 p-8 shadow-sm hover:shadow-xl transition-all duration-300">
+            <div class="flex items-center gap-4 mb-4">
+              <img
+                src={member.image}
+                alt={`${member.name} — ${member.role}`}
+                class="h-20 w-20 rounded-2xl object-cover object-top shadow-lg"
+                loading="lazy"
+                width="80"
+                height="80"
+              />
+              <div>
+                <h3 class="text-xl font-bold text-gray-900">{member.name}</h3>
+                <p class={`text-sm font-semibold ${member.roleClass}`}>{member.role}</p>
+              </div>
+            </div>
+            <p class="text-gray-600 leading-relaxed">{member.bio}</p>
+            <div class="mt-4 flex flex-wrap gap-2 text-xs text-gray-600">
+              {member.tags.map((tag) => (
+                <span
+                  class:list={[
+                    'px-3 py-1 rounded-full font-semibold',
+                    tag.accent ? tag.accentClass : 'bg-gray-100',
+                  ]}
+                >
+                  {tag.label}
+                </span>
+              ))}
             </div>
           </div>
-          <p class="text-gray-600 leading-relaxed"> Founder and owner of ColorAuto Detailing, Paul leads a dedicated team of automotive care professionals committed to excellence in every detail. From expert installers to meticulous detailers, our crew shares a passion for protecting and enhancing your vehicle's appearance.</p>
-          <div class="mt-4 flex flex-wrap gap-2 text-xs text-gray-600">
-            <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold">Lead Installer</span>
-            <span class="px-3 py-1 rounded-full bg-gray-100">Owner</span>
-            <span class="px-3 py-1 rounded-full bg-gray-100">CEO</span>
-          </div>
-        </div>
-
-        <div class="group rounded-2xl border border-gray-100 bg-gradient-to-b from-white to-gray-50 p-8 shadow-sm hover:shadow-xl transition-all duration-300">
-          <div class="flex items-center gap-4 mb-4">
-            <img src="/images/team/Ashlee.jpg" alt="Ashlee — Window Tint Specialist" class="h-20 w-20 rounded-2xl object-cover shadow-lg" loading="lazy" />
-            <div>
-              <h3 class="text-xl font-bold text-gray-900">Ashlee</h3>
-              <p class="text-sm text-emerald-700 font-semibold">Window Tint Specialist</p>
-            </div>
-          </div>
-          <p class="text-gray-600 leading-relaxed">Automotive Tint/home and office film installer who leads the team in delivering high-quality, precise installations with a focus on customer satisfaction.</p>
-          <div class="mt-4 flex flex-wrap gap-2 text-xs text-gray-600">
-            <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-semibold">Automotive Tint</span>
-            <span class="px-3 py-1 rounded-full bg-gray-100">Home Window Tinting</span>
-            <span class="px-3 py-1 rounded-full bg-gray-100">Office Window Tint</span>
-          </div>
-        </div>
-
-        <!-- New Team Member -->
-        <div class="group rounded-2xl border border-gray-100 bg-gradient-to-b from-white to-gray-50 p-8 shadow-sm hover:shadow-xl transition-all duration-300">
-          <div class="flex items-center gap-4 mb-4">
-            <img src="/images/team/Evan.jpg" alt="Evan — Detailing Technician" class="h-20 w-20 rounded-2xl object-cover shadow-lg" loading="lazy" />
-            <div>
-              <h3 class="text-xl font-bold text-gray-900">Evan</h3>
-              <p class="text-sm text-red-700 font-semibold">Detailing Technician</p>
-            </div>
-          </div>
-          <p class="text-gray-600 leading-relaxed">Focused on interior/exterior restoration, engine bay care, and meticulous finishing work.</p>
-          <div class="mt-4 flex flex-wrap gap-2 text-xs text-gray-600">
-            <span class="px-3 py-1 rounded-full bg-red-50 text-red-700 font-semibold">Interior</span>
-            <span class="px-3 py-1 rounded-full bg-gray-100">Exterior</span>
-            <span class="px-3 py-1 rounded-full bg-gray-100">Finishing</span>
-          </div>
-        </div>
-
-        <!-- New Team Member -->
-        <div class="group rounded-2xl border border-gray-100 bg-gradient-to-b from-white to-gray-50 p-8 shadow-sm hover:shadow-xl transition-all duration-300">
-          <div class="flex items-center gap-4 mb-4">
-            <img src="/images/team/jacob.jpg" alt="Jacob — Customer Experience & QA" class="h-20 w-20 rounded-2xl object-cover shadow-lg" loading="lazy" />
-            <div>
-              <h3 class="text-xl font-bold text-gray-900">Jacob</h3>
-              <p class="text-sm text-blue-700 font-semibold">Professional Detailer</p>
-            </div>
-          </div>
-          <p class="text-gray-600 leading-relaxed">Detail specialist focused on quality and customer satisfaction.</p>
-          <div class="mt-4 flex flex-wrap gap-2 text-xs text-gray-600">
-            <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold">Quality Check</span>
-            <span class="px-3 py-1 rounded-full bg-gray-100">Paint Correction</span>
-            <span class="px-3 py-1 rounded-full bg-gray-100">Detailer</span>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   </section>
