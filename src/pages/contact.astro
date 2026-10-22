@@ -293,7 +293,7 @@ const RECAPTCHA_SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || '';
         const json = await res.json().catch(() => ({}));
 
         if (res.ok && json.ok) {
-          setStatus("Thanks! We received your message.", "text-green-600");
+          setStatus(json.warning || "Thanks! We received your message.", json.warning ? "text-amber-700" : "text-green-600");
           form.reset();
           try { if (window && window.fbq) { window.fbq('track', 'Lead'); } } catch (e) {}
         } else {

@@ -25,9 +25,9 @@ import { BlogManager } from '../../components/employee/BlogManager';
         <h2 class="text-lg md:text-xl font-semibold text-gray-900">Quick Access</h2>
       </div>
       <div class="flex flex-wrap gap-2">
-        <button type="button" class="quick-action-btn" onclick="window.switchTab && window.switchTab('blog-builder')">Open Blog Builder</button>
-        <button type="button" class="quick-action-btn" onclick="window.switchTab && window.switchTab('blog-manager')">Open Blog Manager</button>
-        <button type="button" class="quick-action-btn" onclick="window.switchTab && window.switchTab('seo-guide')">Open SEO Guide</button>
+        <button type="button" class="quick-action-btn" data-quick-tab="blog-builder">Open Blog Builder</button>
+        <button type="button" class="quick-action-btn" data-quick-tab="blog-manager">Open Blog Manager</button>
+        <button type="button" class="quick-action-btn" data-quick-tab="seo-guide">Open SEO Guide</button>
       </div>
     </div>
     
@@ -222,6 +222,13 @@ import { BlogManager } from '../../components/employee/BlogManager';
 
   // Restore last active tab on page load
   document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-quick-tab]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const tab = btn.getAttribute('data-quick-tab');
+        if (tab) dashboardWindow.switchTab?.(tab);
+      });
+    });
+
     const lastTab = localStorage.getItem('activeTab') || 'leads';
     dashboardWindow.switchTab?.(lastTab);
   });

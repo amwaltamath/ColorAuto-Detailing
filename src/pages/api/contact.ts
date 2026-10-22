@@ -1,6 +1,7 @@
 import type { APIContext } from "astro";
 import { supabaseServer } from "../../utils/supabaseServer";
 import { createOrbisxLead } from "../../utils/orbisx";
+import { sanitizeEnv } from "../../utils/envSanitize";
 import {
   getTeamNotifyNumber,
   isQuoSelfSms,
@@ -33,8 +34,19 @@ function isValidEmail(email: string) {
   return /.+@.+\..+/.test(email);
 }
 
+function getResendConfig() {
+  const resendKey = sanitizeEnv(process.env.RESEND_API_KEY);
+  const toRaw = sanitizeEnv(process.env.CONTACT_TO_EMAIL) || "admin@colorautodetailing.com";
+  const toEmails = toRaw
+    .split(",")
+    .map((e) => sanitizeEnv(e) || e.trim())
+    .filter(Boolean);
+  const fromEmail = sanitizeEnv(process.env.CONTACT_FROM_EMAIL) || "no-reply@colorautodetailing.com";
+  return { resendKey, toEmails, fromEmail };
+}
+
 async function verifyRecaptcha(token: string): Promise<boolean> {
-  const secretKey = (process.env.RECAPTCHA_SECRET_KEY || "").trim();
+  const secretKey = sanitizeEnv(process.env.RECAPTCHA_SECRET_KEY) || "";
   if (!secretKey) {
     console.warn("[RECAPTCHA] RECAPTCHA_SECRET_KEY not configured. Skipping verification.");
     return true; // If not configured, allow submission
@@ -173,12 +185,7 @@ export async function POST({ request }: APIContext) {
       });
     }
 
-    const RESEND_API_KEY = (process.env.RESEND_API_KEY || "").trim();
-    const TO_EMAILS = (process.env.CONTACT_TO_EMAIL || "admin@colorautodetailing.com")
-      .split(",")
-      .map((e) => e.trim())
-      .filter(Boolean);
-    const FROM_EMAIL = (process.env.CONTACT_FROM_EMAIL || "no-reply@colorautodetailing.com").trim();
+    const { resendKey: RESEND_API_KEY, toEmails: TO_EMAILS, fromEmail: FROM_EMAIL } = getResendConfig();
 
     // Validate email addresses
     if (!TO_EMAILS.length || TO_EMAILS.some((e) => !isValidEmail(e))) {
@@ -212,6 +219,52 @@ export async function POST({ request }: APIContext) {
         headers: { "content-type": "application/json" },
       });
     }
+
+    const VALID_SOURCES = ['google_ads', 'meta_ads', 'website', 'phone', 'walk_in', 'referral', 'other'];
+    const leadSource = (data.source && VALID_SOURCES.includes(data.source)) ? data.source : 'website';
+
+    let leadSaved = false;
+    if (supabaseServer) {
+      const { error: leadError } = await supabaseServer.from('leads').insert({
+        name,
+        email: email || null,
+        phone: phone || null,
+        source: leadSource,
+        service_interest: service || null,
+        vehicle_info: vehicle || null,
+        message: message || null,
+        status: 'new',
+        utm_source: (data.utm_source || '').trim() || null,
+        utm_medium: (data.utm_medium || '').trim() || null,
+        utm_campaign: (data.utm_campaign || '').trim() || null,
+        utm_term: (data.utm_term || '').trim() || null,
+        utm_content: (data.utm_content || '').trim() || null,
+        landing_page: (data.landing_page || '').trim() || null,
+      });
+      if (leadError) {
+        console.error('[contact] Lead insert failed:', leadError.message);
+      } else {
+        leadSaved = true;
+      }
+    }
+
+    createOrbisxLead({
+      name,
+      email: email || null,
+      phone: phone || null,
+      serviceInterest: service || null,
+      vehicleInfo: vehicle || null,
+      message: message || null,
+      source: leadSource,
+      landingPage: (data.landing_page || '').trim() || null,
+      utmSource: (data.utm_source || '').trim() || null,
+      utmMedium: (data.utm_medium || '').trim() || null,
+      utmCampaign: (data.utm_campaign || '').trim() || null,
+      utmTerm: (data.utm_term || '').trim() || null,
+      utmContent: (data.utm_content || '').trim() || null,
+    }).catch((err) => {
+      console.error('Failed to sync lead to OrbisX:', err);
+    });
 
     const subject = `New Inquiry — ${service || "Contact"} — ${name}`;
 
@@ -358,75 +411,33 @@ export async function POST({ request }: APIContext) {
         resendMsg = errJson.message || "";
       } catch {}
 
-      // Check for common Resend errors
+      let emailError = `Email service error: ${res.status}${resendMsg ? " — " + resendMsg : ""}`;
       if (res.status === 401) {
-        return new Response(JSON.stringify({ ok: false, error: "Email service authentication failed. Please check API key." }), {
-          status: 500,
-          headers: { "content-type": "application/json" },
-        });
-      }
-      if (res.status === 403) {
-        return new Response(JSON.stringify({ ok: false, error: "Email service access denied. Domain may not be verified." }), {
-          status: 500,
-          headers: { "content-type": "application/json" },
-        });
-      }
-      if (res.status === 422) {
-        return new Response(JSON.stringify({ ok: false, error: `Email validation failed: ${resendMsg || "check sender domain is verified in Resend"}` }), {
-          status: 500,
-          headers: { "content-type": "application/json" },
-        });
+        emailError = "Email service authentication failed. Please check API key.";
+      } else if (res.status === 403) {
+        emailError = "Email service access denied. Domain may not be verified.";
+      } else if (res.status === 422) {
+        emailError = `Email validation failed: ${resendMsg || "check sender domain is verified in Resend"}`;
       }
 
-      return new Response(JSON.stringify({ ok: false, error: `Email service error: ${res.status}${resendMsg ? " — " + resendMsg : ""}` }), {
+      if (leadSaved) {
+        console.error("[contact] Email failed but lead was saved:", emailError);
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            leadSaved: true,
+            emailSent: false,
+            warning: "Your message was saved. Our team may take a moment to receive email — call 970-628-1505 if urgent.",
+          }),
+          { status: 200, headers: { "content-type": "application/json" } },
+        );
+      }
+
+      return new Response(JSON.stringify({ ok: false, error: emailError }), {
         status: 500,
         headers: { "content-type": "application/json" },
       });
     }
-
-    // Auto-create lead in database
-    const VALID_SOURCES = ['google_ads', 'meta_ads', 'website', 'phone', 'walk_in', 'referral', 'other'];
-    const leadSource = (data.source && VALID_SOURCES.includes(data.source)) ? data.source : 'website';
-    if (supabaseServer) {
-      try {
-        await supabaseServer.from('leads').insert({
-          name,
-          email: email || null,
-          phone: phone || null,
-          source: leadSource,
-          service_interest: service || null,
-          vehicle_info: vehicle || null,
-          message: message || null,
-          status: 'new',
-          utm_source: (data.utm_source || '').trim() || null,
-          utm_medium: (data.utm_medium || '').trim() || null,
-          utm_campaign: (data.utm_campaign || '').trim() || null,
-          utm_term: (data.utm_term || '').trim() || null,
-          utm_content: (data.utm_content || '').trim() || null,
-          landing_page: (data.landing_page || '').trim() || null,
-        });
-      } catch (leadErr) {
-        console.error('Failed to create lead from contact form:', leadErr);
-      }
-    }
-
-    createOrbisxLead({
-      name,
-      email: email || null,
-      phone: phone || null,
-      serviceInterest: service || null,
-      vehicleInfo: vehicle || null,
-      message: message || null,
-      source: leadSource,
-      landingPage: (data.landing_page || '').trim() || null,
-      utmSource: (data.utm_source || '').trim() || null,
-      utmMedium: (data.utm_medium || '').trim() || null,
-      utmCampaign: (data.utm_campaign || '').trim() || null,
-      utmTerm: (data.utm_term || '').trim() || null,
-      utmContent: (data.utm_content || '').trim() || null,
-    }).catch((err) => {
-      console.error('Failed to sync lead to OrbisX:', err);
-    });
 
     if (phone && isSmsBridgeEnabled()) {
       const externalId = quoExternalIdForPhone(phone, 'website-form');
@@ -457,12 +468,12 @@ export async function POST({ request }: APIContext) {
       }
     }
 
-    return new Response(JSON.stringify({ ok: true }), {
+    return new Response(JSON.stringify({ ok: true, leadSaved, emailSent: true }), {
       status: 200,
       headers: { "content-type": "application/json" },
     });
   } catch (e: any) {
-    console.error(e);
+    console.error("[contact] Unhandled error:", e);
     return new Response(JSON.stringify({ ok: false, error: "Server error" }), {
       status: 500,
       headers: { "content-type": "application/json" },
