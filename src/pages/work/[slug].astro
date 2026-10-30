@@ -2,11 +2,46 @@
 import { getCollection } from 'astro:content';
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
-import { getSupabaseBlogPostBySlug } from '../../utils/blogPosts';
-import { SITE_ORIGIN, canonicalUrlForPath } from '../../utils/seo';
+import { getSupabaseBlogPostBySlug, getSupabaseBlogPosts } from '../../utils/blogPosts';
+import { SITE_ORIGIN } from '../../utils/seo';
+import { renderMarkdown } from '../../utils/renderMarkdown';
+
+const SERVICE_LINKS: Record<string, { href: string; name: string; pitchTitle: string; pitch: string }> = {
+  'window-tint': {
+    href: '/services/window-tinting',
+    name: 'window tinting',
+    pitchTitle: 'Ready for window tint in Grand Junction?',
+    pitch: 'Automotive, home, and office film with a legal shade and a clear quote before we start.',
+  },
+  ppf: {
+    href: '/services/paint-protection-film',
+    name: 'paint protection film',
+    pitchTitle: 'Ready for paint protection film?',
+    pitch: 'Tell us the vehicle and coverage you want. We will quote XPEL film for a Grand Junction install.',
+  },
+  'color-ppf': {
+    href: '/services/color-ppf',
+    name: 'Color PPF',
+    pitchTitle: 'Ready for Color PPF?',
+    pitch: 'Send the vehicle and the look you want. We will quote a color change film install.',
+  },
+  'ceramic-coating': {
+    href: '/services/ceramic-coating',
+    name: 'ceramic coating',
+    pitchTitle: 'Ready for ceramic coating?',
+    pitch: 'Tell us the vehicle size and condition. We will recommend a coating package and quote it.',
+  },
+  detailing: {
+    href: '/services/auto-detailing',
+    name: 'auto detailing',
+    pitchTitle: 'Ready for a detail?',
+    pitch: 'Tell us the vehicle and how you want it to look. We will match a detailing package and quote it.',
+  },
+};
 
 const slug = Astro.params.slug || '';
 const dbPost = slug ? await getSupabaseBlogPostBySlug(slug) : null;
+const allDbPosts = await getSupabaseBlogPosts();
 
 let localPost: (Awaited<ReturnType<typeof getCollection>>)[number] | null = null;
 let Content: ((props: Record<string, any>) => any) | null = null;
@@ -55,11 +90,51 @@ const siteUrl = SITE_ORIGIN;
 const formattedDate = postData.publishDate.toLocaleDateString('en-US', {
   month: 'long',
   day: 'numeric',
-  year: 'numeric'
+  year: 'numeric',
+  timeZone: 'UTC',
 });
 
 // ISO date for structured data
 const isoDate = postData.publishDate.toISOString();
+
+const categoryLabel = postData.category.replace(/-/g, ' ');
+const serviceLink = SERVICE_LINKS[postData.category] ?? {
+  href: '/services',
+  name: 'our services',
+  pitchTitle: 'Ready to book?',
+  pitch: 'Tell us the vehicle and what you want done. We will quote the right service.',
+};
+
+const bodyHtml = dbPost?.bodyMarkdown?.trim() ? renderMarkdown(dbPost.bodyMarkdown) : '';
+
+const sortedOthers = [
+  ...allDbPosts.map((post) => ({
+    slug: post.slug,
+    title: post.title,
+    description: post.description,
+    publishDate: post.publishDate,
+    image: post.image,
+    imageAlt: post.imageAlt,
+    category: post.category,
+  })),
+  ...(await getCollection('blog'))
+    .filter((post) => !allDbPosts.some((db) => db.slug === post.slug))
+    .map((post) => ({
+      slug: post.slug,
+      title: post.data.title,
+      description: post.data.description,
+      publishDate: post.data.publishDate,
+      image: post.data.image,
+      imageAlt: post.data.imageAlt,
+      category: post.data.category,
+    })),
+]
+  .filter((post) => post.slug !== postData.slug)
+  .sort((a, b) => b.publishDate.getTime() - a.publishDate.getTime());
+
+const sameCategory = sortedOthers.filter((post) => post.category === postData.category);
+const relatedPosts = [...sameCategory, ...sortedOthers.filter((post) => post.category !== postData.category)].slice(0, 3);
+const relatedHeading = sameCategory.length > 0 ? `More ${categoryLabel}` : 'Latest posts';
 
 // BlogPosting schema
 const blogPostingSchema = {
@@ -112,56 +187,35 @@ const blogPostingSchema = {
 
   <script type="application/ld+json" set:html={JSON.stringify(blogPostingSchema)} />
 
-  <article class="bg-white">
-    <!-- Hero Image -->
-    <div class="relative h-96 overflow-hidden">
-      <img 
-        src={postData.image} 
+  <article class="bg-slate-50">
+    <header class="relative min-h-[28rem] md:min-h-[34rem] overflow-hidden">
+      <img
+        src={postData.image}
         alt={postData.imageAlt}
-        class="w-full h-full object-cover"
+        class="absolute inset-0 w-full h-full object-cover"
         fetchpriority="high"
       />
-      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-      <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
-        <div class="max-w-4xl mx-auto">
-          <div class="inline-flex items-center gap-2 bg-blue-600 px-4 py-2 rounded-full text-sm font-semibold mb-4 uppercase shadow-lg backdrop-blur-sm bg-opacity-95 border border-blue-500">
-            <span class="w-2 h-2 rounded-full bg-white"></span>
-            {postData.category.replace('-', ' ')}
-          </div>
-          <h1 class="text-4xl md:text-5xl font-bold mb-3 drop-shadow-lg leading-tight">{postData.title}</h1>
-          <div class="flex flex-wrap items-center gap-6 text-sm text-gray-200">
-            <div class="flex items-center gap-2">
-              <span>📅</span>
-              <time>{formattedDate}</time>
-            </div>
-            <span class="text-gray-400">•</span>
-            <div class="flex items-center gap-2">
-              <span>📍</span>
-              <span>{postData.location}</span>
-            </div>
-            <span class="text-gray-400">•</span>
-            <div class="flex items-center gap-2">
-              <span>✍️</span>
-              <span>{postData.author}</span>
-            </div>
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/20"></div>
+      <div class="relative z-10 flex min-h-[28rem] md:min-h-[34rem] items-end">
+        <div class="max-w-6xl mx-auto px-4 pb-16 md:pb-20 w-full text-white">
+          <p class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-200 mb-4">{categoryLabel}</p>
+          <h1 class="text-3xl md:text-5xl font-bold leading-tight max-w-4xl">{postData.title}</h1>
+          <p class="mt-4 max-w-2xl text-base md:text-lg text-slate-200">{postData.description}</p>
+          <div class="mt-6 flex flex-wrap gap-3 text-sm">
+            <time class="rounded-full bg-white/10 px-3 py-1 backdrop-blur">{formattedDate}</time>
+            <span class="rounded-full bg-white/10 px-3 py-1 backdrop-blur">{postData.location}</span>
+            <span class="rounded-full bg-white/10 px-3 py-1 backdrop-blur">{postData.author}</span>
           </div>
         </div>
       </div>
-    </div>
+    </header>
 
-    <!-- Article Content -->
-    <div class="max-w-4xl mx-auto px-4 py-16">
-      <div class="prose prose-lg max-w-none 
-        prose-headings:font-bold prose-headings:text-gray-900
-        prose-h1:text-4xl prose-h1:mt-12 prose-h1:mb-6 prose-h1:leading-tight
-        prose-h2:text-3xl prose-h2:mt-10 prose-h2:mb-5 prose-h2:pt-4 prose-h2:border-t prose-h2:border-gray-200
-        prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-blue-900
-        prose-p:text-gray-700 prose-p:leading-relaxed prose-p:text-base
-        prose-ul:my-8 prose-ul:ml-0 prose-li:pl-8 prose-li:my-3 prose-li:text-gray-700
-        prose-li:relative prose-li:before:absolute prose-li:before:left-0 prose-li:before:content-['▸'] prose-li:before:text-blue-600 prose-li:before:font-bold
-        prose-strong:text-gray-900 prose-strong:font-bold
-        prose-em:text-gray-800 prose-em:italic">
-        {dbPost ? (
+    <div class="max-w-6xl mx-auto px-4 -mt-10 relative z-20 pb-16">
+      <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+      <div class="ca-article bg-white rounded-3xl border border-slate-200 shadow-xl px-6 py-8 md:px-10 md:py-12">
+        {bodyHtml ? (
+          <Fragment set:html={bodyHtml} />
+        ) : dbPost ? (
           <>
             <p>{dbPost.projectSummary}</p>
 
@@ -191,7 +245,6 @@ const blogPostingSchema = {
         ) : (
           Content && <Content />
         )}
-      </div>
 
       {dbPost && dbPost.gallery.length > 0 && (
         <div class="mt-16 pt-12 border-t border-gray-200">
@@ -211,34 +264,137 @@ const blogPostingSchema = {
         </div>
       )}
 
-      <!-- Share & CTA -->
-      <div class="mt-16 pt-12 border-t-2 border-gray-200">
-        <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-10 text-white shadow-2xl">
-          <h3 class="text-3xl font-bold mb-3">Ready for Similar Results?</h3>
-          <p class="text-blue-100 mb-8 text-lg leading-relaxed">Get professional auto detailing, paint protection, and ceramic coating in Grand Junction. Let our experts transform your vehicle.</p>
-          <div class="flex flex-col sm:flex-row gap-4">
-            <a href="/contact" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition duration-300 text-center shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-              Get a Free Quote
-            </a>
-            <a href="tel:970-628-1505" class="bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-900 transition duration-300 text-center border-2 border-white hover:shadow-lg transform hover:-translate-y-1">
-              Call: 970-628-1505
-            </a>
+        <div class="ca-article-cta mt-12 rounded-2xl bg-slate-950 p-8">
+          <h2>{serviceLink.pitchTitle}</h2>
+          <p>{serviceLink.pitch}</p>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <a href="/contact" class="ca-article-cta__primary">Get a free quote</a>
+            <a href={serviceLink.href} class="ca-article-cta__secondary">View {serviceLink.name}</a>
           </div>
         </div>
       </div>
 
-      <!-- Back to Gallery -->
-      <div class="mt-12 text-center pb-4">
-        <a href="/our-work" class="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700 transition duration-300 group">
-          <span class="mr-2 transform group-hover:-translate-x-1 transition duration-300">←</span>
-          Back to Our Work
-        </a>
+      <aside class="space-y-6 lg:sticky lg:top-24">
+        <div class="rounded-3xl bg-blue-700 text-white p-6 shadow-lg">
+          <p class="text-xs uppercase tracking-wide text-blue-100">Grand Junction shop</p>
+          <h2 class="text-xl font-bold mt-2">Book {serviceLink.name}</h2>
+          <p class="text-sm text-blue-100 mt-2">562 S Westgate Drive. Same-week appointments are often open.</p>
+          <a href={serviceLink.href} class="mt-5 inline-flex w-full justify-center rounded-lg bg-white text-blue-800 font-semibold px-4 py-3">See {serviceLink.name}</a>
+        </div>
+        {relatedPosts.length > 0 && (
+          <div class="rounded-3xl bg-white border border-slate-200 p-5 shadow-sm">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">{relatedHeading}</h2>
+            <div class="mt-4 space-y-4">
+              {relatedPosts.map((post) => (
+                <a href={`/work/${post.slug}`} class="flex gap-3 group">
+                  <img src={post.image} alt={post.imageAlt} class="h-16 w-16 rounded-xl object-cover shrink-0" />
+                  <span>
+                    <time class="text-xs text-slate-400">{post.publishDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}</time>
+                    <span class="block text-sm font-semibold text-slate-900 group-hover:text-blue-700 leading-snug">{post.title}</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        <a href="/work" class="block text-sm font-semibold text-blue-700 hover:underline">All projects</a>
+      </aside>
       </div>
     </div>
   </article>
 </PublicLayout>
 
 <style>
+  .ca-article :global(.ca-article-cta h2) {
+    color: #ffffff;
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem;
+  }
+  .ca-article :global(.ca-article-cta p) {
+    color: #e2e8f0;
+    font-size: 1rem;
+    margin: 0 0 1.25rem;
+  }
+  .ca-article :global(.ca-article-cta a) {
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    justify-content: center;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+  }
+  .ca-article :global(.ca-article-cta__primary) {
+    background: #ffffff;
+    color: #0f172a;
+  }
+  .ca-article :global(.ca-article-cta__secondary) {
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+  }
+  .ca-article :global(h2) {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 2.5rem 0 0.85rem;
+    letter-spacing: -0.02em;
+  }
+  .ca-article :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin: 1.75rem 0 0.6rem;
+  }
+  .ca-article :global(p) {
+    color: #334155;
+    line-height: 1.75;
+    margin: 0.9rem 0;
+    font-size: 1.05rem;
+  }
+  .ca-article :global(ul),
+  .ca-article :global(ol) {
+    margin: 1rem 0 1.25rem;
+    padding-left: 1.25rem;
+    color: #334155;
+  }
+  .ca-article :global(li) {
+    margin: 0.4rem 0;
+    line-height: 1.6;
+  }
+  .ca-article :global(a) {
+    color: #1d4ed8;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .ca-article :global(strong) {
+    color: #0f172a;
+  }
+  .ca-article :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0 1.75rem;
+    font-size: 0.95rem;
+    overflow: hidden;
+    border-radius: 0.75rem;
+  }
+  .ca-article :global(th) {
+    background: #0f172a;
+    color: white;
+    text-align: left;
+    padding: 0.75rem 1rem;
+  }
+  .ca-article :global(td) {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0.75rem 1rem;
+    color: #334155;
+  }
+  .ca-article :global(tr:nth-child(even) td) {
+    background: #f8fafc;
+  }
+  .ca-article :global(img) {
+    border-radius: 1rem;
+    margin: 1.5rem 0;
+  }
   .prose img {
     border-radius: 0.75rem;
     box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.15);

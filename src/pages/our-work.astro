@@ -38,7 +38,9 @@ const mergedFeaturedPosts = [
     })),
 ]
   .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
-  .slice(0, 3);
+  .slice(0, 4);
+const latestFeatured = mergedFeaturedPosts[0];
+const moreFeatured = mergedFeaturedPosts.slice(1, 4);
 ---
 
 <PublicLayout
@@ -110,7 +112,20 @@ const mergedFeaturedPosts = [
       </div>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {mergedFeaturedPosts.map((post) => (
+        {latestFeatured && (
+          <article class="md:col-span-2 lg:col-span-3 bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition group">
+            <a href={`/work/${latestFeatured.slug}`} class="grid md:grid-cols-2">
+              <img src={latestFeatured.data.image} alt={latestFeatured.data.imageAlt} class="w-full h-72 md:h-full object-cover" />
+              <div class="p-8 flex flex-col justify-center">
+                <p class="text-xs font-semibold uppercase tracking-wide text-blue-600 mb-3">Latest · {latestFeatured.data.publishDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}</p>
+                <h3 class="text-3xl font-bold mb-3 group-hover:text-blue-600 transition">{latestFeatured.data.title}</h3>
+                <p class="text-gray-600 mb-6">{latestFeatured.data.description}</p>
+                <span class="text-blue-600 font-semibold">Read the latest post →</span>
+              </div>
+            </a>
+          </article>
+        )}
+        {moreFeatured.map((post) => (
           <article class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition group">
             <a href={`/work/${post.slug}`}>
               <div class="overflow-hidden">
@@ -128,7 +143,7 @@ const mergedFeaturedPosts = [
                   </span>
                   <span class="text-xs text-gray-400">•</span>
                   <time class="text-xs text-gray-500">
-                    {post.data.publishDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    {post.data.publishDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}
                   </time>
                 </div>
                 <h3 class="text-xl font-bold mb-2 group-hover:text-blue-600 transition">
