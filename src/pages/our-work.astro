@@ -3,27 +3,25 @@ import PublicLayout from '../layouts/PublicLayout.astro';
 import { getCollection } from 'astro:content';
 import { getSupabaseBlogPosts } from '../utils/blogPosts';
 
-// Get featured blog posts for Recent Work section
+// Newest post is the featured story. The next three fill the row under it.
 const localPosts = await getCollection('blog');
 const dbPosts = await getSupabaseBlogPosts();
 
-const mergedFeaturedPosts = [
-  ...dbPosts
-    .filter((post) => post.featured)
-    .map((post) => ({
-      slug: post.slug,
-      data: {
-        title: post.title,
-        description: post.description,
-        publishDate: post.publishDate,
-        image: post.image,
-        imageAlt: post.imageAlt,
-        category: post.category,
-        location: post.location,
-      },
-    })),
+const recentPosts = [
+  ...dbPosts.map((post) => ({
+    slug: post.slug,
+    data: {
+      title: post.title,
+      description: post.description,
+      publishDate: post.publishDate,
+      image: post.image,
+      imageAlt: post.imageAlt,
+      category: post.category,
+      location: post.location,
+    },
+  })),
   ...localPosts
-    .filter((post) => post.data.featured && !dbPosts.some((dbPost) => dbPost.slug === post.slug))
+    .filter((post) => !dbPosts.some((dbPost) => dbPost.slug === post.slug))
     .map((post) => ({
       slug: post.slug,
       data: {
@@ -39,8 +37,8 @@ const mergedFeaturedPosts = [
 ]
   .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
   .slice(0, 4);
-const latestFeatured = mergedFeaturedPosts[0];
-const moreFeatured = mergedFeaturedPosts.slice(1, 4);
+const latestFeatured = recentPosts[0];
+const moreFeatured = recentPosts.slice(1, 4);
 ---
 
 <PublicLayout
