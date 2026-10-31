@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 import { supabaseServer } from '../../../utils/supabaseServer';
+import { blogCategoryPreset, type BlogInstallStep } from '../../../utils/blogCategoryPresets';
 
 const VALID_CATEGORIES = new Set([
   'detailing',
@@ -123,8 +124,10 @@ function buildMarkdown(input: {
   ctaLabel: string;
   ctaHref: string;
   phoneNumber: string;
+  installSteps: BlogInstallStep[];
   gallery: Array<{ src: string; alt: string }>;
 }): string {
+  const preset = blogCategoryPreset(input.category);
   const galleryMarkup = input.gallery
     .map(
       (photo) =>
@@ -152,11 +155,7 @@ ${input.servicesList.join('\n')}
 
 ## Installation Process
 
-1. **Consultation and inspection**: Confirmed goals and problem areas.
-2. **Surface preparation**: Decontamination and prep for the selected service.
-3. **Professional installation**: Applied ${input.materialHighlight} using shop best practices.
-4. **Detail finishing**: Final correction, wipe-down, and finish inspection.
-5. **Delivery walkthrough**: Shared care instructions and maintenance plan.
+${input.installSteps.map((step, index) => `${index + 1}. **${step.title}**: ${step.detail}`).join('\n')}
 
 ## Results
 
@@ -164,7 +163,7 @@ This project is now protected and easier to maintain with a cleaner finish and s
 
 **Location**: ${input.location}  
 **Service Time**: ${input.duration}  
-**Product/Material**: ${input.materialHighlight}
+**${preset.productLabel}**: ${input.materialHighlight}
 
 Ready for similar results? Learn more about our [${input.ctaLabel}](${input.ctaHref}) or [contact us for a quote](/contact). Call **${input.phoneNumber}**.
 
@@ -334,6 +333,7 @@ export const POST: APIRoute = async ({ request }) => {
       ctaLabel,
       ctaHref,
       phoneNumber,
+      installSteps: blogCategoryPreset(category).steps,
       gallery,
     });
 

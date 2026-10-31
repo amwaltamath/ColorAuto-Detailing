@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { blogCategoryPreset } from '../../utils/blogCategoryPresets';
 
 type BlogCategory = 'detailing' | 'ppf' | 'ceramic-coating' | 'window-tint' | 'color-ppf';
 
@@ -31,10 +32,10 @@ export const BlogBuilder: React.FC = () => {
   const [featured, setFeatured] = useState(false);
   const [projectSummary, setProjectSummary] = useState('');
   const [servicesPerformed, setServicesPerformed] = useState('');
-  const [duration, setDuration] = useState('2 days');
-  const [materialHighlight, setMaterialHighlight] = useState('XPEL Ultimate+ PPF');
-  const [ctaLabel, setCtaLabel] = useState('paint protection film services');
-  const [ctaHref, setCtaHref] = useState('/services/paint-protection-film');
+  const [duration, setDuration] = useState(blogCategoryPreset('ppf').duration);
+  const [materialHighlight, setMaterialHighlight] = useState(blogCategoryPreset('ppf').materialHighlight);
+  const [ctaLabel, setCtaLabel] = useState(blogCategoryPreset('ppf').ctaLabel);
+  const [ctaHref, setCtaHref] = useState(blogCategoryPreset('ppf').ctaHref);
   const [phoneNumber, setPhoneNumber] = useState('970-628-1505');
   const [imageAltPrefix, setImageAltPrefix] = useState('Project photo');
   const [photos, setPhotos] = useState<File[]>([]);
@@ -145,7 +146,15 @@ export const BlogBuilder: React.FC = () => {
             <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Category *</span>
             <select
               value={category}
-              onChange={(e) => setCategory(e.target.value as BlogCategory)}
+              onChange={(e) => {
+                const next = e.target.value as BlogCategory;
+                const preset = blogCategoryPreset(next);
+                setCategory(next);
+                setDuration(preset.duration);
+                setMaterialHighlight(preset.materialHighlight);
+                setCtaLabel(preset.ctaLabel);
+                setCtaHref(preset.ctaHref);
+              }}
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             >
               {CATEGORY_OPTIONS.map((option) => (
@@ -155,6 +164,17 @@ export const BlogBuilder: React.FC = () => {
               ))}
             </select>
           </label>
+
+          <div className="md:col-span-2 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Install process for this category</p>
+            <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-gray-700">
+              {blogCategoryPreset(category).steps.map((step) => (
+                <li key={step.title}>
+                  <span className="font-medium text-gray-900">{step.title}.</span> {step.detail}
+                </li>
+              ))}
+            </ol>
+          </div>
 
           <label className="block md:col-span-2">
             <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Description *</span>

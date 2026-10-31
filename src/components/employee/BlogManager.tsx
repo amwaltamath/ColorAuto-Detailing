@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { blogCategoryPreset } from '../../utils/blogCategoryPresets';
 
 type BlogCategory = 'detailing' | 'ppf' | 'ceramic-coating' | 'window-tint' | 'color-ppf';
 
@@ -331,12 +332,34 @@ export const BlogManager: React.FC = () => {
                     </label>
                     <label className="block">
                       <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Category</span>
-                      <select value={editor.category} onChange={(e) => setEditor((prev) => ({ ...prev, category: e.target.value as BlogCategory }))} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                      <select value={editor.category} onChange={(e) => {
+                        const next = e.target.value as BlogCategory;
+                        const preset = blogCategoryPreset(next);
+                        setEditor((prev) => ({
+                          ...prev,
+                          category: next,
+                          duration: preset.duration,
+                          materialHighlight: preset.materialHighlight,
+                          ctaLabel: preset.ctaLabel,
+                          ctaHref: preset.ctaHref,
+                        }));
+                      }} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
                         {CATEGORY_OPTIONS.map((option) => (
                           <option key={option.value} value={option.value}>{option.label}</option>
                         ))}
                       </select>
                     </label>
+                  </div>
+
+                  <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Install process for this category</p>
+                    <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-gray-700">
+                      {blogCategoryPreset(editor.category).steps.map((step) => (
+                        <li key={step.title}>
+                          <span className="font-medium text-gray-900">{step.title}.</span> {step.detail}
+                        </li>
+                      ))}
+                    </ol>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -5,6 +5,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 import { getSupabaseBlogPostBySlug, getSupabaseBlogPosts } from '../../utils/blogPosts';
 import { SITE_ORIGIN } from '../../utils/seo';
 import { renderMarkdown } from '../../utils/renderMarkdown';
+import { blogCategoryPreset } from '../../utils/blogCategoryPresets';
 
 const SERVICE_LINKS: Record<string, { href: string; name: string; pitchTitle: string; pitch: string }> = {
   'window-tint': {
@@ -106,6 +107,8 @@ const serviceLink = SERVICE_LINKS[postData.category] ?? {
 };
 
 const bodyHtml = dbPost?.bodyMarkdown?.trim() ? renderMarkdown(dbPost.bodyMarkdown) : '';
+const installPreset = blogCategoryPreset(postData.category);
+const useCategoryInstall = Boolean(dbPost) && (!dbPost?.bodyMarkdown || dbPost.bodyMarkdown.includes('## Installation Process'));
 
 const sortedOthers = [
   ...allDbPosts.map((post) => ({
@@ -213,7 +216,7 @@ const blogPostingSchema = {
     <div class="max-w-6xl mx-auto px-4 -mt-10 relative z-20 pb-16">
       <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
       <div class="ca-article bg-white rounded-3xl border border-slate-200 shadow-xl px-6 py-8 md:px-10 md:py-12">
-        {bodyHtml ? (
+        {bodyHtml && !useCategoryInstall ? (
           <Fragment set:html={bodyHtml} />
         ) : dbPost ? (
           <>
@@ -228,19 +231,17 @@ const blogPostingSchema = {
 
             <h2>Installation Process</h2>
             <ol>
-              <li><strong>Consultation and inspection</strong>: Confirmed goals and problem areas.</li>
-              <li><strong>Surface preparation</strong>: Decontamination and prep for the selected service.</li>
-              <li><strong>Professional installation</strong>: Applied {dbPost.materialHighlight} using shop best practices.</li>
-              <li><strong>Detail finishing</strong>: Final correction, wipe-down, and finish inspection.</li>
-              <li><strong>Delivery walkthrough</strong>: Shared care instructions and maintenance plan.</li>
+              {installPreset.steps.map((step) => (
+                <li><strong>{step.title}</strong>: {step.detail}</li>
+              ))}
             </ol>
 
             <h2>Results</h2>
-            <p>This project is now protected and easier to maintain with a cleaner finish and stronger long-term durability.</p>
+            <p>This {serviceLink.name} project is finished and ready for daily use, with care instructions covered at delivery.</p>
 
-            <p><strong>Location</strong>: {dbPost.location}<br /><strong>Service Time</strong>: {dbPost.duration}<br /><strong>Product/Material</strong>: {dbPost.materialHighlight}</p>
+            <p><strong>Location</strong>: {dbPost.location}<br /><strong>Service Time</strong>: {dbPost.duration}<br /><strong>{installPreset.productLabel}</strong>: {dbPost.materialHighlight}</p>
 
-            <p>Ready for similar results? Learn more about our <a href={dbPost.ctaHref}>{dbPost.ctaLabel}</a> or <a href="/contact">contact us for a quote</a>. Call <strong>{dbPost.phoneNumber}</strong>.</p>
+            <p>Want the same result? See our <a href={dbPost.ctaHref || installPreset.ctaHref}>{dbPost.ctaLabel || installPreset.ctaLabel}</a> or <a href="/contact">request a quote</a>. Call <strong>{dbPost.phoneNumber}</strong>.</p>
           </>
         ) : (
           Content && <Content />
