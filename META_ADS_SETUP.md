@@ -119,7 +119,9 @@ https://colorautodetailing.com/api/webhooks/meta-leads
 5. In **Webhooks → Page**, subscribe your Page to the app (Install app on Page if prompted).
 6. Submit a **test lead** from Ads Manager (Instant Form preview) and confirm a new row in the dashboard with source **Meta Ads**.
 
-Leads are stored with `source: meta_ads`, UTM fields from form/ad IDs, and sync to OrbisX when configured.
+Leads are stored with `source: meta_ads`, UTM fields from form/ad IDs, and sync to OrbisX when `ORBISX_API_KEY` and `ORBISX_BUSINESS_ID` are set. A CSV import of new rows syncs those leads to OrbisX as well.
+
+**Inbound texts:** Quo `message.received` events on `https://colorautodetailing.com/api/quo/webhook` create or update a lead (`source: phone`) and send the text to OrbisX. The first text from a number creates the OrbisX lead. Later texts from that number are appended as notes. Texts from `QUO_SMS_NOTIFY_NUMBER` (the team alert cell) are ignored.
 
 **Team alerts (same as contact form):**
 

@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { supabaseServer } from '../../../utils/supabaseServer';
 import { createOrbisxLead } from '../../../utils/orbisx';
+import { rememberOrbisxLeadId } from '../../../utils/smsLeads';
 import { notifyTeamOfMetaLead } from '../../../utils/leadNotifications';
 import {
   fetchMetaLeadFromGraph,
@@ -147,7 +148,7 @@ export const POST: APIRoute = async ({ request }) => {
       continue;
     }
 
-    createOrbisxLead({
+    const orbis = await createOrbisxLead({
       name: parsed.name,
       email: parsed.email,
       phone: parsed.phone,
@@ -159,9 +160,12 @@ export const POST: APIRoute = async ({ request }) => {
       utmMedium: 'paid_social',
       utmCampaign: parsed.formId ? `form_${parsed.formId}` : null,
       utmContent: parsed.adId || null,
-    }).catch((err) => {
-      console.error('[meta-leads] OrbisX sync failed:', err);
     });
+    if (!orbis.ok) {
+      console.error('[meta-leads] OrbisX sync failed:', orbis.error);
+    } else if (orbis.leadId && lead?.id) {
+      await rememberOrbisxLeadId(lead.id, orbis.leadId);
+    }
 
     notifyTeamOfMetaLead(parsed, lead?.id);
 

@@ -1,6 +1,7 @@
 import type { APIContext } from 'astro';
 import { supabaseServer } from '../../../utils/supabaseServer';
 import { WEB_CHAT_ALERT_PREFIX } from '../../../utils/quo';
+import { ingestInboundSms } from '../../../utils/smsLeads';
 
 /**
  * POST /api/quo/webhook
@@ -59,6 +60,13 @@ export async function POST({ request }: APIContext) {
       });
     }
 
+    const contactName = typeof msg.contact?.name === 'string' ? msg.contact.name : null;
+    try {
+      await ingestInboundSms({ from: fromNumber, text, contactName });
+    } catch (err) {
+      console.error('[quo-webhook] SMS lead sync failed:', err);
+    }
+
     // Look up which chat session is mapped to this phone number
     const { data: bridge } = await supabaseServer
       .from('chat_sms_bridge')
@@ -69,8 +77,8 @@ export async function POST({ request }: APIContext) {
       .single();
 
     if (!bridge?.session_id) {
-      console.warn('[quo-webhook] No session mapped for incoming', fromNumber);
-      return new Response(JSON.stringify({ ok: true, noSession: true }), {
+      console.log('[quo-webhook] Incoming SMS saved as a lead (no website chat session)', fromNumber);
+      return new Response(JSON.stringify({ ok: true, leadSynced: true }), {
         status: 200,
         headers: { 'content-type': 'application/json' },
       });

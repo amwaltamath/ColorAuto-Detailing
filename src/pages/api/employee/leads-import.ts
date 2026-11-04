@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import { supabaseServer } from '../../../utils/supabaseServer';
 import { mapCsvToLeads, type LeadSource } from '../../../utils/csvLeadsImport';
+import { createOrbisxLead } from '../../../utils/orbisx';
+import { rememberOrbisxLeadId } from '../../../utils/smsLeads';
 
 const VALID_SOURCES: LeadSource[] = [
   'google_ads',
@@ -113,7 +115,8 @@ export const POST: APIRoute = async ({ request }) => {
         insertRow.created_at = lead.created_at;
       }
 
-      const { error } = await supabaseServer.from('leads').insert(insertRow);
+      let insertedId: string | undefined;
+      const { data: inserted, error } = await supabaseServer.from('leads').insert(insertRow).select('id').single();
 
       if (error) {
         if (error.code === '23505') {
@@ -122,19 +125,43 @@ export const POST: APIRoute = async ({ request }) => {
         }
         if (error.message?.includes('external_id')) {
           delete insertRow.external_id;
-          const { error: retryErr } = await supabaseServer.from('leads').insert(insertRow);
+          const { data: retried, error: retryErr } = await supabaseServer.from('leads').insert(insertRow).select('id').single();
           if (retryErr) {
             insertErrors.push({ external_id: lead.external_id, error: retryErr.message });
             continue;
           }
+          insertedId = retried?.id;
           imported++;
+        } else {
+          insertErrors.push({ external_id: lead.external_id, error: error.message });
           continue;
         }
-        insertErrors.push({ external_id: lead.external_id, error: error.message });
-        continue;
+      } else {
+        insertedId = inserted?.id;
+        imported++;
       }
 
-      imported++;
+      if (insertedId) {
+        const orbis = await createOrbisxLead({
+          name: lead.name,
+          email: lead.email,
+          phone: lead.phone,
+          serviceInterest: lead.service_interest,
+          vehicleInfo: lead.vehicle_info,
+          message: lead.message,
+          source: lead.source,
+          landingPage: lead.landing_page,
+          utmSource: lead.utm_source,
+          utmMedium: lead.utm_medium,
+          utmCampaign: lead.utm_campaign,
+          utmContent: lead.utm_content,
+        });
+        if (orbis.ok && orbis.leadId) {
+          await rememberOrbisxLeadId(insertedId, orbis.leadId);
+        } else if (!orbis.ok) {
+          console.error('[leads-import] OrbisX sync failed:', orbis.error);
+        }
+      }
     }
 
     return new Response(

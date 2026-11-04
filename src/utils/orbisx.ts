@@ -71,7 +71,23 @@ function buildPayload(input: OrbisxLeadInput) {
   };
 }
 
-export async function createOrbisxLead(input: OrbisxLeadInput): Promise<{ ok: boolean; error?: string }> {
+function extractLeadId(parsed: unknown): string | number | undefined {
+  if (!parsed || typeof parsed !== 'object') return undefined;
+  const record = parsed as Record<string, unknown>;
+  const direct = record.id ?? record.lead_id;
+  if (typeof direct === 'string' || typeof direct === 'number') return direct;
+
+  for (const key of ['data', 'lead']) {
+    const nested = record[key];
+    if (!nested || typeof nested !== 'object') continue;
+    const nestedId = (nested as Record<string, unknown>).id ?? (nested as Record<string, unknown>).lead_id;
+    if (typeof nestedId === 'string' || typeof nestedId === 'number') return nestedId;
+  }
+
+  return undefined;
+}
+
+export async function createOrbisxLead(input: OrbisxLeadInput): Promise<{ ok: boolean; error?: string; leadId?: string | number }> {
   const { apiKey, businessId } = getConfig();
 
   if (!apiKey || !businessId) {
@@ -117,12 +133,46 @@ export async function createOrbisxLead(input: OrbisxLeadInput): Promise<{ ok: bo
       return { ok: false, error: message };
     }
 
-    return { ok: true };
+    return { ok: true, leadId: extractLeadId(parsed) };
   } catch (err) {
     const message = err instanceof Error ? err.message : 'OrbisX request failed';
     console.error('[OrbisX] Failed to create lead:', message);
     return { ok: false, error: message };
   }
+}
+
+/** Add a follow-up onto an OrbisX lead. Tries the notes route, then falls back quietly. */
+export async function appendOrbisxLeadNote(
+  leadId: string | number,
+  note: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const { apiKey, businessId } = getConfig();
+  if (!apiKey || !businessId) {
+    return { ok: false, error: 'OrbisX not configured (ORBISX_API_KEY, ORBISX_BUSINESS_ID)' };
+  }
+
+  const body = JSON.stringify({ note, notes: note });
+  const headers = {
+    Authorization: `Bearer ${apiKey}`,
+    'X-Business-ID': businessId,
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  };
+
+  for (const path of [`/leads/${leadId}/notes`, `/leads/${leadId}/note`]) {
+    try {
+      const response = await fetch(`${ORBISX_API_BASE}${path}`, { method: 'POST', headers, body });
+      if (response.ok) return { ok: true };
+      if (response.status === 404 || response.status === 405) continue;
+      const text = await response.text();
+      return { ok: false, error: text || `OrbisX note error (${response.status})` };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'OrbisX note request failed';
+      return { ok: false, error: message };
+    }
+  }
+
+  return { ok: false, error: 'OrbisX note endpoint not available' };
 }
 
 /** Sync a website chat message into OrbisX (once per session). */

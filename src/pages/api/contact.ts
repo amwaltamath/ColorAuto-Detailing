@@ -1,6 +1,7 @@
 import type { APIContext } from "astro";
 import { supabaseServer } from "../../utils/supabaseServer";
 import { createOrbisxLead } from "../../utils/orbisx";
+import { rememberOrbisxLeadId } from "../../utils/smsLeads";
 import { sanitizeEnv } from "../../utils/envSanitize";
 import {
   getTeamNotifyNumber,
@@ -224,8 +225,9 @@ export async function POST({ request }: APIContext) {
     const leadSource = (data.source && VALID_SOURCES.includes(data.source)) ? data.source : 'website';
 
     let leadSaved = false;
+    let savedLeadId: string | undefined;
     if (supabaseServer) {
-      const { error: leadError } = await supabaseServer.from('leads').insert({
+      const { data: savedLead, error: leadError } = await supabaseServer.from('leads').insert({
         name,
         email: email || null,
         phone: phone || null,
@@ -240,15 +242,16 @@ export async function POST({ request }: APIContext) {
         utm_term: (data.utm_term || '').trim() || null,
         utm_content: (data.utm_content || '').trim() || null,
         landing_page: (data.landing_page || '').trim() || null,
-      });
+      }).select('id').single();
       if (leadError) {
         console.error('[contact] Lead insert failed:', leadError.message);
       } else {
         leadSaved = true;
+        savedLeadId = savedLead?.id;
       }
     }
 
-    createOrbisxLead({
+    const orbis = await createOrbisxLead({
       name,
       email: email || null,
       phone: phone || null,
@@ -262,9 +265,12 @@ export async function POST({ request }: APIContext) {
       utmCampaign: (data.utm_campaign || '').trim() || null,
       utmTerm: (data.utm_term || '').trim() || null,
       utmContent: (data.utm_content || '').trim() || null,
-    }).catch((err) => {
-      console.error('Failed to sync lead to OrbisX:', err);
     });
+    if (!orbis.ok) {
+      console.error('Failed to sync lead to OrbisX:', orbis.error);
+    } else if (orbis.leadId && savedLeadId) {
+      await rememberOrbisxLeadId(savedLeadId, orbis.leadId);
+    }
 
     const subject = `New Inquiry — ${service || "Contact"} — ${name}`;
 
