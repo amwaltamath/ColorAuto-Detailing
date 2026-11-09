@@ -2,6 +2,7 @@ import type { APIContext } from "astro";
 import { supabaseServer } from "../../utils/supabaseServer";
 import { createOrbisxLead } from "../../utils/orbisx";
 import { rememberOrbisxLeadId } from "../../utils/smsLeads";
+import { upsertNewsletterFromLead } from "../../utils/newsletterSubscribers";
 import { sanitizeEnv } from "../../utils/envSanitize";
 import {
   getTeamNotifyNumber,
@@ -248,6 +249,7 @@ export async function POST({ request }: APIContext) {
       } else {
         leadSaved = true;
         savedLeadId = savedLead?.id;
+        void upsertNewsletterFromLead({ name, email, source: leadSource });
       }
     }
 

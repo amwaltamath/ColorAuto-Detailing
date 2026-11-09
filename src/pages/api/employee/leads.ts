@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { supabaseServer } from '../../../utils/supabaseServer';
 import { createOrbisxLead } from '../../../utils/orbisx';
 import { rememberOrbisxLeadId } from '../../../utils/smsLeads';
+import { upsertNewsletterFromLead } from '../../../utils/newsletterSubscribers';
 
 export const GET: APIRoute = async ({ url }) => {
   if (!supabaseServer) {
@@ -110,6 +111,12 @@ export const POST: APIRoute = async ({ request }) => {
     } else if (orbis.leadId && lead?.id) {
       await rememberOrbisxLeadId(lead.id, orbis.leadId);
     }
+
+    void upsertNewsletterFromLead({
+      name,
+      email: email || null,
+      source: source || 'website',
+    });
 
     return new Response(JSON.stringify({ ok: true, lead }), { status: 201, headers: { 'content-type': 'application/json' } });
   } catch (err) {

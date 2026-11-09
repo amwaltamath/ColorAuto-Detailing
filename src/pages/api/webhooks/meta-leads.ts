@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { supabaseServer } from '../../../utils/supabaseServer';
 import { createOrbisxLead } from '../../../utils/orbisx';
 import { rememberOrbisxLeadId } from '../../../utils/smsLeads';
+import { upsertNewsletterFromLead } from '../../../utils/newsletterSubscribers';
 import { notifyTeamOfMetaLead } from '../../../utils/leadNotifications';
 import {
   fetchMetaLeadFromGraph,
@@ -168,6 +169,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     notifyTeamOfMetaLead(parsed, lead?.id);
+    void upsertNewsletterFromLead({ name: parsed.name, email: parsed.email, source: 'meta_ads' });
 
     results.push({ leadgen_id: leadgenId, status: 'created', lead_id: lead?.id });
     console.log('[meta-leads] Created lead', lead?.id, 'from leadgen', leadgenId);

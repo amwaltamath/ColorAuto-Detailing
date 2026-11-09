@@ -3,6 +3,7 @@ import { supabaseServer } from '../../../utils/supabaseServer';
 import { mapCsvToLeads, type LeadSource } from '../../../utils/csvLeadsImport';
 import { createOrbisxLead } from '../../../utils/orbisx';
 import { rememberOrbisxLeadId } from '../../../utils/smsLeads';
+import { upsertNewsletterFromLead } from '../../../utils/newsletterSubscribers';
 
 const VALID_SOURCES: LeadSource[] = [
   'google_ads',
@@ -142,6 +143,12 @@ export const POST: APIRoute = async ({ request }) => {
       }
 
       if (insertedId) {
+        void upsertNewsletterFromLead({
+          name: lead.name,
+          email: lead.email,
+          source: lead.source,
+        });
+
         const orbis = await createOrbisxLead({
           name: lead.name,
           email: lead.email,
