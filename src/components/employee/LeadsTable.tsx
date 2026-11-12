@@ -131,10 +131,44 @@ export function LeadsTable() {
   }, [statusFilter, sourceFilter, searchQuery]);
 
   useEffect(() => {
-    fetchLeads();
-    const interval = setInterval(fetchLeads, 15000);
-    return () => clearInterval(interval);
+    const pollMs = 60_000;
+    const run = () => {
+      if (document.visibilityState === 'visible') void fetchLeads();
+    };
+    run();
+    const interval = setInterval(run, pollMs);
+    const onVis = () => {
+      if (document.visibilityState === 'visible') void fetchLeads();
+    };
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVis);
+    };
   }, [fetchLeads]);
+
+  const fetchLeadDetails = async (leadId: string): Promise<Lead | null> => {
+    try {
+      const res = await fetch(`/api/employee/leads?id=${encodeURIComponent(leadId)}`);
+      const data = await res.json();
+      if (!res.ok || !data.lead) return null;
+      return data.lead as Lead;
+    } catch {
+      return null;
+    }
+  };
+
+  const openDetail = async (lead: Lead) => {
+    setDetailLead(lead);
+    const full = await fetchLeadDetails(lead.id);
+    if (full) setDetailLead(full);
+  };
+
+  const openEdit = async (lead: Lead) => {
+    const full = (await fetchLeadDetails(lead.id)) ?? lead;
+    setSelectedLead(full);
+    setModalOpen(true);
+  };
 
   const handleStatusChange = async (leadId: string, newStatus: string) => {
     try {
@@ -301,7 +335,7 @@ export function LeadsTable() {
           lead={detailLead}
           onClose={() => setDetailLead(undefined)}
           onStatusChange={handleStatusChange}
-          onEdit={(lead: Lead) => { setSelectedLead(lead); setModalOpen(true); }}
+          onEdit={(lead: Lead) => void openEdit(lead)}
           onDelete={handleDeleteLead}
         />
       )}
@@ -322,7 +356,7 @@ export function LeadsTable() {
             <div
               key={lead.id}
               className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm cursor-pointer hover:border-gray-300 transition"
-              onClick={() => setDetailLead(lead)}
+              onClick={() => void openDetail(lead)}
             >
               <div className="flex justify-between items-start mb-2">
                 <div>
@@ -372,7 +406,7 @@ export function LeadsTable() {
                 <tr
                   key={lead.id}
                   className="hover:bg-gray-50 cursor-pointer transition"
-                  onClick={() => setDetailLead(lead)}
+                  onClick={() => void openDetail(lead)}
                 >
                   <td className="px-4 py-3">
                     <div className="text-gray-900 font-medium">{lead.name}</div>
@@ -408,7 +442,7 @@ export function LeadsTable() {
                   <td className="px-4 py-3">
                     <div className="flex gap-1" onClick={e => e.stopPropagation()}>
                       <button
-                        onClick={() => { setSelectedLead(lead); setModalOpen(true); }}
+                        onClick={() => void openEdit(lead)}
                         className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition"
                         title="Edit"
                       >

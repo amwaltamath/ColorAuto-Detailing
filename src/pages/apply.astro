@@ -1,5 +1,7 @@
 ---
 import PublicLayout from '../layouts/PublicLayout.astro';
+
+const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 ---
 
 <PublicLayout
@@ -115,6 +117,16 @@ import PublicLayout from '../layouts/PublicLayout.astro';
 
           <div id="form-status" class="text-sm font-semibold hidden"></div>
 
+          {TURNSTILE_SITE_KEY && (
+            <div class="flex justify-center">
+              <div
+                class="cf-turnstile"
+                data-sitekey={TURNSTILE_SITE_KEY}
+                data-theme="light"
+              />
+            </div>
+          )}
+
           <button
             type="submit"
             class="w-full bg-blue-600 text-white font-bold py-3 rounded hover:bg-blue-700 transition"
@@ -181,7 +193,7 @@ import PublicLayout from '../layouts/PublicLayout.astro';
   </div>
 </PublicLayout>
 
-<script>
+<script define:vars={{ TURNSTILE_SITE_KEY }}>
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.querySelector("#apply-form") as HTMLFormElement | null;
     const statusEl = document.querySelector("#form-status") as HTMLElement | null;
@@ -199,9 +211,16 @@ import PublicLayout from '../layouts/PublicLayout.astro';
       setStatus("Sending...", "text-gray-700");
 
       try {
+        const formData = new FormData(form);
+        const turnstileResponse = formData.get('cf-turnstile-response');
+        if (TURNSTILE_SITE_KEY && (!turnstileResponse || !String(turnstileResponse).trim())) {
+          setStatus('Please complete the security check and try again.', 'text-red-600');
+          return;
+        }
+
         const res = await fetch("/api/apply", {
           method: "POST",
-          body: new FormData(form),
+          body: formData,
         });
 
         const json = await res.json().catch(() => ({}));
@@ -209,8 +228,10 @@ import PublicLayout from '../layouts/PublicLayout.astro';
         if (res.ok && json.ok) {
           setStatus("Thanks for applying! We'll be in touch soon.", "text-green-600");
           form.reset();
+          try { window.turnstile?.reset(); } catch (_) {}
         } else {
           setStatus(json.error || "Unable to send right now. Please email Admin@colorautodetailling.com directly.", "text-red-600");
+          try { window.turnstile?.reset(); } catch (_) {}
         }
       } catch (error) {
         setStatus("Unable to send right now. Please email Admin@colorautodetailling.com directly.", "text-red-600");

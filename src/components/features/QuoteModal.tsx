@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { TurnstileWidget, resetTurnstileWidgets } from "./TurnstileWidget";
 
 type Status = { type: "idle" | "loading" | "success" | "error"; message?: string };
 
@@ -37,6 +38,7 @@ function detectSource(fallback: string): string {
 export default function QuoteModal({ isOpen: initialOpen = false, onClose, service = "", source = "website" }: QuoteModalProps) {
   const [isOpen, setIsOpen] = React.useState(initialOpen);
   const [status, setStatus] = useState<Status>({ type: "idle" });
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   React.useEffect(() => {
     const handleOpenModal = () => setIsOpen(true);
@@ -55,16 +57,10 @@ export default function QuoteModal({ isOpen: initialOpen = false, onClose, servi
     const formData = new FormData(form);
 
     const utm = getUtmParams();
-    const siteKey = (window as any).__RECAPTCHA_SITE_KEY || '';
-    
-    // Execute reCAPTCHA v3
-    let recaptchaToken = '';
-    if (typeof window !== 'undefined' && (window as any).grecaptcha && siteKey) {
-      try {
-        recaptchaToken = await (window as any).grecaptcha.execute(siteKey, { action: 'quote' });
-      } catch (err) {
-        console.error('reCAPTCHA execution failed:', err);
-      }
+    const turnstileRequired = typeof window !== "undefined" && Boolean(window.__TURNSTILE_SITE_KEY);
+    if (turnstileRequired && !turnstileToken) {
+      setStatus({ type: "error", message: "Please complete the security check and try again." });
+      return;
     }
 
     const payload = {
@@ -74,8 +70,8 @@ export default function QuoteModal({ isOpen: initialOpen = false, onClose, servi
       message: `Quote request for: ${service || 'General Service'}\n\n${String(formData.get("message") || "")}`,
       service: service,
       source: detectSource(source),
-      website: "", // honeypot always empty in JS submit
-      recaptchaToken: recaptchaToken,
+      website: "",
+      turnstileToken,
       ...utm,
     };
 
@@ -89,6 +85,8 @@ export default function QuoteModal({ isOpen: initialOpen = false, onClose, servi
       const json = await res.json();
       if (!res.ok || !json.ok) {
         setStatus({ type: "error", message: json.error || "Submission failed." });
+        resetTurnstileWidgets();
+        setTurnstileToken("");
         return;
       }
       setStatus({
@@ -96,6 +94,8 @@ export default function QuoteModal({ isOpen: initialOpen = false, onClose, servi
         message: json.warning || "Thanks! We'll reach out shortly with your quote.",
       });
       form.reset();
+      resetTurnstileWidgets();
+      setTurnstileToken("");
       if (typeof window !== 'undefined' && (window as any).fbq) {
         (window as any).fbq('track', 'Lead', { content_name: service || 'Quote' });
       }
@@ -104,8 +104,10 @@ export default function QuoteModal({ isOpen: initialOpen = false, onClose, servi
         handleClose();
         setStatus({ type: "idle" });
       }, 2000);
-    } catch (err: any) {
+    } catch {
       setStatus({ type: "error", message: "Network error. Please try again." });
+      resetTurnstileWidgets();
+      setTurnstileToken("");
     }
   }
 
@@ -182,6 +184,8 @@ export default function QuoteModal({ isOpen: initialOpen = false, onClose, servi
               <label htmlFor="website">Website</label>
               <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
             </div>
+
+            <TurnstileWidget onTokenChange={setTurnstileToken} className="flex justify-center" />
 
             <button
               type="submit"

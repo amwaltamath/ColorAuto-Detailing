@@ -1,6 +1,7 @@
 import type { APIContext } from "astro";
 import { supabaseServer } from "../../utils/supabaseServer";
 import { createOrbisxLead } from "../../utils/orbisx";
+import { assertTurnstileForRequest } from "../../utils/turnstile";
 
 interface ApplyPayload {
   name: string;
@@ -10,6 +11,7 @@ interface ApplyPayload {
   experience?: string;
   message: string;
   website?: string; // honeypot
+  turnstileToken?: string;
 }
 
 function isValidEmail(email: string) {
@@ -34,6 +36,7 @@ export async function POST({ request }: APIContext) {
           experience: String(form.get("experience") || ""),
           message: String(form.get("message") || ""),
           website: String(form.get("website") || ""),
+          turnstileToken: String(form.get("cf-turnstile-response") || form.get("turnstileToken") || ""),
         };
       } catch {
         return new Response(JSON.stringify({ ok: false, error: "Invalid request format" }), {
@@ -62,6 +65,15 @@ export async function POST({ request }: APIContext) {
     if (website) {
       return new Response(JSON.stringify({ ok: true }), {
         status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    }
+
+    const turnstileToken = (data.turnstileToken || "").trim();
+    const turnstileCheck = await assertTurnstileForRequest(turnstileToken, request);
+    if (!turnstileCheck.ok) {
+      return new Response(JSON.stringify({ ok: false, error: turnstileCheck.error }), {
+        status: turnstileCheck.status,
         headers: { "content-type": "application/json" },
       });
     }

@@ -34,7 +34,7 @@ Three critical events now fire automatically on all ad pages:
 
 Required for Meta lead generation campaigns. Includes:
 - Data collection disclosures (forms, SMS, analytics)
-- Third-party tracking services (Meta Pixel, Google Analytics, reCAPTCHA, OpenPhone/Quo)
+- Third-party tracking services (Meta Pixel, Google Analytics, Cloudflare Turnstile, OpenPhone/Quo)
 - SMS opt-out instructions
 - User rights and contact information
 - Links to third-party privacy policies

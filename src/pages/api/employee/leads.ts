@@ -13,14 +13,43 @@ export const GET: APIRoute = async ({ url }) => {
   }
 
   try {
+    const leadId = url.searchParams.get('id');
+    if (leadId) {
+      const { data: lead, error } = await supabaseServer
+        .from('leads')
+        .select('*, lead_notes(id)')
+        .eq('id', leadId)
+        .maybeSingle();
+
+      if (error) {
+        return new Response(JSON.stringify({ error: error.message }), { status: 400, headers: { 'content-type': 'application/json' } });
+      }
+      if (!lead) {
+        return new Response(JSON.stringify({ error: 'Lead not found' }), { status: 404, headers: { 'content-type': 'application/json' } });
+      }
+
+      const full = {
+        ...lead,
+        note_count: lead.lead_notes?.length || 0,
+        lead_notes: undefined,
+      };
+
+      return new Response(JSON.stringify({ lead: full }), { status: 200, headers: { 'content-type': 'application/json' } });
+    }
+
     const status = url.searchParams.get('status');
     const source = url.searchParams.get('source');
     const search = url.searchParams.get('search');
+    const listLimit = Math.min(Math.max(parseInt(url.searchParams.get('limit') || '500', 10) || 500, 1), 2000);
+
+    const listColumns =
+      'id, name, email, phone, source, service_interest, vehicle_info, status, assigned_to, estimated_value, utm_source, utm_medium, utm_campaign, landing_page, created_at, updated_at, contacted_at, closed_at, lead_notes(count)';
 
     let query = supabaseServer
       .from('leads')
-      .select('*, lead_notes(id)')
-      .order('created_at', { ascending: false });
+      .select(listColumns)
+      .order('created_at', { ascending: false })
+      .limit(listLimit);
 
     if (status && status !== 'all') {
       query = query.eq('status', status);
@@ -38,10 +67,9 @@ export const GET: APIRoute = async ({ url }) => {
       return new Response(JSON.stringify({ error: error.message }), { status: 400, headers: { 'content-type': 'application/json' } });
     }
 
-    // Add note count
     const leadsWithCount = (leads || []).map((lead: any) => ({
       ...lead,
-      note_count: lead.lead_notes?.length || 0,
+      note_count: lead.lead_notes?.[0]?.count ?? 0,
       lead_notes: undefined,
     }));
 

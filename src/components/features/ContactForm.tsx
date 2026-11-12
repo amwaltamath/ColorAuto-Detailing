@@ -1,35 +1,33 @@
 import React, { useState } from "react";
+import { TurnstileWidget, resetTurnstileWidgets } from "./TurnstileWidget";
 
 type Status = { type: "idle" | "loading" | "success" | "error"; message?: string };
 
 export default function ContactForm() {
   const [status, setStatus] = useState<Status>({ type: "idle" });
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
 
+    const turnstileRequired = typeof window !== "undefined" && Boolean(window.__TURNSTILE_SITE_KEY);
+    if (turnstileRequired && !turnstileToken) {
+      setStatus({ type: "error", message: "Please complete the security check and try again." });
+      return;
+    }
+
     const payload = {
       name: String(formData.get("name") || ""),
       email: String(formData.get("email") || ""),
       phone: String(formData.get("phone") || ""),
       message: String(formData.get("message") || ""),
-      website: "", // honeypot always empty in JS submit
-      recaptchaToken: "",
+      website: "",
+      turnstileToken,
     };
 
     setStatus({ type: "loading" });
-    
-    // Execute reCAPTCHA v3 before sending
-    const siteKey = (window as any).__RECAPTCHA_SITE_KEY || '';
-    if (typeof window !== 'undefined' && (window as any).grecaptcha && siteKey) {
-      try {
-        payload.recaptchaToken = await (window as any).grecaptcha.execute(siteKey, { action: 'contact' });
-      } catch (err) {
-        console.error('reCAPTCHA execution failed:', err);
-      }
-    }
 
     try {
       const res = await fetch("/api/contact", {
@@ -40,12 +38,18 @@ export default function ContactForm() {
       const json = await res.json();
       if (!res.ok || !json.ok) {
         setStatus({ type: "error", message: json.error || "Submission failed." });
+        resetTurnstileWidgets();
+        setTurnstileToken("");
         return;
       }
       setStatus({ type: "success", message: "Thanks! We’ll reach out shortly." });
       form.reset();
-    } catch (err: any) {
+      resetTurnstileWidgets();
+      setTurnstileToken("");
+    } catch {
       setStatus({ type: "error", message: "Network error. Please try again." });
+      resetTurnstileWidgets();
+      setTurnstileToken("");
     }
   }
 
@@ -72,6 +76,8 @@ export default function ContactForm() {
         <label htmlFor="website">Website</label>
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
+
+      <TurnstileWidget onTokenChange={setTurnstileToken} className="flex justify-center" />
 
       <button type="submit" disabled={status.type === "loading"} className="w-full bg-blue-600 text-white font-semibold py-3 rounded hover:bg-blue-700 transition disabled:opacity-60">
         {status.type === "loading" ? "Sending…" : "Send Message"}

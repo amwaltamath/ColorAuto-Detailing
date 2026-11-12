@@ -43,9 +43,20 @@ export const SchedulesTable = () => {
   };
 
   useEffect(() => {
-    fetchSchedules();
-    const interval = setInterval(fetchSchedules, 10000); // Refresh every 10 seconds
-    return () => clearInterval(interval);
+    const pollMs = 60_000;
+    const run = () => {
+      if (document.visibilityState === 'visible') void fetchSchedules();
+    };
+    run();
+    const interval = setInterval(run, pollMs);
+    const onVis = () => {
+      if (document.visibilityState === 'visible') void fetchSchedules();
+    };
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVis);
+    };
   }, []);
 
   const getStatusColor = (status: string) => {

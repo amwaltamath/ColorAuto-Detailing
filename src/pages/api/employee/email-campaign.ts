@@ -144,7 +144,21 @@ export const GET: APIRoute = async ({ request }) => {
   }
 
   try {
-    const subscribers = await fetchAllSubscribers();
+    const { count: subscriberTotal, error: countErr } = await supabaseServer
+      .from('newsletter_subscribers')
+      .select('id', { count: 'exact', head: true })
+      .eq('email_opt_in', true);
+
+    if (countErr) throw new Error(countErr.message);
+
+    const { data: subscribers, error: subErr } = await supabaseServer
+      .from('newsletter_subscribers')
+      .select('id, email, name, email_opt_in, created_at')
+      .eq('email_opt_in', true)
+      .order('created_at', { ascending: false })
+      .limit(500);
+
+    if (subErr) throw new Error(subErr.message);
 
     const { data: campaigns, error: campErr } = await supabaseServer
       .from('email_campaigns')
@@ -170,7 +184,9 @@ export const GET: APIRoute = async ({ request }) => {
 
     return json({
       schema_ready: true,
-      subscribers,
+      subscribers: subscribers ?? [],
+      subscriber_total: subscriberTotal ?? (subscribers ?? []).length,
+      subscribers_truncated: (subscriberTotal ?? 0) > (subscribers ?? []).length,
       campaigns: visibleCampaigns,
     });
   } catch (err) {

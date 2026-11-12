@@ -4,6 +4,7 @@ import { createOrbisxLead } from "../../utils/orbisx";
 import { rememberOrbisxLeadId } from "../../utils/smsLeads";
 import { upsertNewsletterFromLead } from "../../utils/newsletterSubscribers";
 import { sanitizeEnv } from "../../utils/envSanitize";
+import { assertTurnstileForRequest } from "../../utils/turnstile";
 import {
   getTeamNotifyNumber,
   isQuoSelfSms,
@@ -22,7 +23,7 @@ interface ContactPayload {
   vehicle?: string;
   service?: string;
   website?: string; // honeypot
-  recaptchaToken?: string; // reCAPTCHA v3 token
+  turnstileToken?: string;
   source?: string;
   utm_source?: string;
   utm_medium?: string;
@@ -45,45 +46,6 @@ function getResendConfig() {
     .filter(Boolean);
   const fromEmail = sanitizeEnv(process.env.CONTACT_FROM_EMAIL) || "no-reply@colorautodetailing.com";
   return { resendKey, toEmails, fromEmail };
-}
-
-async function verifyRecaptcha(token: string): Promise<boolean> {
-  const secretKey = sanitizeEnv(process.env.RECAPTCHA_SECRET_KEY) || "";
-  if (!secretKey) {
-    console.warn("[RECAPTCHA] RECAPTCHA_SECRET_KEY not configured. Skipping verification.");
-    return true; // If not configured, allow submission
-  }
-
-  try {
-    const response = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `secret=${encodeURIComponent(secretKey)}&response=${encodeURIComponent(token)}`,
-    });
-
-    if (!response.ok) {
-      console.error("[RECAPTCHA] API error:", response.status);
-      return false;
-    }
-
-    const result = await response.json();
-    const MIN_SCORE = 0.5; // Adjust threshold as needed (0-1, higher = more likely human)
-
-    if (!result.success) {
-      console.warn("[RECAPTCHA] Verification failed:", result);
-      return false;
-    }
-
-    if (result.score < MIN_SCORE) {
-      console.warn("[RECAPTCHA] Score too low:", result.score);
-      return false;
-    }
-
-    return true;
-  } catch (error) {
-    console.error("[RECAPTCHA] Verification error:", error);
-    return false;
-  }
 }
 
 export async function POST({ request }: APIContext) {
@@ -109,7 +71,7 @@ export async function POST({ request }: APIContext) {
           vehicle: String(form.get("vehicle") || ""),
           service: String(form.get("service") || ""),
           website: String(form.get("website") || ""),
-          recaptchaToken: String(form.get("recaptchaToken") || ""),
+          turnstileToken: String(form.get("cf-turnstile-response") || form.get("turnstileToken") || ""),
           source: String(form.get("source") || ""),
           utm_source: String(form.get("utm_source") || ""),
           utm_medium: String(form.get("utm_medium") || ""),
@@ -155,17 +117,14 @@ export async function POST({ request }: APIContext) {
       });
     }
 
-    // Verify reCAPTCHA v3 token if provided
-    const recaptchaToken = (data.recaptchaToken || "").trim();
-    if (recaptchaToken) {
-      const isValidCaptcha = await verifyRecaptcha(recaptchaToken);
-      if (!isValidCaptcha) {
-        console.warn("[RECAPTCHA] Failed verification for submission from", email);
-        return new Response(JSON.stringify({ ok: false, error: "reCAPTCHA verification failed. Please try again." }), {
-          status: 400,
-          headers: { "content-type": "application/json" },
-        });
-      }
+    const turnstileToken = (data.turnstileToken || "").trim();
+    const turnstileCheck = await assertTurnstileForRequest(turnstileToken, request);
+    if (!turnstileCheck.ok) {
+      console.warn("[TURNSTILE] Blocked submission from", email || "(no email)");
+      return new Response(JSON.stringify({ ok: false, error: turnstileCheck.error }), {
+        status: turnstileCheck.status,
+        headers: { "content-type": "application/json" },
+      });
     }
 
     if (!name || !email || !message) {

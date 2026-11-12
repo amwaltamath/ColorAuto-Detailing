@@ -50,9 +50,20 @@ export const DashboardStats = () => {
       }
     };
 
-    fetchStats();
-    const interval = setInterval(fetchStats, 30000); // Refresh every 30 seconds
-    return () => clearInterval(interval);
+    const pollMs = 120_000;
+    const run = () => {
+      if (document.visibilityState === 'visible') void fetchStats();
+    };
+    run();
+    const interval = setInterval(run, pollMs);
+    const onVis = () => {
+      if (document.visibilityState === 'visible') void fetchStats();
+    };
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVis);
+    };
   }, []);
 
   const statCards = [

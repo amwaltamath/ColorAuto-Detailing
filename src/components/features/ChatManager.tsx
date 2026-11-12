@@ -68,11 +68,22 @@ export function ChatManager() {
     }
   }, []);
 
-  // Load sessions initially + poll every 5s for new/updated sessions
+  // Load sessions + light poll (Realtime handles live updates; poll catches missed events)
   useEffect(() => {
-    loadSessions();
-    const interval = setInterval(loadSessions, 5000);
-    return () => clearInterval(interval);
+    const pollMs = 30_000;
+    const run = () => {
+      if (document.visibilityState === 'visible') void loadSessions();
+    };
+    run();
+    const interval = setInterval(run, pollMs);
+    const onVis = () => {
+      if (document.visibilityState === 'visible') void loadSessions();
+    };
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVis);
+    };
   }, []);
 
   // Supabase Realtime: subscribe to all chat_messages inserts

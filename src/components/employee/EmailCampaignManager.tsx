@@ -18,6 +18,8 @@ interface Campaign {
 
 export function EmailCampaignManager() {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
+  const [subscriberTotal, setSubscriberTotal] = useState(0);
+  const [subscribersTruncated, setSubscribersTruncated] = useState(false);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [schemaReady, setSchemaReady] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -40,6 +42,8 @@ export function EmailCampaignManager() {
       if (!res.ok) throw new Error(payload.error || 'Failed to load');
       setSchemaReady(payload.schema_ready !== false);
       setSubscribers(payload.subscribers ?? []);
+      setSubscriberTotal(payload.subscriber_total ?? (payload.subscribers ?? []).length);
+      setSubscribersTruncated(Boolean(payload.subscribers_truncated));
       setCampaigns(payload.campaigns ?? []);
       if (payload.schema_ready === false) {
         setError(payload.error || 'Database tables missing');
@@ -288,7 +292,12 @@ export function EmailCampaignManager() {
         </div>
       </section>
 
-      <motionStats loading={loading} subscribers={subscribers.length} campaigns={campaigns.length} />
+      <motionStats loading={loading} subscribers={subscriberTotal || subscribers.length} campaigns={campaigns.length} />
+      {subscribersTruncated && (
+        <p className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+          Showing the 500 most recent subscribers ({subscriberTotal} total). Import or use CSV to target others; full list loads only when sending.
+        </p>
+      )}
 
       {!showForm ? (
         <button
