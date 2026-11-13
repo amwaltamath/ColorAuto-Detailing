@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { trackLeadConversion } from "../../utils/googleLead";
 import { TurnstileWidget, resetTurnstileWidgets } from "./TurnstileWidget";
 
 type Status = { type: "idle" | "loading" | "success" | "error"; message?: string };
@@ -46,6 +47,7 @@ export default function ContactForm() {
       form.reset();
       resetTurnstileWidgets();
       setTurnstileToken("");
+      trackLeadConversion('contact_form');
     } catch {
       setStatus({ type: "error", message: "Network error. Please try again." });
       resetTurnstileWidgets();

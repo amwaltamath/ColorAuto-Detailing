@@ -299,6 +299,7 @@ const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
           form.reset();
           try { window.turnstile?.reset(); } catch (_) {}
           try { if (window && window.fbq) { window.fbq('track', 'Lead'); } } catch (e) {}
+          try { window.trackColorAutoLead?.('contact'); } catch (e) {}
         } else {
           setStatus(json.error || "Unable to send right now. Please call 970-628-1505.", "text-red-600");
           try { window.turnstile?.reset(); } catch (_) {}
