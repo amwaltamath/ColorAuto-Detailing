@@ -1,6 +1,7 @@
 ﻿---
 import '../styles/global.css';
 import { ChatWidget } from '../components/features/ChatWidget';
+import { GA_MEASUREMENT_ID, GOOGLE_ADS_ID } from '../utils/googleLead';
 import { COLORAUTO_KNOWN_REVIEW_COUNT } from '../utils/googlePlaces';
 import { SITE_ORIGIN, canonicalUrlForPath, normalizeCanonicalUrl } from '../utils/seo';
 
@@ -16,7 +17,6 @@ interface Props {
 }
 
 const GTM_ID = import.meta.env.PUBLIC_GTM_ID || 'GTM-PMBBJ2B6';
-const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_ID || 'G-M47FRT6SY8';
 const META_PIXEL_ID = import.meta.env.PUBLIC_META_PIXEL_ID || '1510606456947831';
 const GOOGLE_SITE_VERIFICATION = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
 const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
@@ -109,12 +109,15 @@ const schemaReviewCount =
     
     {GA_MEASUREMENT_ID && (
       <>
+        <!-- One gtag.js load for GA4 and Google Ads. Do not add a second snippet. -->
         <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>
-        <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
+        <script is:inline define:vars={{ GA_MEASUREMENT_ID, GOOGLE_ADS_ID }}>
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
+          window.gtag = gtag;
           gtag('js', new Date());
           gtag('config', GA_MEASUREMENT_ID);
+          gtag('config', GOOGLE_ADS_ID);
         </script>
       </>
     )}
@@ -129,6 +132,11 @@ const schemaReviewCount =
       </script>
     )}
     
+    <script>
+      import { trackLeadConversion as trackLead } from '../utils/googleLead';
+      window.trackColorAutoLead = trackLead;
+    </script>
+
     <title>{title}</title>
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",

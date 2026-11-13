@@ -587,6 +587,7 @@ const tintPosts = [
           if (res.ok && json.ok) {
             setStatus('Thanks! We received your booking request.', 'text-green-600');
             form.reset();
+            try { window.trackColorAutoLead?.('window_tint_booking'); } catch (e) {}
           } else {
             setStatus(json.error || 'Unable to send right now. Please call 970-628-1505.', 'text-red-600');
           }

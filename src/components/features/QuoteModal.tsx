@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { trackLeadConversion } from "../../utils/googleLead";
 import { TurnstileWidget, resetTurnstileWidgets } from "./TurnstileWidget";
 
 type Status = { type: "idle" | "loading" | "success" | "error"; message?: string };
@@ -99,6 +100,7 @@ export default function QuoteModal({ isOpen: initialOpen = false, onClose, servi
       if (typeof window !== 'undefined' && (window as any).fbq) {
         (window as any).fbq('track', 'Lead', { content_name: service || 'Quote' });
       }
+      trackLeadConversion('quote');
       // Close modal after 2 seconds on success
       setTimeout(() => {
         handleClose();
