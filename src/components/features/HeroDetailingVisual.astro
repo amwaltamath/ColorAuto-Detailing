@@ -1,3 +1,10 @@
+---
+import { getGoogleReviews } from '../../utils/googlePlaces';
+
+const placeReviews = await getGoogleReviews();
+const reviewLabel = `${placeReviews.rating.toFixed(1)} · ${placeReviews.reviewCount.toLocaleString('en-US')} Google reviews`;
+---
+
 <div class="ca-hero-visual" id="caHeroVisual" aria-hidden="true">
   <div class="ca-hero-visual__frame">
     <div class="ca-hero-visual__chrome">
@@ -12,13 +19,15 @@
         src="/images/professional auto detailing.jpg"
         alt=""
         class="ca-hero-visual__photo"
+        width="1707"
+        height="2560"
         loading="eager"
         fetchpriority="high"
         decoding="async"
       />
       <div class="ca-hero-visual__photo-overlay"></div>
       <span class="ca-hero-visual__float">XPEL Certified</span>
-      <span class="ca-hero-visual__badge">★ 400+ Google reviews</span>
+      <span class="ca-hero-visual__badge">★ {reviewLabel}</span>
       <div class="ca-hero-visual__flow" id="caHeroFlow"></div>
     </div>
 

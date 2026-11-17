@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { FORMATTED_ADDRESS, GEO_LATITUDE, GEO_LONGITUDE, SITE_ORIGIN } from '../../utils/seo';
 import { PKPass } from 'passkit-generator';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -59,29 +60,29 @@ const passJson = {
       { key: 'email', label: 'EMAIL', value: 'admin@colorautodetailing.com' },
     ],
     auxiliaryFields: [
-      { key: 'address', label: 'ADDRESS', value: '562 S Westgate Drive, Grand Junction, CO 81505' },
+      { key: 'address', label: 'ADDRESS', value: FORMATTED_ADDRESS },
     ],
     backFields: [
       { key: 'services', label: 'SERVICES', value: 'Auto Detailing • Paint Correction • Paint Protection Film • Ceramic Coating • Window Tinting • Color PPF' },
       { key: 'hours', label: 'BUSINESS HOURS', value: 'Monday – Friday: 8:00 AM – 5:00 PM\nSaturday – Sunday: Closed' },
-      { key: 'website', label: 'WEBSITE', value: 'https://colorautodetailing.com' },
+      { key: 'website', label: 'WEBSITE', value: SITE_ORIGIN },
       { key: 'directions', label: 'DIRECTIONS', value: 'https://maps.app.goo.gl/U8GewAAibaMwEZ8q8' },
     ],
   },
   barcode: {
     format: 'PKBarcodeFormatQR',
-    message: 'https://colorautodetailing.com/business-card',
+    message: `${SITE_ORIGIN}/business-card`,
     messageEncoding: 'iso-8859-1',
   },
   barcodes: [
     {
       format: 'PKBarcodeFormatQR',
-      message: 'https://colorautodetailing.com/business-card',
+      message: `${SITE_ORIGIN}/business-card`,
       messageEncoding: 'iso-8859-1',
     },
   ],
   locations: [
-    { latitude: 39.0639, longitude: -108.5842, relevantText: "You're near ColorAuto Detailing!" },
+    { latitude: GEO_LATITUDE, longitude: GEO_LONGITUDE, relevantText: "You're near ColorAuto Detailing!" },
   ],
 };
 

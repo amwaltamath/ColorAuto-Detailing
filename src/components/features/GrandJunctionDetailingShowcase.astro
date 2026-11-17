@@ -1,5 +1,9 @@
 ---
 import '../../styles/grand-junction-showcase.css';
+import { getGoogleReviews } from '../../utils/googlePlaces';
+
+const placeReviews = await getGoogleReviews();
+const reviewLabel = `${placeReviews.reviewCount.toLocaleString('en-US')} Google reviews from Grand Junction customers`;
 ---
 
 <section class="ca-detailing-showcase" aria-labelledby="gj-showcase-heading">
@@ -13,7 +17,7 @@ import '../../styles/grand-junction-showcase.css';
       <ul>
         <li>Certified XPEL paint protection film &amp; window tint installer</li>
         <li>Ceramic coating, paint correction &amp; full interior/exterior detailing</li>
-        <li>400+ Google reviews from real Grand Junction customers</li>
+        <li>{reviewLabel}</li>
         <li>Same-week scheduling at 562 S Westgate Drive</li>
       </ul>
       <div class="ca-detailing-showcase__actions">

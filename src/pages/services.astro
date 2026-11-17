@@ -1,10 +1,12 @@
 ---
 import PublicLayout from '../layouts/PublicLayout.astro';
+import Breadcrumbs from '../components/common/Breadcrumbs.astro';
+import { serviceListLd } from '../utils/seo';
 ---
 
 <PublicLayout
-  title="Services - ColorAuto"
-  description="Explore professional services: auto detailing, paint protection film (PPF), ceramic coating, and window tinting in Grand Junction."
+  title="Services | Detailing, PPF, Ceramic Coating & Window Tint in Grand Junction"
+  description="Auto detailing, paint correction, paint protection film, ceramic coating, and window tinting in Grand Junction, CO. Shop at 562 S Westgate Drive. Call 970-628-1505."
   keywords={[
     'auto services Grand Junction',
     'car detailing',
@@ -14,6 +16,10 @@ import PublicLayout from '../layouts/PublicLayout.astro';
   ]}
   image="/images/background.jpg"
 >
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Services' },
+  ]} />
   <div class="max-w-7xl mx-auto px-4 py-12">
     <h1 class="text-4xl font-bold mb-4 text-center">Our Services</h1>
     <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">
@@ -139,6 +145,16 @@ import PublicLayout from '../layouts/PublicLayout.astro';
       </div>
     </div>
 
+    <div class="bg-white p-8 rounded-lg shadow-lg mb-12">
+      <h2 class="text-2xl font-bold mb-4 text-gray-900">More services</h2>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-blue-600 font-semibold">
+        <li><a href="/services/auto-paint-correction" class="hover:underline">Paint Correction</a></li>
+        <li><a href="/services/auto-window-tinting" class="hover:underline">Car Window Tint</a></li>
+        <li><a href="/services/home-window-tint" class="hover:underline">Home Window Tint</a></li>
+        <li><a href="/services/office-window-tint" class="hover:underline">Office Window Tint</a></li>
+      </ul>
+    </div>
+
     <!-- Color PPF Section -->
     <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-12 rounded-lg mb-12">
       <h2 class="text-3xl font-bold mb-4" id="color-ppf">NOW OFFERING COLOR PPF</h2>
@@ -170,4 +186,5 @@ import PublicLayout from '../layouts/PublicLayout.astro';
       </a>
     </div>
   </div>
+  <script type="application/ld+json" set:html={JSON.stringify(serviceListLd())} />
 </PublicLayout>

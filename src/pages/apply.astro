@@ -1,11 +1,12 @@
 ---
 import PublicLayout from '../layouts/PublicLayout.astro';
+import Breadcrumbs from '../components/common/Breadcrumbs.astro';
 
 const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 ---
 
 <PublicLayout
-  title="Join Our Team - ColorAuto Detailing"
+  title="Careers | Join ColorAuto Detailing in Grand Junction"
   description="Apply to join the ColorAuto Detailing team in Grand Junction, CO. We're looking for passionate automotive professionals — detailers, tint installers, and PPF specialists."
   keywords={[
     'auto detailing jobs',
@@ -16,6 +17,10 @@ const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
   ]}
   image="/images/ourteam.JPG"
 >
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Apply' },
+  ]} />
   <!-- Hero -->
   <section class="relative text-white py-70 overflow-hidden">
     <div class="absolute inset-0">

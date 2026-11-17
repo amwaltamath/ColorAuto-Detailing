@@ -6,10 +6,11 @@ import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 
 import tailwindcss from '@tailwindcss/vite';
+import { SITE_ORIGIN, isIndexableSitemapUrl } from './src/utils/seo.ts';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://colorautodetailing.com',
+  site: SITE_ORIGIN,
   trailingSlash: 'never',
 
   // Enable server output so API routes deploy as Vercel functions
@@ -24,10 +25,7 @@ export default defineConfig({
   integrations: [
     react(),
     sitemap({
-      filter: (page) =>
-        !page.includes('/employee/') &&
-        !page.includes('/customer/') &&
-        !page.includes('/api/'),
+      filter: (page) => isIndexableSitemapUrl(page),
     }),
   ],
 

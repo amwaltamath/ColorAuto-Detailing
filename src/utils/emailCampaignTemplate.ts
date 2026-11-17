@@ -28,7 +28,7 @@ export function createColorAutoCampaignEmail(input: {
     ? `Hi ${input.recipientName.trim()},`
     : 'Hi there,';
   const bodyHtml = messageToHtml(input.message);
-  const site = 'https://colorautodetailing.com';
+  const site = 'https://www.colorautodetailing.com';
   const phone = '970-628-1505';
 
   const html = `<!DOCTYPE html>
@@ -57,7 +57,7 @@ export function createColorAutoCampaignEmail(input: {
         </tr>
         <tr>
           <td style="padding:16px 24px;background:#f8fafc;border-top:1px solid #e2e8f0;font-size:12px;line-height:1.5;color:#94a3b8;text-align:center;">
-            ColorAuto Detailing · 562 S Westgate Dr, Grand Junction, CO<br />
+            ColorAuto Detailing · 562 S Westgate Drive, Grand Junction, CO 81505<br />
             Reply to this email or contact <a href="mailto:admin@colorautodetailing.com" style="color:#64748b;">admin@colorautodetailing.com</a> to unsubscribe.
           </td>
         </tr>

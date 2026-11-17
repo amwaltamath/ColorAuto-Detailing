@@ -2,6 +2,7 @@
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 import ServicePageHero from '../../components/common/ServicePageHero.astro';
+import ServiceSchema from '../../components/seo/ServiceSchema.astro';
 import '../../styles/service-page-glass.css';
 ---
 
@@ -408,7 +409,7 @@ import '../../styles/service-page-glass.css';
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="text-center">
           <h3 class="text-lg font-bold mb-2">📍 Location</h3>
-          <p class="text-gray-600">Grand Junction, CO</p>
+          <p class="text-gray-600">562 S Westgate Drive<br />Grand Junction, CO 81505</p>
           <a
             href="https://maps.app.goo.gl/U8GewAAibaMwEZ8q8"
             target="_blank"
@@ -458,6 +459,10 @@ import '../../styles/service-page-glass.css';
           <h3 class="text-xl font-bold mb-2 text-blue-600">Window Tinting</h3>
           <p class="text-gray-600">Complete the look with matching window tint</p>
         </a>
+        <a href="/services/paint-protection-film" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition text-center">
+          <h3 class="text-xl font-bold mb-2 text-blue-600">Clear Paint Protection Film</h3>
+          <p class="text-gray-600">Invisible XPEL film when you want protection without a color change</p>
+        </a>
         <a href="/services/auto-detailing" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition text-center">
           <h3 class="text-xl font-bold mb-2 text-blue-600">Auto Detailing</h3>
           <p class="text-gray-600">Maintain your Color PPF with professional detailing</p>
@@ -467,36 +472,11 @@ import '../../styles/service-page-glass.css';
   </section>
 
 
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Service",
-    name: "Color PPF",
-    serviceType: "AutoDetailing",
-    description: "Color-match paint protection film in Grand Junction. Factory-like finish with the protection of PPF.",
-    url: "https://colorautodetailing.com/services/color-ppf",
-    provider: {
-      "@type": "AutoRepair",
-      name: "ColorAuto Detailing",
-      telephone: "970-628-1505",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "562 S Westgate Drive",
-        addressLocality: "Grand Junction",
-        addressRegion: "CO",
-        postalCode: "81505",
-        addressCountry: "US"
-      }
-    },
-    areaServed: {
-      "@type": "City",
-      name: "Grand Junction"
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "5.0",
-      reviewCount: "72",
-      bestRating: "5",
-      worstRating: "1"
-    }
-  })} />
+  <ServiceSchema
+    name="Color PPF"
+    serviceType="AutoDetailing"
+    description="Color-match paint protection film in Grand Junction. Factory-like finish with the protection of PPF."
+    path="/services/color-ppf"
+    image="/images/colorppfhero.jpg"
+  />
 </PublicLayout>

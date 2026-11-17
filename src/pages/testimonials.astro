@@ -3,6 +3,14 @@ import PublicLayout from '../layouts/PublicLayout.astro';
 import Breadcrumbs from '../components/common/Breadcrumbs.astro';
 import GoogleReviews from '../components/common/GoogleReviews.astro';
 import { getGoogleReviews, stars } from '../utils/googlePlaces';
+import {
+  BUSINESS_ID,
+  BUSINESS_NAME,
+  BUSINESS_PHONE,
+  SITE_ORIGIN,
+  aggregateRatingLd,
+  postalAddressLd,
+} from '../utils/seo';
 
 const placeReviews = await getGoogleReviews();
 ---
@@ -37,7 +45,7 @@ const placeReviews = await getGoogleReviews();
         <span class="text-yellow-400 text-2xl tracking-wide">{stars(placeReviews.rating)}</span>
         <span class="text-lg font-semibold">{placeReviews.rating.toFixed(1)} out of 5</span>
         <span class="text-gray-300">·</span>
-        <span class="text-gray-200">{placeReviews.reviewCount.toLocaleString()} Google reviews</span>
+        <span class="text-gray-200">{placeReviews.reviewCount.toLocaleString('en-US')} Google reviews</span>
       </div>
       <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
         <a
@@ -67,7 +75,7 @@ const placeReviews = await getGoogleReviews();
       <h2 class="text-2xl font-bold mb-3">See every review on Google</h2>
       <p class="text-gray-600 mb-6">
         Google only lets websites show a handful of recent reviews, but you can read all{' '}
-        {placeReviews.reviewCount.toLocaleString()} customer reviews on our Google Maps listing.
+        {placeReviews.reviewCount.toLocaleString('en-US')} customer reviews on our Google Maps listing.
       </p>
       <a
         href={placeReviews.reviewsUri}
@@ -90,35 +98,27 @@ const placeReviews = await getGoogleReviews();
 
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    name: "ColorAuto Detailing",
-    url: "https://colorautodetailing.com",
-    telephone: "970-628-1505",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "562 S Westgate Drive",
-      addressLocality: "Grand Junction",
-      addressRegion: "CO",
-      postalCode: "81505",
-      addressCountry: "US",
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: placeReviews.rating.toFixed(1),
-      reviewCount: String(placeReviews.reviewCount),
-      bestRating: "5",
-      worstRating: "1",
-    },
-    review: placeReviews.reviews.slice(0, 5).map((review) => ({
-      "@type": "Review",
-      author: { "@type": "Person", name: review.authorName },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: String(review.rating),
-        bestRating: "5",
-        worstRating: "1",
-      },
-      reviewBody: review.text,
-    })),
+    "@type": "AutoRepair",
+    "@id": BUSINESS_ID,
+    name: BUSINESS_NAME,
+    url: SITE_ORIGIN,
+    telephone: BUSINESS_PHONE,
+    address: postalAddressLd(),
+    aggregateRating: aggregateRatingLd(placeReviews.rating, placeReviews.reviewCount),
+    ...(placeReviews.source === 'google' && placeReviews.reviews.length > 0
+      ? {
+          review: placeReviews.reviews.slice(0, 5).map((review) => ({
+            "@type": "Review",
+            author: { "@type": "Person", name: review.authorName },
+            reviewRating: {
+              "@type": "Rating",
+              ratingValue: String(review.rating),
+              bestRating: "5",
+              worstRating: "1",
+            },
+            reviewBody: review.text,
+          })),
+        }
+      : {}),
   })} />
 </PublicLayout>

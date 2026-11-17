@@ -1,0 +1,39 @@
+---
+import { getGoogleReviews } from '../../utils/googlePlaces';
+import {
+  SITE_ORIGIN,
+  aggregateRatingLd,
+  businessRefLd,
+  canonicalUrlForPath,
+  GRAND_JUNCTION_AREA,
+} from '../../utils/seo';
+
+interface Props {
+  name: string;
+  serviceType: string;
+  description: string;
+  path: string;
+  image?: string;
+  areaServed?: unknown;
+  offers?: unknown;
+}
+
+const { name, serviceType, description, path, image, areaServed, offers } = Astro.props;
+const reviews = await getGoogleReviews();
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name,
+  serviceType,
+  description,
+  url: canonicalUrlForPath(path),
+  ...(image ? { image: new URL(image, SITE_ORIGIN).href } : {}),
+  provider: businessRefLd(),
+  areaServed: areaServed ?? GRAND_JUNCTION_AREA,
+  aggregateRating: aggregateRatingLd(reviews.rating, reviews.reviewCount),
+  ...(offers ? { offers } : {}),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
