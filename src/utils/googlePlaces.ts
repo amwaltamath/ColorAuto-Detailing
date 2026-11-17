@@ -1,3 +1,5 @@
+import { BUSINESS_MAPS_URL } from './seo';
+
 export interface GoogleReview {
   authorName: string;
   authorPhotoUrl?: string;
@@ -16,11 +18,11 @@ export interface GooglePlaceReviews {
   source: 'google' | 'fallback';
 }
 
-/** ColorAuto Detailing — 562 S Westgate Dr, Grand Junction, CO */
+/** ColorAuto Detailing — 562 S Westgate Drive, Grand Junction, CO */
 export const COLORAUTO_GOOGLE_PLACE_ID = 'ChIJK7hIXhgdR4cR0sQGOiELHgQ';
 
 /** Verified Google Maps listing short link used across the site */
-export const COLORAUTO_GOOGLE_MAPS_URL = 'https://maps.app.goo.gl/U8GewAAibaMwEZ8q8';
+export const COLORAUTO_GOOGLE_MAPS_URL = BUSINESS_MAPS_URL;
 
 /**
  * Direct write-review URL derived from ColorAuto's verified Maps listing.
@@ -41,25 +43,26 @@ export function getGoogleWriteReviewUrl(): string {
   return COLORAUTO_WRITE_REVIEW_URL;
 }
 
-/** Public review total when API is unavailable (update via GOOGLE_REVIEW_COUNT env). */
-export const COLORAUTO_KNOWN_REVIEW_COUNT = 400;
+/**
+ * Public Google rating and review total when the Places API key is unset
+ * or the request fails. Live `rating` / `userRatingCount` win whenever the
+ * key is set and Google returns them.
+ */
+export const COLORAUTO_KNOWN_RATING = 5.0;
+export const COLORAUTO_KNOWN_REVIEW_COUNT = 714;
 
 function resolveReviewCount(apiCount?: number | null): number {
-  const override = Number(import.meta.env.GOOGLE_REVIEW_COUNT);
-  if (Number.isFinite(override) && override > 0) {
-    return Math.round(override);
-  }
-  if (typeof apiCount === 'number' && apiCount > 0) {
-    return apiCount;
+  if (typeof apiCount === 'number' && Number.isFinite(apiCount) && apiCount > 0) {
+    return Math.round(apiCount);
   }
   return COLORAUTO_KNOWN_REVIEW_COUNT;
 }
 
 function resolveRating(apiRating?: number | null): number {
-  if (typeof apiRating === 'number' && apiRating > 0) {
+  if (typeof apiRating === 'number' && Number.isFinite(apiRating) && apiRating > 0) {
     return apiRating;
   }
-  return 5;
+  return COLORAUTO_KNOWN_RATING;
 }
 
 function resolvePlaceId(): string {
@@ -239,7 +242,7 @@ export async function testGooglePlacesConnection(): Promise<GooglePlacesDiagnost
         ok: true,
         summary: 'Places API works for ColorAuto, but Google returned zero text reviews in the API payload.',
         nextSteps: [
-          'The site will still show fallback review cards until Google returns review text.',
+          'The site will show the Google rating total and a link to Maps until Google returns review text.',
           'Write-review links should work using the Maps URL.',
         ],
       };
@@ -265,49 +268,20 @@ export async function testGooglePlacesConnection(): Promise<GooglePlacesDiagnost
 }
 
 const FALLBACK: GooglePlaceReviews = {
-  rating: 5,
+  rating: COLORAUTO_KNOWN_RATING,
   reviewCount: COLORAUTO_KNOWN_REVIEW_COUNT,
   source: 'fallback',
   googleMapsUri: COLORAUTO_GOOGLE_MAPS_URL,
   writeReviewUri: COLORAUTO_WRITE_REVIEW_URL,
   reviewsUri: COLORAUTO_REVIEWS_URL,
-  reviews: [
-    {
-      authorName: 'Alex R.',
-      rating: 5,
-      text: 'Paint correction + ceramic came out flawless. Looks brand new!',
-      relativeTime: '',
-    },
-    {
-      authorName: 'Jamie W.',
-      rating: 5,
-      text: 'PPF saved my bumper from rock chips. Install is seamless.',
-      relativeTime: '',
-    },
-    {
-      authorName: 'Chris M.',
-      rating: 5,
-      text: 'Fast window tint and great service. Cooler cabin instantly.',
-      relativeTime: '',
-    },
-    {
-      authorName: 'Amanda K.',
-      rating: 5,
-      text: 'Finally can see clearly without squinting from glare. The team was professional and completed the job in a few hours.',
-      relativeTime: '',
-    },
-    {
-      authorName: 'Kevin R.',
-      rating: 5,
-      text: "My interior isn't fading anymore and my AC doesn't have to work as hard. Great work by ColorAuto!",
-      relativeTime: '',
-    },
-  ],
+  reviews: [],
 };
 
 const CACHE_TTL_MS = 60 * 60 * 1000;
+const PLACES_TIMEOUT_MS = 3500;
 
 let cache: { data: GooglePlaceReviews; expiresAt: number } | null = null;
+let inflight: Promise<GooglePlaceReviews> | null = null;
 
 function stars(rating: number): string {
   const full = Math.round(Math.min(5, Math.max(0, rating)));
@@ -355,7 +329,7 @@ function buildGoogleReviewsResult(
     reviewCount: resolveReviewCount(
       typeof data.userRatingCount === 'number' ? data.userRatingCount : null,
     ),
-    reviews: reviews.length > 0 ? reviews : FALLBACK.reviews,
+    reviews,
     googleMapsUri: COLORAUTO_GOOGLE_MAPS_URL,
     writeReviewUri: parseWriteReviewUri(data),
     reviewsUri: parseReviewsUri(data),
@@ -388,7 +362,15 @@ export async function getGoogleReviews(): Promise<GooglePlaceReviews> {
   if (cache && cache.expiresAt > Date.now()) {
     return cache.data;
   }
+  if (!inflight) {
+    inflight = loadGoogleReviews().finally(() => {
+      inflight = null;
+    });
+  }
+  return inflight;
+}
 
+async function loadGoogleReviews(): Promise<GooglePlaceReviews> {
   const apiKey = import.meta.env.GOOGLE_PLACES_API_KEY;
   const placeId = resolvePlaceId();
 
@@ -403,6 +385,7 @@ export async function getGoogleReviews(): Promise<GooglePlaceReviews> {
         'X-Goog-Api-Key': apiKey,
         'X-Goog-FieldMask': 'rating,userRatingCount,reviews,displayName,googleMapsLinks',
       },
+      signal: AbortSignal.timeout(PLACES_TIMEOUT_MS),
     });
 
     if (!response.ok) {

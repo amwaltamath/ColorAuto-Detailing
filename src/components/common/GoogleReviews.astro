@@ -40,29 +40,25 @@ const hasMoreOnGoogle = placeReviews.reviewCount > reviews.length;
             <span class="text-yellow-500 text-lg tracking-wide">{stars(placeReviews.rating)}</span>
             <span class="font-semibold text-gray-900">{placeReviews.rating.toFixed(1)} / 5</span>
             <span>·</span>
-            <span>{placeReviews.reviewCount.toLocaleString()} Google reviews</span>
-            {placeReviews.source === 'google' && (
-              <>
-                <span>·</span>
-                <a
-                  href={placeReviews.reviewsUri}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-blue-600 font-semibold hover:underline"
-                >
-                  View all on Google
-                </a>
-              </>
-            )}
+            <span>{placeReviews.reviewCount.toLocaleString('en-US')} Google reviews</span>
+            <span>·</span>
+            <a
+              href={placeReviews.reviewsUri}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-blue-600 font-semibold hover:underline"
+            >
+              View all on Google
+            </a>
           </div>
         )}
       </div>
     )}
 
-    {showGoogleLimitNote && hasMoreOnGoogle && (
+    {showGoogleLimitNote && reviews.length > 0 && hasMoreOnGoogle && (
       <p class="text-center text-sm text-gray-500 mb-8 max-w-2xl mx-auto">
         Google allows websites to display up to {maxAvailable} recent reviews here.
-        Browse all {placeReviews.reviewCount.toLocaleString()} reviews on Google Maps.
+        Browse all {placeReviews.reviewCount.toLocaleString('en-US')} reviews on Google Maps.
       </p>
     )}
 
@@ -104,7 +100,7 @@ const hasMoreOnGoogle = placeReviews.reviewCount > reviews.length;
           rel="noopener noreferrer"
           class="inline-block bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition"
         >
-          Read all {placeReviews.reviewCount.toLocaleString()} reviews on Google →
+          Read all {placeReviews.reviewCount.toLocaleString('en-US')} reviews on Google →
         </a>
       )}
       {showViewAll && (

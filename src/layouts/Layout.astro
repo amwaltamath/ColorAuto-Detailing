@@ -2,8 +2,8 @@
 import '../styles/global.css';
 import { ChatWidget } from '../components/features/ChatWidget';
 import { GA_MEASUREMENT_ID, GOOGLE_ADS_ID } from '../utils/googleLead';
-import { COLORAUTO_KNOWN_REVIEW_COUNT } from '../utils/googlePlaces';
-import { SITE_ORIGIN, canonicalUrlForPath, normalizeCanonicalUrl } from '../utils/seo';
+import { getGoogleReviews } from '../utils/googlePlaces';
+import { SITE_ORIGIN, businessGraphLd, canonicalUrlForPath, normalizeCanonicalUrl } from '../utils/seo';
 
 interface Props {
   title: string;
@@ -28,12 +28,8 @@ const canonicalUrl = canonical
   ? normalizeCanonicalUrl(canonical)
   : canonicalUrlForPath(Astro.url.pathname);
 const ogImage = image ? new URL(image, SITE_ORIGIN).href : `${SITE_ORIGIN}/images/ColorAuto.png`;
-
-const reviewCountOverride = Number(import.meta.env.GOOGLE_REVIEW_COUNT);
-const schemaReviewCount =
-  Number.isFinite(reviewCountOverride) && reviewCountOverride > 0
-    ? String(Math.round(reviewCountOverride))
-    : String(COLORAUTO_KNOWN_REVIEW_COUNT);
+const placeReviews = await getGoogleReviews();
+const businessLd = businessGraphLd(placeReviews.rating, placeReviews.reviewCount);
 ---
 
 <!doctype html>
@@ -138,68 +134,7 @@ const schemaReviewCount =
     </script>
 
     <title>{title}</title>
-    <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "AutoRepair",
-      name: "ColorAuto Detailing",
-      alternateName: ["Color Auto Detailing", "ColorAuto"],
-      description: "Professional auto detailing, paint protection film (PPF), ceramic coating, and window tinting in Grand Junction, CO.",
-      url: SITE_ORIGIN,
-      telephone: "970-628-1505",
-      email: "admin@colorautodetailing.com",
-      image: `${SITE_ORIGIN}/images/ColorAuto.png`,
-      priceRange: "$$",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "562 S Westgate Drive",
-        addressLocality: "Grand Junction",
-        addressRegion: "CO",
-        postalCode: "81505",
-        addressCountry: "US"
-      },
-      geo: {
-        "@type": "GeoCoordinates",
-        latitude: 39.0639,
-        longitude: -108.5842
-      },
-      openingHoursSpecification: [
-        {
-          "@type": "OpeningHoursSpecification",
-          dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-          opens: "08:00",
-          closes: "17:00"
-        }
-      ],
-      sameAs: [
-        "https://www.facebook.com/ColorAutoDetailing",
-        "https://www.instagram.com/colorautodetailing",
-        "https://www.youtube.com/@colorautodetailing3388"
-      ],
-      areaServed: {
-        "@type": "City",
-        name: "Grand Junction",
-        "@id": "https://www.wikidata.org/wiki/Q162660"
-      },
-      aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: "5.0",
-        reviewCount: schemaReviewCount,
-        bestRating: "5",
-        worstRating: "1"
-      },
-      hasOfferCatalog: {
-        "@type": "OfferCatalog",
-        name: "Auto Detailing Services",
-        itemListElement: [
-          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Auto Detailing" }},
-          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Paint Protection Film (PPF)" }},
-          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Ceramic Coating" }},
-          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Window Tinting" }},
-          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Color PPF" }},
-          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Paint Correction" }}
-        ]
-      }
-    })} />
+    <script type="application/ld+json" set:html={JSON.stringify(businessLd)} />
   </head>
   <body>
     <!-- Skip to main content for accessibility -->

@@ -51,7 +51,7 @@
       {
         "key": "website",
         "label": "WEBSITE",
-        "value": "https://colorautodetailing.com"
+        "value": "https://www.colorautodetailing.com"
       },
       {
         "key": "directions",
@@ -62,20 +62,20 @@
   },
   "barcode": {
     "format": "PKBarcodeFormatQR",
-    "message": "https://colorautodetailing.com/business-card",
+    "message": "https://www.colorautodetailing.com/business-card",
     "messageEncoding": "iso-8859-1"
   },
   "barcodes": [
     {
       "format": "PKBarcodeFormatQR",
-      "message": "https://colorautodetailing.com/business-card",
+      "message": "https://www.colorautodetailing.com/business-card",
       "messageEncoding": "iso-8859-1"
     }
   ],
   "locations": [
     {
-      "latitude": 39.0639,
-      "longitude": -108.5842,
+      "latitude": 39.086479,
+      "longitude": -108.586097,
       "relevantText": "You're near ColorAuto Detailing!"
     }
   ]

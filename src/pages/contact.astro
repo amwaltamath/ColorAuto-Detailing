@@ -1,11 +1,12 @@
 ---
 import PublicLayout from '../layouts/PublicLayout.astro';
+import Breadcrumbs from '../components/common/Breadcrumbs.astro';
 
 const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 ---
 
 <PublicLayout
-  title="Contact ColorAuto Detailing"
+  title="Contact ColorAuto Detailing in Grand Junction, CO"
   description="Contact ColorAuto Detailing in Grand Junction, CO for quotes on auto detailing, PPF, ceramic coating, and window tinting. Call 970-628-1505 or email admin@colorautodetailing.com."
   keywords={[
     'contact ColorAuto',
@@ -16,6 +17,10 @@ const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
   ]}
   image="/images/protection.jpg"
 >
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Contact' },
+  ]} />
   <!-- Hero -->
   <section class="relative text-white py-70 overflow-hidden">
     <div class="absolute inset-0">

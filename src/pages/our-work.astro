@@ -1,5 +1,6 @@
 ---
 import PublicLayout from '../layouts/PublicLayout.astro';
+import Breadcrumbs from '../components/common/Breadcrumbs.astro';
 import { getCollection } from 'astro:content';
 import { getSupabaseBlogPosts } from '../utils/blogPosts';
 
@@ -42,8 +43,8 @@ const moreFeatured = recentPosts.slice(1, 4);
 ---
 
 <PublicLayout
-  title="Our Work - ColorAuto"
-  description="Gallery of recent auto detailing, PPF, ceramic coating, and window tinting projects by ColorAuto in Grand Junction."
+  title="Our Work Gallery | ColorAuto Detailing in Grand Junction"
+  description="Photo gallery of auto detailing, PPF, ceramic coating, and window tinting projects by ColorAuto at 562 S Westgate Drive in Grand Junction."
   keywords={[
     'auto detailing gallery',
     'PPF installs',
@@ -53,6 +54,10 @@ const moreFeatured = recentPosts.slice(1, 4);
   ]}
   image="/images/professional auto detailing.jpg"
 >
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Our Work' },
+  ]} />
   <!-- Hero -->
   <section class="relative text-white py-70 overflow-hidden">
     <div class="absolute inset-0">

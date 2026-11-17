@@ -2,6 +2,7 @@
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 import ServicePageHero from '../../components/common/ServicePageHero.astro';
+import ServiceSchema from '../../components/seo/ServiceSchema.astro';
 import '../../styles/service-page-glass.css';
 ---
 
@@ -352,7 +353,7 @@ import '../../styles/service-page-glass.css';
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="text-center">
           <h3 class="text-lg font-bold mb-2">📍 Location</h3>
-          <p class="text-gray-600">Grand Junction, CO</p>
+          <p class="text-gray-600">562 S Westgate Drive<br />Grand Junction, CO 81505</p>
           <a
             href="https://maps.app.goo.gl/U8GewAAibaMwEZ8q8"
             target="_blank"
@@ -411,36 +412,11 @@ import '../../styles/service-page-glass.css';
   </section>
 
 
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Service",
-    name: "Paint Protection Film (PPF)",
-    serviceType: "AutoDetailing",
-    description: "XPEL paint protection film installation in Grand Junction. Self-healing PPF shields paint from rock chips, scratches, and UV.",
-    url: "https://colorautodetailing.com/services/paint-protection-film",
-    provider: {
-      "@type": "AutoRepair",
-      name: "ColorAuto Detailing",
-      telephone: "970-628-1505",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "562 S Westgate Drive",
-        addressLocality: "Grand Junction",
-        addressRegion: "CO",
-        postalCode: "81505",
-        addressCountry: "US"
-      }
-    },
-    areaServed: {
-      "@type": "City",
-      name: "Grand Junction"
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "5.0",
-      reviewCount: "72",
-      bestRating: "5",
-      worstRating: "1"
-    }
-  })} />
+  <ServiceSchema
+    name="Paint Protection Film (PPF)"
+    serviceType="AutoDetailing"
+    description="XPEL paint protection film installation in Grand Junction. Self-healing PPF shields paint from rock chips, scratches, and UV."
+    path="/services/paint-protection-film"
+    image="/images/Paint protection film hero.jpg"
+  />
 </PublicLayout>

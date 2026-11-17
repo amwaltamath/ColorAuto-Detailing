@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { SITE_ORIGIN } from '../../utils/seo';
 
 export const GET: APIRoute = async () => {
   const vcard = [
@@ -11,7 +12,7 @@ export const GET: APIRoute = async () => {
     'TEL;TYPE=WORK,VOICE:+19706281505',
     'EMAIL;TYPE=WORK:admin@colorautodetailing.com',
     'ADR;TYPE=WORK:;;562 S Westgate Drive;Grand Junction;CO;81505;USA',
-    'URL:https://colorautodetailing.com',
+    `URL:${SITE_ORIGIN}`,
     'NOTE:Auto Detailing • Paint Correction • Paint Protection Film • Ceramic Coating • Window Tinting • Color PPF',
     'END:VCARD',
   ].join('\r\n');

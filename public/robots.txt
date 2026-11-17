@@ -1,8 +1,18 @@
+# Canonical host: https://www.colorautodetailing.com
+# LLM summary: https://www.colorautodetailing.com/llms.txt
+
 User-agent: *
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: PerplexityBot
+User-agent: Google-Extended
+User-agent: ClaudeBot
+User-agent: Bingbot
 Allow: /
 
 Disallow: /api/
 Disallow: /employee/
 Disallow: /customer/
 
-Sitemap: https://colorautodetailing.com/sitemap-index.xml
+Sitemap: https://www.colorautodetailing.com/sitemap-index.xml
