@@ -381,10 +381,13 @@ nav[aria-label='Breadcrumb']:has(+ .ca-hero-split--service) svg {
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-/* CTA banners stay fully visible — no scroll fade */
+/* Service / glass sections stay visible — global fade-in uses opacity:0 until scroll */
+.ca-hero-split.fade-in-section,
+.ca-service-page.fade-in-section,
+.ca-glass-strip.fade-in-section,
 .ca-glass-banner.fade-in-section {
-  opacity: 1;
-  transform: none;
+  opacity: 1 !important;
+  transform: none !important;
 }
 
 .ca-glass-banner h2,

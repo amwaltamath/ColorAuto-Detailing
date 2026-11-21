@@ -236,7 +236,14 @@ const schemaReviewCount =
             }
           });
         }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-        sections.forEach(s => {
+        const skipFadeIn = (el) =>
+          el.classList.contains('ca-service-page') ||
+          el.classList.contains('ca-hero-split') ||
+          el.classList.contains('ca-glass-strip') ||
+          el.classList.contains('ca-glass-banner');
+
+        sections.forEach((s) => {
+          if (skipFadeIn(s)) return;
           s.classList.add('fade-in-section');
           observer.observe(s);
         });
