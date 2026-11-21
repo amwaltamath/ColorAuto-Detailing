@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import PublicLayout from '../../layouts/PublicLayout.astro';
+import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 import { getSupabaseBlogPosts } from '../../utils/blogPosts';
 
 // Get all blog posts sorted by date
@@ -45,8 +46,8 @@ const categories = ['all', 'ppf', 'ceramic-coating', 'color-ppf', 'detailing', '
 ---
 
 <PublicLayout
-  title="All Projects - ColorAuto Grand Junction"
-  description="Browse all our recent auto detailing, PPF, ceramic coating, and window tinting projects in Grand Junction, CO. See real results from ColorAuto."
+  title="Project Stories | ColorAuto Detailing in Grand Junction"
+  description="Read project stories about auto detailing, PPF, ceramic coating, and window tinting from ColorAuto in Grand Junction, CO."
   keywords={[
     'auto detailing projects',
     'PPF gallery',
@@ -55,6 +56,10 @@ const categories = ['all', 'ppf', 'ceramic-coating', 'color-ppf', 'detailing', '
     'ColorAuto portfolio'
   ]}
 >
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Project Stories' },
+  ]} />
   <!-- Hero -->
   <section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
     <div class="max-w-7xl mx-auto px-4 text-center">

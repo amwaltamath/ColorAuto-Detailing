@@ -1,6 +1,6 @@
 ---
 const currentPath = Astro.url.pathname;
-const isAutoService = currentPath.startsWith('/services/auto-detailing') || currentPath.startsWith('/services/auto-paint-correction') || currentPath.startsWith('/services/paint-protection-film') || currentPath.startsWith('/services/ceramic-coating') || currentPath.startsWith('/services/window-tinting') || currentPath.startsWith('/services/color-ppf');
+const isAutoService = currentPath.startsWith('/services/auto-detailing') || currentPath.startsWith('/services/auto-paint-correction') || currentPath.startsWith('/services/auto-window-tinting') || currentPath.startsWith('/services/paint-protection-film') || currentPath.startsWith('/services/ceramic-coating') || currentPath.startsWith('/services/window-tinting') || currentPath.startsWith('/services/color-ppf');
 const isHomeService = currentPath.startsWith('/services/home-window-tint') || currentPath.startsWith('/services/office-window-tint');
 
 function navLinkClass(href: string): string {
@@ -21,7 +21,7 @@ function mobileLinkClass(href: string): string {
   <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
     <!-- Logo -->
     <a href="/" class="flex items-center space-x-3">
-      <img src="/images/ColorAuto.png" alt="ColorAuto Logo" class="h-12 w-auto" />
+      <img src="/images/ColorAuto.png" alt="ColorAuto Detailing" width="1658" height="622" class="h-12 w-auto" />
     </a>
     
     <!-- Navigation -->
@@ -43,6 +43,7 @@ function mobileLinkClass(href: string): string {
             <a href="/services/paint-protection-film" class={dropdownLinkClass('/services/paint-protection-film')}>Paint Protection Film</a>
             <a href="/services/ceramic-coating" class={dropdownLinkClass('/services/ceramic-coating')}>Ceramic Coating</a>
             <a href="/services/window-tinting" class={dropdownLinkClass('/services/window-tinting')}>Window Tinting</a>
+            <a href="/services/auto-window-tinting" class={dropdownLinkClass('/services/auto-window-tinting')}>Car Window Tint</a>
             <a href="/services/color-ppf" class={dropdownLinkClass('/services/color-ppf')}>Color PPF</a>
           </div>
           </div>
@@ -107,6 +108,7 @@ function mobileLinkClass(href: string): string {
           <a href="/services/paint-protection-film" class={mobileLinkClass('/services/paint-protection-film')}>Paint Protection Film</a>
           <a href="/services/ceramic-coating" class={mobileLinkClass('/services/ceramic-coating')}>Ceramic Coating</a>
           <a href="/services/window-tinting" class={mobileLinkClass('/services/window-tinting')}>Window Tinting</a>
+          <a href="/services/auto-window-tinting" class={mobileLinkClass('/services/auto-window-tinting')}>Car Window Tint</a>
           <a href="/services/color-ppf" class={mobileLinkClass('/services/color-ppf')}>Color PPF</a>
         </div>
       </details>

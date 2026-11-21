@@ -8,9 +8,9 @@ interface Props {
   items: BreadcrumbItem[];
 }
 
-const { items } = Astro.props;
+import { canonicalUrlForPath } from '../../utils/seo';
 
-const siteUrl = 'https://colorautodetailing.com';
+const { items } = Astro.props;
 
 // Build JSON-LD BreadcrumbList
 const breadcrumbSchema = {
@@ -20,7 +20,7 @@ const breadcrumbSchema = {
     "@type": "ListItem",
     position: index + 1,
     name: item.label,
-    ...(item.href ? { item: new URL(item.href, siteUrl).href } : {}),
+    ...(item.href ? { item: canonicalUrlForPath(item.href) } : {}),
   })),
 };
 ---

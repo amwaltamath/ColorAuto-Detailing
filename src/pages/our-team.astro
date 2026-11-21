@@ -1,5 +1,6 @@
 ---
 import PublicLayout from '../layouts/PublicLayout.astro';
+import Breadcrumbs from '../components/common/Breadcrumbs.astro';
 
 type TeamMember = {
   name: string;
@@ -87,7 +88,7 @@ const team: TeamMember[] = [
 ---
 
 <PublicLayout
-  title="Our Team - ColorAuto"
+  title="Our Team | ColorAuto Detailing in Grand Junction"
   description="Meet the ColorAuto Detailing team in Grand Junction — certified installers and detailing professionals."
   keywords={[
     'ColorAuto team',
@@ -97,6 +98,10 @@ const team: TeamMember[] = [
   ]}
   image="/images/ourteam.JPG"
 >
+  <Breadcrumbs items={[
+    { label: 'Home', href: '/' },
+    { label: 'Our Team' },
+  ]} />
   <section class="relative text-white py-70 overflow-hidden">
     <div class="absolute inset-0">
       <img src="/images/ourteam.JPG" alt="ColorAuto Detailing team of professional installers in Grand Junction, CO" class="w-full h-full object-cover" />

@@ -9,11 +9,15 @@ import GlassHighlightsBar from '../components/common/GlassHighlightsBar.astro';
 import '../styles/hero-split.css';
 import '../styles/glass-services.css';
 import '../styles/service-page-glass.css';
+import { getGoogleReviews } from '../utils/googlePlaces';
+
+const placeReviews = await getGoogleReviews();
+const reviewSummary = `${placeReviews.rating.toFixed(1)} stars from ${placeReviews.reviewCount.toLocaleString('en-US')} Google reviews`;
 ---
 
 <PublicLayout
   title="Professional Car Detailing in Grand Junction, CO | ColorAuto"
-  description="Grand Junction auto detailing, PPF, ceramic coating, and window tinting near me — local XPEL shop at 562 S Westgate Dr. Call 970-628-1505 for a free quote."
+  description="Grand Junction auto detailing, PPF, ceramic coating, and window tinting near me — local XPEL shop at 562 S Westgate Drive. Call 970-628-1505 for a free quote."
   keywords={[
     'window tinting near me',
     'window tint near me Grand Junction',
@@ -37,7 +41,7 @@ import '../styles/service-page-glass.css';
         </h1>
         <p class="ca-hero-split__subtitle">
           ColorAuto is the Western Slope&apos;s trusted shop for premium detailing, XPEL paint protection film,
-          ceramic coating, and window tint — with 400+ Google reviews from local drivers.
+          ceramic coating, and window tint, with {reviewSummary} by local drivers.
         </p>
         <div class="ca-hero-split__actions">
           <button type="button" data-quote-popup class="ca-hero-split__btn-primary">
@@ -188,7 +192,7 @@ import '../styles/service-page-glass.css';
   <GoogleReviews class="bg-white" showViewAll={true} limit={5} />
 
   <!-- FAQ -->
-  <section class="py-20 bg-gradient-to-b from-white to-gray-50">
+  <section id="faq" class="py-20 bg-gradient-to-b from-white to-gray-50">
     <div class="max-w-3xl mx-auto px-4">
       <div class="text-center mb-16">
         <h2 class="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>

@@ -2,13 +2,15 @@
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 import ServicePageHero from '../../components/common/ServicePageHero.astro';
+import ServiceSchema from '../../components/seo/ServiceSchema.astro';
+import { SERVICE_AREA, TINT_OFFERS } from '../../utils/seo';
 import GlassHighlightsBar from '../../components/common/GlassHighlightsBar.astro';
 import '../../styles/service-page-glass.css';
 ---
 
 <PublicLayout
   title="Car Window Tinting Near Me | Grand Junction, CO | ColorAuto"
-  description="Car window tinting near me in Grand Junction — XPEL PRIME ceramic tint, 99% UV block, Colorado legal installs. Local shop at 562 S Westgate Dr. Call 970-628-1505."
+  description="Car window tinting near me in Grand Junction — XPEL PRIME ceramic tint, 99% UV block, Colorado legal installs. Local shop at 562 S Westgate Drive. Call 970-628-1505."
   keywords={[
     'window tinting near me',
     'car window tinting near me',
@@ -241,7 +243,7 @@ import '../../styles/service-page-glass.css';
   </section>
 
   <!-- FAQ Section -->
-  <section class="ca-service-page py-16">
+  <section id="faq" class="ca-service-page py-16">
     <div class="max-w-3xl mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-10">Frequently Asked Questions</h2>
       <div class="space-y-5">
@@ -380,112 +382,66 @@ import '../../styles/service-page-glass.css';
     </div>
   </section>
 
-  <!-- Schema Markup -->
-
+  <ServiceSchema
+    name="Auto Window Tinting"
+    serviceType="AutomotiveWindowTinting"
+    description="Professional automotive window tinting in Grand Junction, CO. XPEL PRIME ceramic films block 99% of UV rays and up to 90% of solar heat. Lifetime warranty."
+    path="/services/auto-window-tinting"
+    image="/images/primexr.jpg"
+    areaServed={SERVICE_AREA}
+    offers={TINT_OFFERS}
+  />
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
-    "@graph": [
+    "@type": "FAQPage",
+    mainEntity: [
       {
-        "@type": "Service",
-        name: "Auto Window Tinting",
-        serviceType: "AutomotiveWindowTinting",
-        description: "Professional automotive window tinting in Grand Junction, CO. XPEL PRIME ceramic films block 99% of UV rays and up to 90% of solar heat. Lifetime warranty.",
-        url: "https://colorautodetailing.com/services/auto-window-tinting",
-        image: "https://colorautodetailing.com/images/primexr.jpg",
-        provider: {
-          "@type": "AutoRepair",
-          name: "ColorAuto Detailing",
-          telephone: "970-628-1505",
-          url: "https://colorautodetailing.com",
-          address: {
-            "@type": "PostalAddress",
-            streetAddress: "562 S Westgate Drive",
-            addressLocality: "Grand Junction",
-            addressRegion: "CO",
-            postalCode: "81505",
-            addressCountry: "US"
-          }
-        },
-        areaServed: {
-          "@type": "City",
-          name: "Grand Junction",
-          sameAs: "https://en.wikipedia.org/wiki/Grand_Junction,_Colorado"
-        },
-        offers: [
-          {
-            "@type": "Offer",
-            name: "XPEL PRIME CS Window Tint",
-            price: "250",
-            priceCurrency: "USD",
-            description: "Color-stable dyed film with 99% UV protection and lifetime warranty"
-          },
-          {
-            "@type": "Offer",
-            name: "XPEL PRIME XR Window Tint",
-            price: "350",
-            priceCurrency: "USD",
-            description: "Nano-ceramic film with 60% heat rejection, signal-friendly"
-          },
-          {
-            "@type": "Offer",
-            name: "XPEL PRIME XR PLUS Window Tint",
-            price: "500",
-            priceCurrency: "USD",
-            description: "Flagship ceramic film with maximum heat rejection and clarity"
-          }
-        ],
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: "5.0",
-          reviewCount: "72",
-          bestRating: "5",
-          worstRating: "1"
+        "@type": "Question",
+        name: "How long does auto window tinting take?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Most standard vehicles take 2–4 hours. Larger vehicles or those with more complex window shapes may take up to 6 hours. We'll give you a time estimate when you book."
         }
       },
       {
-        "@type": "FAQPage",
-        mainEntity: [
-          {
-            "@type": "Question",
-            name: "How long does auto window tinting take?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Most standard vehicles take 2–4 hours. Larger vehicles may take up to 6 hours."
-            }
-          },
-          {
-            "@type": "Question",
-            name: "How long do I need to wait before rolling down my windows after tinting?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Wait 3–5 days before rolling your windows down to allow the film to fully cure and adhere."
-            }
-          },
-          {
-            "@type": "Question",
-            name: "Is window tinting legal in Colorado?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Yes. Colorado law requires front side windows to transmit more than 27% of visible light. Rear windows have no restriction. All installations are fully compliant."
-            }
-          },
-          {
-            "@type": "Question",
-            name: "What is the difference between dyed and ceramic window tint?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Dyed tint blocks light for privacy and some UV protection. Ceramic tint uses nano-ceramic particles to block significantly more infrared heat while maintaining clear visibility and being signal-friendly."
-            }
-          },
-          {
-            "@type": "Question",
-            name: "What warranty do you offer on window tint?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "All XPEL PRIME films come with a lifetime warranty against fading, bubbling, peeling, and delaminating."
-            }
-          }
-        ]
+        "@type": "Question",
+        name: "How long do I need to wait before rolling down my windows?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "We recommend waiting 3–5 days before rolling your windows down to allow the film to fully cure and adhere. This is especially important in cooler weather."
+        }
+      },
+      {
+        "@type": "Question",
+        name: "Is window tinting legal in Colorado?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Colorado law requires front side windows to transmit more than 27% of visible light. Rear side windows and the rear window have no restriction. All of our installations are fully compliant."
+        }
+      },
+      {
+        "@type": "Question",
+        name: "What's the difference between dyed and ceramic tint?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Dyed tint (like PRIME CS) primarily blocks visible light for privacy and some UV protection. Ceramic tint (like PRIME XR and XR PLUS) uses nano-ceramic particles to block significantly more infrared heat while maintaining crystal-clear visibility. Ceramic tint is also signal-friendly and more durable."
+        }
+      },
+      {
+        "@type": "Question",
+        name: "Does ceramic tint interfere with GPS or cell signals?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "No. XPEL PRIME XR and XR PLUS are non-metallic ceramic films, which means they are fully signal-friendly. Your GPS, cell service, and radio won't be affected."
+        }
+      },
+      {
+        "@type": "Question",
+        name: "What warranty do you offer on window tint?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "All XPEL PRIME films come with a lifetime warranty against fading, bubbling, peeling, and delaminating. We also stand behind our installation work."
+        }
       }
     ]
   })} />

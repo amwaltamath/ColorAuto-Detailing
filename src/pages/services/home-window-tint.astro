@@ -2,12 +2,13 @@
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 import ServicePageHero from '../../components/common/ServicePageHero.astro';
+import ServiceSchema from '../../components/seo/ServiceSchema.astro';
 import '../../styles/service-page-glass.css';
 ---
 
 <PublicLayout
   title="Home Window Tint | Grand Junction, CO | ColorAuto"
-  description="Residential window tinting near me in Grand Junction — heat, UV, and privacy film for homes. Local install at ColorAuto, 562 S Westgate Dr."
+  description="Residential window tinting near me in Grand Junction — heat, UV, and privacy film for homes. Local install at ColorAuto, 562 S Westgate Drive."
   keywords={[
     'home window tinting near me',
     'residential window tint near me Grand Junction',
@@ -204,7 +205,7 @@ import '../../styles/service-page-glass.css';
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="text-center">
           <h3 class="text-lg font-bold mb-2">📍 Location</h3>
-          <p class="text-gray-600">Grand Junction, CO</p>
+          <p class="text-gray-600">562 S Westgate Drive<br />Grand Junction, CO 81505</p>
           <a
             href="https://maps.app.goo.gl/U8GewAAibaMwEZ8q8"
             target="_blank"
@@ -244,8 +245,8 @@ import '../../styles/service-page-glass.css';
   <!-- Related Services -->
   <section class="ca-service-page py-12">
     <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-8">Complete Tinting Solutions</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <h2 class="text-3xl font-bold text-center mb-8">Related Services</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <a href="/services/office-window-tint" class="bg-gray-50 p-6 rounded-lg shadow hover:shadow-lg transition text-center">
           <h3 class="text-xl font-bold mb-2 text-green-600">Office Window Tint</h3>
           <p class="text-gray-600">Commercial window film for workplace comfort</p>
@@ -254,45 +255,24 @@ import '../../styles/service-page-glass.css';
           <h3 class="text-xl font-bold mb-2 text-green-600">Automotive Window Tint</h3>
           <p class="text-gray-600">Vehicle window tinting services</p>
         </a>
-        <a href="/contact" class="bg-gray-50 p-6 rounded-lg shadow hover:shadow-lg transition text-center">
-          <h3 class="text-xl font-bold mb-2 text-green-600">Custom Solutions</h3>
-          <p class="text-gray-600">Specialty film applications and consultations</p>
+        <a href="/services/ceramic-coating" class="bg-gray-50 p-6 rounded-lg shadow hover:shadow-lg transition text-center">
+          <h3 class="text-xl font-bold mb-2 text-green-600">Ceramic Coating</h3>
+          <p class="text-gray-600">Hydrophobic paint protection for the vehicle</p>
+        </a>
+        <a href="/services/paint-protection-film" class="bg-gray-50 p-6 rounded-lg shadow hover:shadow-lg transition text-center">
+          <h3 class="text-xl font-bold mb-2 text-green-600">Paint Protection Film</h3>
+          <p class="text-gray-600">Clear XPEL film for rock chips and scratches</p>
         </a>
       </div>
     </div>
   </section>
 
 
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Service",
-    name: "Home Window Tinting",
-    serviceType: "WindowTinting",
-    description: "Home window tinting in Grand Junction to reduce heat and UV, protect interiors, and add privacy.",
-    url: "https://colorautodetailing.com/services/home-window-tint",
-    provider: {
-      "@type": "AutoRepair",
-      name: "ColorAuto Detailing",
-      telephone: "970-628-1505",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "562 S Westgate Drive",
-        addressLocality: "Grand Junction",
-        addressRegion: "CO",
-        postalCode: "81505",
-        addressCountry: "US"
-      }
-    },
-    areaServed: {
-      "@type": "City",
-      name: "Grand Junction"
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "5.0",
-      reviewCount: "72",
-      bestRating: "5",
-      worstRating: "1"
-    }
-  })} />
+  <ServiceSchema
+    name="Home Window Tinting"
+    serviceType="WindowTinting"
+    description="Home window tinting in Grand Junction to reduce heat and UV, protect interiors, and add privacy."
+    path="/services/home-window-tint"
+    image="/images/Colorauto window tint.jpg"
+  />
 </PublicLayout>

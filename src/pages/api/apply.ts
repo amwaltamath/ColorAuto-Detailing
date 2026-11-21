@@ -225,7 +225,7 @@ export async function POST({ request }: APIContext) {
                 <tr>
                   <td style="font-size:12px; line-height:1.4;">
                     <div style="font-weight:700; color:#e2e8f0;">Color Auto Detailing</div>
-                    <div>562 S. Westgate Drive, Grand Junction, CO</div>
+                    <div>562 S Westgate Drive, Grand Junction, CO</div>
                     <div><a href="tel:9706281505" style="color:#93c5fd; text-decoration:none;">(970) 628-1505</a> &bull; <a href="${baseUrl}" style="color:#93c5fd; text-decoration:none;">${baseUrl.replace(/^https?:\/\//, '')}</a></div>
                   </td>
                 </tr>

@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 import ServicePageHero from '../../components/common/ServicePageHero.astro';
+import ServiceSchema from '../../components/seo/ServiceSchema.astro';
+import { SERVICE_AREA, TINT_OFFERS } from '../../utils/seo';
 import '../../styles/service-page-glass.css';
 import { getSupabaseBlogPosts } from '../../utils/blogPosts';
 
@@ -98,7 +100,7 @@ const tintPosts = [
 
 <PublicLayout
   title="Window Tinting Near Me | Grand Junction, CO | ColorAuto"
-  description="Window tinting near me in Grand Junction — ColorAuto at 562 S Westgate Dr installs XPEL automotive, home & office tint. UV block, heat rejection, lifetime warranty. Call 970-628-1505."
+  description="Window tinting near me in Grand Junction — ColorAuto at 562 S Westgate Drive installs XPEL automotive, home, and office tint. UV block, heat rejection, lifetime warranty. Call 970-628-1505."
   keywords={[
     'window tinting near me',
     'window tint near me',
@@ -432,7 +434,7 @@ const tintPosts = [
   </section>
 
   <!-- FAQ Section -->
-  <section class="ca-service-page py-16">
+  <section id="faq" class="ca-service-page py-16">
     <div class="max-w-3xl mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-10">Window Tint FAQ — Grand Junction, CO</h2>
       <div class="space-y-4" id="faq-list">
@@ -500,7 +502,7 @@ const tintPosts = [
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="text-center">
           <h3 class="text-lg font-bold mb-2">📍 Location</h3>
-          <p class="text-gray-600">Grand Junction, CO</p>
+          <p class="text-gray-600">562 S Westgate Drive<br />Grand Junction, CO 81505</p>
           <a
             href="https://maps.app.goo.gl/U8GewAAibaMwEZ8q8"
             target="_blank"
@@ -611,39 +613,13 @@ const tintPosts = [
 
 
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Service",
-    name: "Window Tinting",
-    serviceType: "AutoDetailing",
-    description: "Window tinting near me in Grand Junction, CO — automotive, home, and office XPEL tint at ColorAuto Detailing, 562 S Westgate Drive.",
-    url: "https://colorautodetailing.com/services/window-tinting",
-    provider: {
-      "@type": "AutoRepair",
-      name: "ColorAuto Detailing",
-      telephone: "970-628-1505",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "562 S Westgate Drive",
-        addressLocality: "Grand Junction",
-        addressRegion: "CO",
-        postalCode: "81505",
-        addressCountry: "US"
-      }
-    },
-    areaServed: [
-      { "@type": "City", name: "Grand Junction" },
-      { "@type": "City", name: "Fruita" },
-      { "@type": "City", name: "Clifton" },
-      { "@type": "City", name: "Palisade" },
-      { "@type": "AdministrativeArea", name: "Mesa County, Colorado" }
-    ],
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "5.0",
-      reviewCount: "72",
-      bestRating: "5",
-      worstRating: "1"
-    }
-  })} />
+  <ServiceSchema
+    name="Window Tinting"
+    serviceType="AutoDetailing"
+    description="Window tinting near me in Grand Junction, CO — automotive, home, and office XPEL tint at ColorAuto Detailing, 562 S Westgate Drive."
+    path="/services/window-tinting"
+    image="/images/primexr.jpg"
+    areaServed={SERVICE_AREA}
+    offers={TINT_OFFERS}
+  />
 </PublicLayout>
