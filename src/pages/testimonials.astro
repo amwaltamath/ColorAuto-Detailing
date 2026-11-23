@@ -3,6 +3,7 @@ import PublicLayout from '../layouts/PublicLayout.astro';
 import Breadcrumbs from '../components/common/Breadcrumbs.astro';
 import GoogleReviews from '../components/common/GoogleReviews.astro';
 import { getGoogleReviews, stars } from '../utils/googlePlaces';
+import { COLORAUTO_AREA_SERVED } from '../utils/seo';
 
 const placeReviews = await getGoogleReviews();
 ---
@@ -90,7 +91,7 @@ const placeReviews = await getGoogleReviews();
 
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": ["AutomotiveBusiness", "LocalBusiness"],
     name: "ColorAuto Detailing",
     url: "https://colorautodetailing.com",
     telephone: "970-628-1505",
@@ -102,13 +103,7 @@ const placeReviews = await getGoogleReviews();
       postalCode: "81505",
       addressCountry: "US",
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: placeReviews.rating.toFixed(1),
-      reviewCount: String(placeReviews.reviewCount),
-      bestRating: "5",
-      worstRating: "1",
-    },
+    areaServed: COLORAUTO_AREA_SERVED,
     review: placeReviews.reviews.slice(0, 5).map((review) => ({
       "@type": "Review",
       author: { "@type": "Person", name: review.authorName },

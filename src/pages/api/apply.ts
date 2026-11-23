@@ -139,10 +139,10 @@ export async function POST({ request }: APIContext) {
 
     let host: string;
     try {
-      host = (request.headers.get("x-forwarded-host") || request.headers.get("host") || "www.colorautodetailing.com").trim();
-      if (!host) host = "www.colorautodetailing.com";
+      host = (request.headers.get("x-forwarded-host") || request.headers.get("host") || "colorautodetailing.com").trim();
+      if (!host) host = "colorautodetailing.com";
     } catch {
-      host = "www.colorautodetailing.com";
+      host = "colorautodetailing.com";
     }
     const proto = request.headers.get("x-forwarded-proto") || (host.includes("localhost") ? "http" : "https");
     const baseUrl = `${proto}://${host}`;

@@ -27,7 +27,9 @@ export default defineConfig({
       filter: (page) =>
         !page.includes('/employee/') &&
         !page.includes('/customer/') &&
-        !page.includes('/api/'),
+        !page.includes('/api/') &&
+        !page.includes('/ads/') &&
+        !page.includes('/business-card'),
     }),
   ],
 

@@ -516,6 +516,28 @@ nav[aria-label='Breadcrumb']:has(+ .ca-hero-split--service) svg {
   font-size: 0.9rem;
 }
 
+.ca-pricing__swipe {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .ca-pricing__swipe {
+    display: block;
+  }
+}
+
+.ca-pricing__table--sticky-col thead th:first-child,
+.ca-pricing__table--sticky-col tbody th[scope='row'] {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: #0f172a;
+}
+
+.ca-pricing__table--sticky-col thead th:first-child {
+  z-index: 2;
+}
+
 .ca-pricing__table th,
 .ca-pricing__table td {
   padding: 0.65rem 0.75rem;
