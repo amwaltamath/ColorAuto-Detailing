@@ -7,11 +7,12 @@ import { SITE_ORIGIN } from '../../utils/seo';
 import { renderMarkdown } from '../../utils/renderMarkdown';
 import { blogCategoryPreset } from '../../utils/blogCategoryPresets';
 
-const SERVICE_LINKS: Record<string, { href: string; name: string; pitchTitle: string; pitch: string }> = {
+const SERVICE_LINKS: Record<string, { href: string; name: string; linkLabel?: string; pitchTitle: string; pitch: string }> = {
   'window-tint': {
     href: '/services/window-tinting',
-    name: 'window tinting',
-    pitchTitle: 'Ready for window tint in Grand Junction?',
+    name: 'Grand Junction window tinting',
+    linkLabel: 'Grand Junction window tinting',
+    pitchTitle: 'Ready to book tint?',
     pitch: 'Automotive, home, and office film with a legal shade and a clear quote before we start.',
   },
   ppf: {
@@ -105,6 +106,7 @@ const serviceLink = SERVICE_LINKS[postData.category] ?? {
   pitchTitle: 'Ready to book?',
   pitch: 'Tell us the vehicle and what you want done. We will quote the right service.',
 };
+const serviceAnchor = serviceLink.linkLabel ?? `View ${serviceLink.name}`;
 
 const bodyHtml = dbPost?.bodyMarkdown?.trim() ? renderMarkdown(dbPost.bodyMarkdown) : '';
 const installPreset = blogCategoryPreset(postData.category);
@@ -270,7 +272,7 @@ const blogPostingSchema = {
           <p>{serviceLink.pitch}</p>
           <div class="flex flex-col sm:flex-row gap-3">
             <a href="/contact" class="ca-article-cta__primary">Get a free quote</a>
-            <a href={serviceLink.href} class="ca-article-cta__secondary">View {serviceLink.name}</a>
+            <a href={serviceLink.href} class="ca-article-cta__secondary">{serviceAnchor}</a>
           </div>
         </div>
       </div>
@@ -280,7 +282,7 @@ const blogPostingSchema = {
           <p class="text-xs uppercase tracking-wide text-blue-100">Grand Junction shop</p>
           <h2 class="text-xl font-bold mt-2">Book {serviceLink.name}</h2>
           <p class="text-sm text-blue-100 mt-2">562 S Westgate Drive. Same-week appointments are often open.</p>
-          <a href={serviceLink.href} class="mt-5 inline-flex w-full justify-center rounded-lg bg-white text-blue-800 font-semibold px-4 py-3">See {serviceLink.name}</a>
+          <a href={serviceLink.href} class="mt-5 inline-flex w-full justify-center rounded-lg bg-white text-blue-800 font-semibold px-4 py-3">{serviceAnchor}</a>
         </div>
         {relatedPosts.length > 0 && (
           <div class="rounded-3xl bg-white border border-slate-200 p-5 shadow-sm">

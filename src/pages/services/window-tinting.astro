@@ -5,6 +5,7 @@ import Breadcrumbs from '../../components/common/Breadcrumbs.astro';
 import ServicePageHero from '../../components/common/ServicePageHero.astro';
 import '../../styles/service-page-glass.css';
 import { getSupabaseBlogPosts } from '../../utils/blogPosts';
+import { COLORAUTO_AREA_SERVED } from '../../utils/seo';
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -40,6 +41,14 @@ const faqSchema = {
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Most vehicles take 1.5–3 hours depending on the number of windows and film type. You can drop off in the morning and pick up the same day."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What's the aftercare for window tint?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For optimal results, keep windows fully closed for at least 48 hours following installation. Any residual moisture between the film and glass will cure out naturally over 5–7 days. All installations are backed by a lifetime warranty for your peace of mind."
       }
     },
     {
@@ -97,14 +106,14 @@ const tintPosts = [
 ---
 
 <PublicLayout
-  title="Window Tinting Near Me | Grand Junction, CO | ColorAuto"
-  description="Window tinting near me in Grand Junction — ColorAuto at 562 S Westgate Dr installs XPEL automotive, home & office tint. UV block, heat rejection, lifetime warranty. Call 970-628-1505."
+  title="Grand Junction Window Tinting | XPEL Ceramic & Carbon | ColorAuto"
+  description="Grand Junction window tinting at ColorAuto Detailing — XPEL ceramic and carbon film from $250, Colorado-legal installs, and a lifetime warranty. 562 S Westgate Dr. Call 970-628-1505."
   keywords={[
+    'Grand Junction window tinting',
     'window tinting near me',
     'window tint near me',
     'window tinting near me Grand Junction',
     'car window tinting near me',
-    'Grand Junction window tinting',
     'window tinting Grand Junction CO',
     'auto window tint Grand Junction',
     'home window tint',
@@ -120,8 +129,8 @@ const tintPosts = [
     { label: 'Window Tinting' }
   ]} />
   <ServicePageHero
-    title="Window Tinting Near Grand Junction, CO"
-    subtitle="Local XPEL tint for cars, homes, and offices — the shop Western Slope drivers find when they search window tinting near me."
+    title="Window Tinting in Grand Junction, CO"
+    subtitle="Local XPEL ceramic and carbon tint for cars, homes, and offices — the shop Western Slope drivers find when they search window tinting near me."
     image="/images/primexr.jpg"
     imageAlt="Window tinting near me — XPEL install at ColorAuto Detailing in Grand Junction, Colorado"
     badge="Prime XR"
@@ -185,9 +194,15 @@ const tintPosts = [
           </li>
         </ul>
 
-        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg space-y-3">
           <p class="text-sm text-gray-700">
-            <strong>Colorado Law:</strong> Front side windows must allow more than 27% of light in. We ensure all installations are compliant with state regulations.
+            <strong>Colorado Law:</strong> Colorado allows 27% VLT on front side windows, and any darkness on rear and back windows. We ensure every install meets state regulations.
+          </p>
+          <p class="text-sm text-gray-700">
+            <strong>Install time:</strong> Most vehicles take 1.5–3 hours depending on the number of windows and film type. You can drop off in the morning and pick up the same day.
+          </p>
+          <p class="text-sm text-gray-700">
+            <strong>Aftercare:</strong> For optimal results, keep windows fully closed for at least 48 hours following installation. Any residual moisture between the film and glass will cure out naturally over 5–7 days. All installations are backed by a lifetime warranty for your peace of mind.
           </p>
         </div>
       </div>
@@ -333,6 +348,76 @@ const tintPosts = [
     </div>
   </section>
 
+  <!--
+    TODO(Drew): Fill fronts, full-vehicle, sunroof, and tint-removal prices.
+    Those prices are not in the repo. Do not invent them.
+    Known starting prices only (this page, the FAQ, the tint guide, and /ads/window-tinting):
+    PRIME CS $250, PRIME XR $350, PRIME XR Plus $500.
+    The guide also says sedans/coupes run from $250 (CS) to $500+ (XR Plus)
+    and SUVs/trucks are "slightly higher" with no dollar amount.
+  -->
+  <section class="ca-service-page py-16" id="tint-prices">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center mb-10">
+        <h2 class="text-4xl font-bold text-white mb-3">Grand Junction Window Tinting Prices</h2>
+        <p class="text-gray-300 text-lg">Starting prices by XPEL film. Lifetime warranty on every package.</p>
+      </div>
+      <div class="ca-pricing">
+        <div class="ca-pricing__block">
+          <h3 class="ca-pricing__heading">Film starting prices</h3>
+          <p class="ca-pricing__intro">
+            Final price depends on vehicle size and how many windows are tinted. Fronts, full-vehicle, sunroof, and removal are quoted per vehicle — call 970-628-1505.
+          </p>
+          <p class="ca-pricing__intro ca-pricing__swipe">Swipe sideways to compare every film.</p>
+          <div class="ca-pricing__scroll">
+            <table class="ca-pricing__table ca-pricing__table--sticky-col">
+              <thead>
+                <tr>
+                  <th scope="col">Package</th>
+                  <th scope="col">PRIME CS <span class="ca-pricing__col-hint">Carbon</span></th>
+                  <th scope="col">PRIME XR <span class="ca-pricing__col-hint">Ceramic</span></th>
+                  <th scope="col">PRIME XR Plus <span class="ca-pricing__col-hint">Ceramic</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Starting price <span class="ca-pricing__row-hint">Any vehicle, film tier</span></th>
+                  <td>From $250</td>
+                  <td>From $350</td>
+                  <td>From $500</td>
+                </tr>
+                <tr>
+                  <th scope="row">Fronts</th>
+                  <td>Call for quote</td>
+                  <td>Call for quote</td>
+                  <td>Call for quote</td>
+                </tr>
+                <tr>
+                  <th scope="row">Full vehicle</th>
+                  <td>Call for quote</td>
+                  <td>Call for quote</td>
+                  <td>Call for quote</td>
+                </tr>
+                <tr>
+                  <th scope="row">Sunroof</th>
+                  <td>Call for quote</td>
+                  <td>Call for quote</td>
+                  <td>Call for quote</td>
+                </tr>
+                <tr>
+                  <th scope="row">Tint removal</th>
+                  <td>Call for quote</td>
+                  <td>Call for quote</td>
+                  <td>Call for quote</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Services for Home & Office -->
   <section class="ca-service-page py-12">
     <div class="max-w-7xl mx-auto px-4">
@@ -422,8 +507,6 @@ const tintPosts = [
         Grand Junction · Fruita · Clifton · Palisade · Orchard Mesa · Redlands · Loma · Mack · Mesa County · Western Colorado
       </p>
       <p class="mt-6">
-        <a href="/services/auto-window-tinting" class="text-blue-600 font-semibold hover:underline">Automotive window tinting →</a>
-        <span class="text-gray-400 mx-2" aria-hidden="true">|</span>
         <a href="/services/home-window-tint" class="text-blue-600 font-semibold hover:underline">Home tint →</a>
         <span class="text-gray-400 mx-2" aria-hidden="true">|</span>
         <a href="/services/office-window-tint" class="text-blue-600 font-semibold hover:underline">Office tint →</a>
@@ -470,6 +553,15 @@ const tintPosts = [
           </button>
           <div class="faq-answer px-6 text-gray-600">
             Most vehicles take 1.5–3 hours depending on the number of windows and film type. You can drop off in the morning and pick up the same day.
+          </div>
+        </div>
+        <div class="border border-gray-200 rounded-lg">
+          <button class="faq-toggle w-full text-left px-6 py-4 font-semibold text-lg flex justify-between items-center cursor-pointer bg-transparent border-0">
+            What&apos;s the aftercare for window tint?
+            <span class="text-blue-600 text-2xl">+</span>
+          </button>
+          <div class="faq-answer px-6 text-gray-600">
+            For optimal results, keep windows fully closed for at least 48 hours following installation. Any residual moisture between the film and glass will cure out naturally over 5–7 days. All installations are backed by a lifetime warranty for your peace of mind.
           </div>
         </div>
         <div class="border border-gray-200 rounded-lg">
@@ -615,11 +707,11 @@ const tintPosts = [
     "@context": "https://schema.org",
     "@type": "Service",
     name: "Window Tinting",
-    serviceType: "AutoDetailing",
-    description: "Window tinting near me in Grand Junction, CO — automotive, home, and office XPEL tint at ColorAuto Detailing, 562 S Westgate Drive.",
+    serviceType: "window tinting",
+    description: "Grand Junction window tinting — automotive, home, and office XPEL film at ColorAuto Detailing, 562 S Westgate Drive.",
     url: "https://colorautodetailing.com/services/window-tinting",
     provider: {
-      "@type": "AutoRepair",
+      "@type": ["AutomotiveBusiness", "LocalBusiness"],
       name: "ColorAuto Detailing",
       telephone: "970-628-1505",
       address: {
@@ -631,19 +723,6 @@ const tintPosts = [
         addressCountry: "US"
       }
     },
-    areaServed: [
-      { "@type": "City", name: "Grand Junction" },
-      { "@type": "City", name: "Fruita" },
-      { "@type": "City", name: "Clifton" },
-      { "@type": "City", name: "Palisade" },
-      { "@type": "AdministrativeArea", name: "Mesa County, Colorado" }
-    ],
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "5.0",
-      reviewCount: "72",
-      bestRating: "5",
-      worstRating: "1"
-    }
+    areaServed: COLORAUTO_AREA_SERVED,
   })} />
 </PublicLayout>

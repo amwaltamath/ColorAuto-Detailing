@@ -73,16 +73,16 @@ export const BLOG_CATEGORY_PRESETS: Record<BlogCategory, BlogCategoryPreset> = {
   },
   'window-tint': {
     materialHighlight: 'XPEL PRIME window film',
-    ctaLabel: 'window tinting',
+    ctaLabel: 'Grand Junction window tinting',
     ctaHref: '/services/window-tinting',
-    duration: '2–4 hours',
+    duration: '1.5–3 hours',
     productLabel: 'Film',
     steps: [
       { title: 'Shade consult', detail: 'Chose a legal shade and film tier for heat, privacy, and the look the customer wanted.' },
       { title: 'Glass prep', detail: 'Cleaned the glass so the film installs without dust or trapped debris.' },
       { title: 'Pattern and install', detail: 'Cut and installed XPEL PRIME film, then heat-shrunk and squeegeed each window.' },
       { title: 'Inspection', detail: 'Checked edges, vision, and film contact before the vehicle was released.' },
-      { title: 'Cure instructions', detail: 'Asked them to keep the windows up for a few days while moisture finishes curing.' },
+      { title: 'Cure instructions', detail: 'Asked them to keep windows fully closed for at least 48 hours. Residual moisture cures out over 5–7 days.' },
     ],
   },
 };

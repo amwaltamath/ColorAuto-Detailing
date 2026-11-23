@@ -222,12 +222,22 @@
     },
     {
       "source": "/window-tinting-quote/",
-      "destination": "/contact",
+      "destination": "/services/window-tinting",
       "permanent": true
     },
     {
       "source": "/window-tinting-quote",
-      "destination": "/contact",
+      "destination": "/services/window-tinting",
+      "permanent": true
+    },
+    {
+      "source": "/services/auto-window-tinting/",
+      "destination": "/services/window-tinting",
+      "permanent": true
+    },
+    {
+      "source": "/services/auto-window-tinting",
+      "destination": "/services/window-tinting",
       "permanent": true
     },
     {
@@ -252,6 +262,18 @@
     }
   ],
   "headers": [
+    {
+      "source": "/customer/login",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    },
+    {
+      "source": "/employee/login",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    },
     {
       "source": "/images/(.*)",
       "headers": [
