@@ -9,6 +9,10 @@ import GlassHighlightsBar from '../components/common/GlassHighlightsBar.astro';
 import '../styles/hero-split.css';
 import '../styles/glass-services.css';
 import '../styles/service-page-glass.css';
+import { formatGoogleReviewCount, getGoogleReviews } from '../utils/googlePlaces';
+
+const placeReviews = await getGoogleReviews();
+const reviewCountLabel = formatGoogleReviewCount(placeReviews.reviewCount);
 ---
 
 <PublicLayout
@@ -37,7 +41,7 @@ import '../styles/service-page-glass.css';
         </h1>
         <p class="ca-hero-split__subtitle">
           ColorAuto is the Western Slope&apos;s trusted shop for premium detailing, XPEL paint protection film,
-          ceramic coating, and window tint — with 400+ Google reviews from local drivers.
+          ceramic coating, and window tint — with {reviewCountLabel} Google reviews from local drivers.
         </p>
         <div class="ca-hero-split__actions">
           <button type="button" data-quote-popup class="ca-hero-split__btn-primary">

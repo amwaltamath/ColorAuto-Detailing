@@ -41,8 +41,20 @@ export function getGoogleWriteReviewUrl(): string {
   return COLORAUTO_WRITE_REVIEW_URL;
 }
 
-/** Public review total when API is unavailable (update via GOOGLE_REVIEW_COUNT env). */
-export const COLORAUTO_KNOWN_REVIEW_COUNT = 400;
+/**
+ * Public review total when the Places API is unavailable.
+ * Live Google total was 716 at 5.0 on 2026-11-23. Override with GOOGLE_REVIEW_COUNT.
+ */
+export const COLORAUTO_KNOWN_REVIEW_COUNT = 716;
+
+/** Static marketing floor when a numeric review total is unavailable. */
+export const COLORAUTO_REVIEW_COUNT_FALLBACK_LABEL = '700+';
+
+/** Live Places total for marketing copy, or "700+" when the count is missing. */
+export function formatGoogleReviewCount(count: number): string {
+  if (!Number.isFinite(count) || count < 1) return COLORAUTO_REVIEW_COUNT_FALLBACK_LABEL;
+  return count.toLocaleString('en-US');
+}
 
 function resolveReviewCount(apiCount?: number | null): number {
   const override = Number(import.meta.env.GOOGLE_REVIEW_COUNT);

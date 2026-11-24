@@ -1,8 +1,7 @@
 /**
  * Apex production host (no www). Must match astro.config `site`.
- * Vercel currently redirects this host to www (307). That redirect is a
- * domain setting, not something vercel.json can fix without a loop.
- * Primary domain should be this origin so www and http land here.
+ * This apex origin is canonical. www.colorautodetailing.com 308-redirects here.
+ * Keep this host as the primary domain so www and http land here.
  */
 export const SITE_ORIGIN = 'https://colorautodetailing.com';
 

@@ -186,8 +186,28 @@
       "permanent": true
     },
     {
+      "source": "/team",
+      "destination": "/our-team",
+      "permanent": true
+    },
+    {
       "source": "/about/",
       "destination": "/our-team",
+      "permanent": true
+    },
+    {
+      "source": "/about",
+      "destination": "/our-team",
+      "permanent": true
+    },
+    {
+      "source": "/resources/",
+      "destination": "/work",
+      "permanent": true
+    },
+    {
+      "source": "/resources",
+      "destination": "/work",
       "permanent": true
     },
     {
