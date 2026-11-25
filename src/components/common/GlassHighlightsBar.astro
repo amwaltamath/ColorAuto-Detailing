@@ -1,3 +1,10 @@
+---
+import { formatGoogleReviewCount, getGoogleReviews } from '../../utils/googlePlaces';
+
+const placeReviews = await getGoogleReviews();
+const reviewCountLabel = formatGoogleReviewCount(placeReviews.reviewCount);
+---
+
 <section class="ca-glass-strip ca-glass-strip--highlights" aria-label="Why choose ColorAuto">
   <div class="ca-glass-strip__inner">
     <div class="ca-glass-highlights">
@@ -19,7 +26,7 @@
         <span class="ca-glass-highlight__icon" aria-hidden="true">★</span>
         <div>
           <p class="ca-glass-highlight__title">5-Star Rated</p>
-          <p class="ca-glass-highlight__text">400+ Google reviews</p>
+          <p class="ca-glass-highlight__text">{reviewCountLabel} Google reviews</p>
         </div>
       </article>
       <article class="ca-glass-highlight">

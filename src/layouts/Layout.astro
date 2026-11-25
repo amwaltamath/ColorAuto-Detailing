@@ -132,11 +132,9 @@ const ogImage = image ? new URL(image, SITE_ORIGIN).href : `${SITE_ORIGIN}/image
 
     <title>{title}</title>
     <!--
-      TODO(Drew): Confirm the live Google review count before adding aggregateRating back.
-      The repo does not have one count: homepage and GlassHighlightsBar say "400+",
-      COLORAUTO_KNOWN_REVIEW_COUNT is 400, and service schema used 72.
-      On 2026-11-23 the live Google reviews widget rendered 716.
-      Do not publish a hardcoded count.
+      aggregateRating stays out of this schema on purpose.
+      Marketing copy reads the live Places total (fallback COLORAUTO_KNOWN_REVIEW_COUNT, 716 as of 2026-11-23).
+      Do not publish a second hardcoded count here.
     -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",

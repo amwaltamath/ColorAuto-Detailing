@@ -1,6 +1,6 @@
 ---
 title: "Risky Fitness Commercial Window Tint Project"
-description: "Recently completed XPEL Architectural Black Out Film installation at Risky Fitness. Professional window tinting for privacy and privacy in this new Grand Junction facility."
+description: "Recently completed XPEL Architectural Black Out Film installation at Risky Fitness. Professional window tinting for privacy in this new Grand Junction facility."
 publishDate: 2026-02-25
 image: "/images/blog/Commerical Window Tint/flat window tint.jpg"
 imageAlt: "XPEL Architectural Black Out Film installed at Risky Fitness for privacy"
